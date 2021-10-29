@@ -39,6 +39,71 @@ nb_path: "00_core.ipynb"
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">export</span>
+<span class="k">def</span> <span class="nf">load_public_data</span><span class="p">(</span><span class="n">in_path</span><span class="p">,</span> <span class="n">out_path</span> <span class="o">=</span> <span class="s1">&#39;data/public.pickle&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    load public data and output processed data in pickle format</span>
+<span class="sd">    in_path : input path</span>
+<span class="sd">    out_path: output path</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">public_all</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">in_path</span><span class="p">)</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;foodimage_file_name&#39;</span><span class="p">])</span>
+    
+    <span class="k">def</span> <span class="nf">handle_public_time</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+        <span class="n">tmp_s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;p.m.&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;a.m.&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmp_s</span><span class="o">.</span><span class="n">split</span><span class="p">()[:</span><span class="mi">2</span><span class="p">])</span> <span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">tmp_s</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">][:</span><span class="mi">2</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">12</span><span class="p">:</span>
+                    <span class="n">tmp_s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;p.m.&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;a.m.&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;PM&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;pm&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmp_s</span><span class="o">.</span><span class="n">split</span><span class="p">()[:</span><span class="mi">2</span><span class="p">])</span> <span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+        
+    <span class="n">original_logtime_notz_lst</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="p">(</span><span class="n">public_all</span><span class="o">.</span><span class="n">original_logtime</span><span class="o">.</span><span class="n">values</span><span class="p">):</span>
+        <span class="n">original_logtime_notz_lst</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">handle_public_time</span><span class="p">(</span><span class="n">t</span><span class="p">))</span> 
+    <span class="n">public_all</span><span class="p">[</span><span class="s1">&#39;original_logtime_notz&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">original_logtime_notz_lst</span>
+    
+    <span class="n">public_all</span> <span class="o">=</span> <span class="n">public_all</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">find_date</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">d</span><span class="o">.</span><span class="n">hour</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">d</span><span class="o">.</span><span class="n">date</span><span class="p">()</span> <span class="o">-</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">(</span><span class="s1">&#39;1 day&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">d</span><span class="o">.</span><span class="n">date</span><span class="p">()</span>
+    <span class="n">public_all</span><span class="p">[</span><span class="s1">&#39;day&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">public_all</span><span class="p">[</span><span class="s1">&#39;original_logtime_notz&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">find_date</span><span class="p">)</span>
+    
+    
+    <span class="c1"># Handle the time - Time in floating point format</span>
+    <span class="n">public_all</span><span class="p">[</span><span class="s1">&#39;local_time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">public_all</span><span class="o">.</span><span class="n">original_logtime_notz</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">())</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span> <span class="o">/</span><span class="mf">3600.</span><span class="p">)</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">day_begins_at</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">public_all</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">public_all</span><span class="p">[</span><span class="s1">&#39;local_time&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">day_begins_at</span><span class="p">),</span> <span class="s1">&#39;local_time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">24.0</span> <span class="o">+</span> <span class="n">public_all</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">public_all</span><span class="p">[</span><span class="s1">&#39;local_time&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">day_begins_at</span><span class="p">),</span> <span class="s1">&#39;local_time&#39;</span><span class="p">]</span>
+    
+    <span class="c1"># Handle the time - Time in Datetime object format</span>
+    <span class="n">public_all</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DatetimeIndex</span><span class="p">(</span><span class="n">public_all</span><span class="o">.</span><span class="n">original_logtime_notz</span><span class="p">)</span><span class="o">.</span><span class="n">time</span>
+    
+    <span class="c1"># Handle week from start</span>
+    <span class="n">public_start_time_dic</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">public_all</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;unique_code&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">)[</span><span class="s1">&#39;day&#39;</span><span class="p">])</span>
+    <span class="k">def</span> <span class="nf">count_week_public</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">day</span> <span class="o">-</span> <span class="n">public_start_time_dic</span><span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">unique_code</span><span class="p">])</span><span class="o">.</span><span class="n">days</span> <span class="o">//</span> <span class="mi">7</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">public_all</span><span class="p">[</span><span class="s1">&#39;week_from_start&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">public_all</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">count_week_public</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+    
+    <span class="n">public_all</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">public_all</span><span class="o">.</span><span class="n">day</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">year</span><span class="p">)</span>
+    
+    <span class="n">public_all_pickle_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_path</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span>
+    <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">public_all</span><span class="p">,</span> <span class="n">public_all_pickle_file</span><span class="p">)</span>     
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;data is saved at </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">out_path</span><span class="p">))</span>
+    <span class="n">public_all_pickle_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
 
 </div>
     {% endraw %}
@@ -50,7 +115,7 @@ nb_path: "00_core.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">load_public_data</span><span class="p">(</span><span class="s1">&#39;data/test_food_details.csv&#39;</span><span class="p">)</span>
 </pre></div>
 
     </div>
