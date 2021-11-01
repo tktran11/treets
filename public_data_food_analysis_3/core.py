@@ -16,9 +16,23 @@ from datetime import datetime
 # Cell
 def load_public_data(in_path, out_path = 'data/public.pickle'):
     """
-    load public data and output processed data in pickle format\n
-    in_path : input path\n
-    out_path: output path
+    Load public data and output processed data in pickle format.\n
+
+    Process include:\n
+    1. Dropping 'foodimage_file_name' column.\n
+    2. Handling the format of time by generating a new column, 'original_logtime_notz'\n
+    3. Generating the date column, 'day'\n
+    4. Converting time into float number into a new column, 'local_time'\n
+    5. Converting time in the 'local_time' column so that day starts at 4 am.\n
+    6. Converting time to a format of HH:MM:SS, 'time'\n
+    7. Generating the column 'week_from_start' that contains the week number that the participants input the food item.\n
+    8. Generating 'year' column based on the input data.\n
+    9. Outputing the data into a pickle format file.\n
+
+    \n
+    @param in_path : input path\n
+    @param out_path: output path\n
+    @return: nothing is returned.
     """
     public_all = pd.read_csv(in_path).drop(columns = ['foodimage_file_name'])
 

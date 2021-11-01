@@ -49,9 +49,31 @@ nb_path: "00_core.ipynb"
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="load_public_data" class="doc_header"><code>load_public_data</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L17" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_public_data</code>(<strong><code>in_path</code></strong>, <strong><code>out_path</code></strong>=<em><code>'data/public.pickle'</code></em>)</p>
 </blockquote>
-<p>load public data and output processed data in pickle format</p>
-<p>in_path : input path</p>
-<p>out_path: output path</p>
+<p>Load public data and output processed data in pickle format.</p>
+<p>Process include:</p>
+<ol>
+<li><p>Dropping 'foodimage_file_name' column.</p>
+</li>
+<li><p>Handling the format of time by generating a new column, 'original_logtime_notz'</p>
+</li>
+<li><p>Generating the date column, 'day'</p>
+</li>
+<li><p>Converting time into float number into a new column, 'local_time'</p>
+</li>
+<li><p>Converting time in the 'local_time' column so that day starts at 4 am.</p>
+</li>
+<li><p>Converting time to a format of HH:MM:SS, 'time'</p>
+</li>
+<li><p>Generating the column 'week_from_start' that contains the week number that the participants input the food item.</p>
+</li>
+<li><p>Generating 'year' column based on the input data.</p>
+</li>
+<li><p>Outputing the data into a pickle format file.</p>
+</li>
+</ol>
+<p>@param in_path : input path</p>
+<p>@param out_path: output path</p>
+<p>@return: nothing is returned.</p>
 
 </div>
 
