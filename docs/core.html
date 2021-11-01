@@ -6,8 +6,8 @@ title: Public data food analysis
 keywords: fastai
 sidebar: home_sidebar
 
-summary: "Potential description."
-description: "Potential description."
+summary: "Process collected data."
+description: "Process collected data."
 nb_path: "00_core.ipynb"
 ---
 <!--
@@ -56,7 +56,7 @@ nb_path: "00_core.ipynb"
 </li>
 <li><p>Handling the format of time by generating a new column, 'original_logtime_notz'</p>
 </li>
-<li><p>Generating the date column, 'day'</p>
+<li><p>Generating the date column, 'date'</p>
 </li>
 <li><p>Converting time into float number into a new column, 'local_time'</p>
 </li>
@@ -113,6 +113,73 @@ nb_path: "00_core.ipynb"
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>data is saved at data/public.pickle
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="prepare_baseline_and_intervention_usable_data" class="doc_header"><code>prepare_baseline_and_intervention_usable_data</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L88" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>prepare_baseline_and_intervention_usable_data</code>(<strong><code>in_path</code></strong>)</p>
+</blockquote>
+<p>@param in_path : input path, file in pickle format</p>
+<p>@param out_path: output path</p>
+<p>@return: nothing is returned.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">prepare_baseline_and_intervention_usable_data</span><span class="p">(</span><span class="s1">&#39;data/public.pickle&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre> =&gt; filtering_usable_data()
+  =&gt; using the following criteria: 40 items and 12 days logged in two weeks.
+  =&gt; # of public users pass the criteria: 129
 </pre>
 </div>
 </div>

@@ -1,6 +1,7 @@
 {
   "public_data_food_analysis_3": {
     "Overview": "/",
-    "Public data food analysis": "core.html"
+    "Public data food analysis": "core.html",
+    "App Data Functions": "app_data.html"
   }
 }

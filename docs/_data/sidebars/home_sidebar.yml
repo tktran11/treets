@@ -12,6 +12,9 @@ entries:
     - output: web,pdf
       title: Public data food analysis
       url: core.html
+    - output: web,pdf
+      title: App Data Functions
+      url: app_data.html
     output: web
     title: public_data_food_analysis_3
   output: web
