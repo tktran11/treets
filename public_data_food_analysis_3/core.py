@@ -16,8 +16,8 @@ from datetime import datetime
 # Cell
 def load_public_data(in_path, out_path = 'data/public.pickle'):
     """
-    load public data and output processed data in pickle format
-    in_path : input path
+    load public data and output processed data in pickle format\n
+    in_path : input path\n
     out_path: output path
     """
     public_all = pd.read_csv(in_path).drop(columns = ['foodimage_file_name'])
