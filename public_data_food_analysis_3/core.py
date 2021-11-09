@@ -85,7 +85,9 @@ def load_public_data(in_path, out_path = 'data/public.pickle'):
     public_all_pickle_file.close()
 
 # Cell
-def prepare_baseline_and_intervention_usable_data(in_path):
+def prepare_baseline_and_intervention_usable_data(in_path,
+                                                  baseline_expanded_out_path='data/public_basline_usable_expanded.pickle',
+                                                 intervention_out_path = 'data/public_intervention_usable.pickle'):
     """
     @param in_path : input path, file in pickle format\n
     @param out_path: output path\n
@@ -93,6 +95,29 @@ def prepare_baseline_and_intervention_usable_data(in_path):
     """
     public_all_pickle_file = open(in_path, 'rb')
     public_all = pickle.load(public_all_pickle_file)
+
+    # create baseline data
     df_public_baseline = public_all.query('week_from_start <= 2')
     df_public_baseline_usable, public_baseline_usable_id_set = \
     filtering_usable_data(df_public_baseline, num_items = 40, num_days = 12)
+
+    # create intervention data
+    df_public_intervention = public_all.query('week_from_start in [13, 14]')
+    df_public_intervention_usable, public_intervention_usable_id_set = \
+    filtering_usable_data(df_public_intervention, num_items = 20, num_days = 8)
+
+    # create df that contains both baseline and intervention id_set
+    expanded_baseline_usable_id_set = set(list(public_baseline_usable_id_set) + list(public_intervention_usable_id_set))
+    df_public_basline_usable_expanded = public_all.loc[public_all.apply(lambda s: s.week_from_start <= 2 \
+                                                    and s.unique_code in expanded_baseline_usable_id_set, axis = 1)]
+
+    # save baseline_expanded and intervention to pickle_file
+    public_pickle_file = open(baseline_expanded_out_path, 'wb')
+    pickle.dump(df_public_basline_usable_expanded, public_pickle_file)
+    public_pickle_file.close()
+    print('baseline_expanded data is saved at {}'.format(baseline_expanded_out_path))
+
+    public_pickle_file = open(intervention_out_path, 'wb')
+    pickle.dump(df_public_intervention_usable, public_pickle_file)
+    public_pickle_file.close()
+    print('intervention data is saved at {}'.format(intervention_out_path))

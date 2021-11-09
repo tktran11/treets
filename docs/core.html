@@ -134,7 +134,7 @@ nb_path: "00_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="prepare_baseline_and_intervention_usable_data" class="doc_header"><code>prepare_baseline_and_intervention_usable_data</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L88" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>prepare_baseline_and_intervention_usable_data</code>(<strong><code>in_path</code></strong>)</p>
+<h4 id="prepare_baseline_and_intervention_usable_data" class="doc_header"><code>prepare_baseline_and_intervention_usable_data</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L88" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>prepare_baseline_and_intervention_usable_data</code>(<strong><code>in_path</code></strong>, <strong><code>baseline_expanded_out_path</code></strong>=<em><code>'data/public_basline_usable_expanded.pickle'</code></em>, <strong><code>intervention_out_path</code></strong>=<em><code>'data/public_intervention_usable.pickle'</code></em>)</p>
 </blockquote>
 <p>@param in_path : input path, file in pickle format</p>
 <p>@param out_path: output path</p>
@@ -179,7 +179,12 @@ nb_path: "00_core.ipynb"
 <div class="output_subarea output_stream output_stdout output_text">
 <pre> =&gt; filtering_usable_data()
   =&gt; using the following criteria: 40 items and 12 days logged in two weeks.
-  =&gt; # of public users pass the criteria: 129
+  =&gt; # of public users pass the criteria: 3
+ =&gt; filtering_usable_data()
+  =&gt; using the following criteria: 20 items and 8 days logged in two weeks.
+  =&gt; # of public users pass the criteria: 0
+baseline_expanded data is saved at data/public_basline_usable_expanded.pickle
+intervention data is saved at data/public_intervention_usable.pickle
 </pre>
 </div>
 </div>
