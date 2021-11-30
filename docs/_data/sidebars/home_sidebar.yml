@@ -15,6 +15,9 @@ entries:
     - output: web,pdf
       title: App Data Functions
       url: app_data.html
+    - output: web,pdf
+      title: Food Parser
+      url: food_parser.html
     output: web
     title: public_data_food_analysis_3
   output: web

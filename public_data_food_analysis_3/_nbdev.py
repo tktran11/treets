@@ -4,10 +4,15 @@ __all__ = ["index", "modules", "custom_doc_links", "git_url"]
 
 index = {"load_public_data": "00_core.ipynb",
          "prepare_baseline_and_intervention_usable_data": "00_core.ipynb",
-         "filtering_usable_data": "01_app_data.ipynb"}
+         "adherent": "00_core.ipynb",
+         "most_active_user": "00_core.ipynb",
+         "convert_loggings": "00_core.ipynb",
+         "filtering_usable_data": "01_app_data.ipynb",
+         "FoodParser": "02_food_parser.ipynb"}
 
 modules = ["core.py",
-           "app_data.py"]
+           "app_data.py",
+           "food_parser.py"]
 
 doc_url = "https://QiwenZz.github.io/public_data_food_analysis_3/"
 
