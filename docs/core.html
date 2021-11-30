@@ -406,43 +406,102 @@ intervention data is saved at data/public_intervention_usable.pickle
 
 <div class="output_area">
 
-<div class="output_subarea output_text output_error">
-<pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">FileNotFoundError</span>                         Traceback (most recent call last)
-<span class="ansi-green-fg">&lt;ipython-input-8-69adb39b5f45&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
-<span class="ansi-green-fg">----&gt; 1</span><span class="ansi-red-fg"> </span>convert_loggings<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;data/public.pickle&#39;</span><span class="ansi-blue-fg">)</span>
-
-<span class="ansi-green-fg">&lt;ipython-input-6-22460843d5bc&gt;</span> in <span class="ansi-cyan-fg">convert_loggings</span><span class="ansi-blue-fg">(in_path, parsed_food_path, ascending)</span>
-<span class="ansi-green-intense-fg ansi-bold">     15</span>     <span class="ansi-red-fg"># initialize food parser instance</span>
-<span class="ansi-green-intense-fg ansi-bold">     16</span>     fp <span class="ansi-blue-fg">=</span> FoodParser<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span>
-<span class="ansi-green-fg">---&gt; 17</span><span class="ansi-red-fg">     </span>fp<span class="ansi-blue-fg">.</span>initialization<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">     18</span> 
-<span class="ansi-green-intense-fg ansi-bold">     19</span>     <span class="ansi-red-fg"># parse food</span>
-
-<span class="ansi-green-fg">~/Documents/GitHub/public_data_food_analysis_3/public_data_food_analysis_3/food_parser.py</span> in <span class="ansi-cyan-fg">initialization</span><span class="ansi-blue-fg">(self)</span>
-<span class="ansi-green-intense-fg ansi-bold">     70</span>     <span class="ansi-green-fg">def</span> initialization<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
-<span class="ansi-green-intense-fg ansi-bold">     71</span>         <span class="ansi-red-fg"># 1. read in manually annotated file and bind it to the object</span>
-<span class="ansi-green-fg">---&gt; 72</span><span class="ansi-red-fg">         </span>parser_keys_df <span class="ansi-blue-fg">=</span> pd<span class="ansi-blue-fg">.</span>read_csv<span class="ansi-blue-fg">(</span>pkg_resources<span class="ansi-blue-fg">.</span>resource_stream<span class="ansi-blue-fg">(</span>__name__<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">&#34;data/parser_keys.csv&#34;</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">     73</span>         all_gram_set<span class="ansi-blue-fg">,</span> food_type_dict<span class="ansi-blue-fg">,</span> food2tags <span class="ansi-blue-fg">=</span> self<span class="ansi-blue-fg">.</span>process_parser_keys_df<span class="ansi-blue-fg">(</span>parser_keys_df<span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">     74</span>         correction_dic <span class="ansi-blue-fg">=</span> pickle<span class="ansi-blue-fg">.</span>load<span class="ansi-blue-fg">(</span>pkg_resources<span class="ansi-blue-fg">.</span>resource_stream<span class="ansi-blue-fg">(</span>__name__<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">&#34;data/correction_dic.pickle&#34;</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
-
-<span class="ansi-green-fg">~/opt/anaconda3/lib/python3.8/site-packages/pkg_resources/__init__.py</span> in <span class="ansi-cyan-fg">resource_stream</span><span class="ansi-blue-fg">(self, package_or_requirement, resource_name)</span>
-<span class="ansi-green-intense-fg ansi-bold">   1134</span>     <span class="ansi-green-fg">def</span> resource_stream<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">,</span> package_or_requirement<span class="ansi-blue-fg">,</span> resource_name<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
-<span class="ansi-green-intense-fg ansi-bold">   1135</span>         <span class="ansi-blue-fg">&#34;&#34;&#34;Return a readable file-like object for specified resource&#34;&#34;&#34;</span>
-<span class="ansi-green-fg">-&gt; 1136</span><span class="ansi-red-fg">         return get_provider(package_or_requirement).get_resource_stream(
-</span><span class="ansi-green-intense-fg ansi-bold">   1137</span>             self<span class="ansi-blue-fg">,</span> resource_name
-<span class="ansi-green-intense-fg ansi-bold">   1138</span>         )
-
-<span class="ansi-green-fg">~/opt/anaconda3/lib/python3.8/site-packages/pkg_resources/__init__.py</span> in <span class="ansi-cyan-fg">get_resource_stream</span><span class="ansi-blue-fg">(self, manager, resource_name)</span>
-<span class="ansi-green-intense-fg ansi-bold">   1606</span> 
-<span class="ansi-green-intense-fg ansi-bold">   1607</span>     <span class="ansi-green-fg">def</span> get_resource_stream<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">,</span> manager<span class="ansi-blue-fg">,</span> resource_name<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
-<span class="ansi-green-fg">-&gt; 1608</span><span class="ansi-red-fg">         </span><span class="ansi-green-fg">return</span> open<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">.</span>_fn<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">.</span>module_path<span class="ansi-blue-fg">,</span> resource_name<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">&#39;rb&#39;</span><span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">   1609</span> 
-<span class="ansi-green-intense-fg ansi-bold">   1610</span>     <span class="ansi-green-fg">def</span> _get<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">,</span> path<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
-
-<span class="ansi-red-fg">FileNotFoundError</span>: [Errno 2] No such file or directory: &#39;/Users/qiwenzhang/Documents/GitHub/public_data_food_analysis_3/public_data_food_analysis_3/data/parser_keys.csv&#39;</pre>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>All food is parsed!
+cleaned food loggings is saved at data/public_all_parsed.csv
+All food is counted!
+</pre>
 </div>
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>food</th>
+      <th>count</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>water</td>
+      <td>1804</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>glass</td>
+      <td>666</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>coffee</td>
+      <td>273</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>pint water</td>
+      <td>248</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>large</td>
+      <td>228</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>851</th>
+      <td>tomato soup</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>852</th>
+      <td>florentine</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>853</th>
+      <td>french fry</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>854</th>
+      <td>cheeseburger</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>855</th>
+      <td>ramen</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+<p>856 rows × 2 columns</p>
+</div>
+</div>
+
 </div>
 
 </div>

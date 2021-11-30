@@ -204,7 +204,8 @@ def convert_loggings(in_path, parsed_food_path='data/public_all_parsed.csv', asc
 
     public_all_parsed['cleaned'] = public_all_parsed['cleaned'].apply(lambda x: x[0])
 
-    public_all_parsed.to_csv()
+    public_all_parsed.to_csv(parsed_food_path)
+    print('cleaned food loggings is saved at {}'.format(parsed_food_path))
 
     # count food
     all_count_dict = defaultdict(lambda : 0)
