@@ -15,6 +15,7 @@ nltk.download('words')
 nltk.download('stopwords')
 nltk.download('wordnet')
 nltk.download('punkt')
+nltk.download('omw-1.4')
 import pkg_resources
 
 # Cell
