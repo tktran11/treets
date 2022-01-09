@@ -16,7 +16,7 @@ from datetime import datetime
 from collections import defaultdict
 
 # Cell
-def load_public_data(in_path, out_path = 'data/public.pickle'):
+def load_public_data(in_path, export = False, out_path = 'data/output/public.pickle'):
     """
     Load public data and output processed data in pickle format.\n
 
@@ -34,7 +34,8 @@ def load_public_data(in_path, out_path = 'data/public.pickle'):
     \n
     @param in_path : input path\n
     @param out_path: output path\n
-    @return: nothing is returned.
+    @param export : whether to save the processed dataframe locally\n
+    @return: processed dataframe
     """
     public_all = pd.read_csv(in_path).drop(columns = ['foodimage_file_name'])
 
@@ -81,20 +82,25 @@ def load_public_data(in_path, out_path = 'data/public.pickle'):
 
     public_all['year'] = public_all.date.apply(lambda d: d.year)
 
-    public_all_pickle_file = open(out_path, 'wb')
-    pickle.dump(public_all, public_all_pickle_file)
-    print('data is saved at {}'.format(out_path))
-    public_all_pickle_file.close()
+    if export == True:
+        public_all_pickle_file = open(out_path, 'wb')
+        pickle.dump(public_all, public_all_pickle_file)
+        print('data is saved at {}'.format(out_path))
+        public_all_pickle_file.close()
+
+    return public_all
 
 # Cell
 def prepare_baseline_and_intervention_usable_data(in_path,
-                                                  baseline_expanded_out_path='data/public_basline_usable_expanded.pickle',
-                                                 intervention_out_path = 'data/public_intervention_usable.pickle'):
+                                                  export = False,
+                                                  baseline_expanded_out_path='data/output/public_basline_usable_expanded.pickle',
+                                                 intervention_out_path = 'data/output/public_intervention_usable.pickle'):
     """
-    Filter and create baseline_expanded and intervention groups based on in_path pickle file.
+    Filter and create baseline_expanded and intervention groups based on in_path pickle file.\n
     @param in_path : input path, file in pickle format\n
     @param out_path: output path\n
-    @return: nothing is returned.
+    @param export : whether to save the processed dataframes locally\n
+    @return: baseline expanded and intervention dataframes in a list format where index 0 is the baseline dataframe and 1 is the intervention dataframe.
     """
     public_all_pickle_file = open(in_path, 'rb')
     public_all = pickle.load(public_all_pickle_file)
@@ -114,16 +120,20 @@ def prepare_baseline_and_intervention_usable_data(in_path,
     df_public_basline_usable_expanded = public_all.loc[public_all.apply(lambda s: s.week_from_start <= 2 \
                                                     and s.unique_code in expanded_baseline_usable_id_set, axis = 1)]
 
-    # save baseline_expanded and intervention to pickle_file
-    public_pickle_file = open(baseline_expanded_out_path, 'wb')
-    pickle.dump(df_public_basline_usable_expanded, public_pickle_file)
-    public_pickle_file.close()
-    print('baseline_expanded data is saved at {}'.format(baseline_expanded_out_path))
+    if export == True:
 
-    public_pickle_file = open(intervention_out_path, 'wb')
-    pickle.dump(df_public_intervention_usable, public_pickle_file)
-    public_pickle_file.close()
-    print('intervention data is saved at {}'.format(intervention_out_path))
+        # save baseline_expanded and intervention to pickle_file
+        public_pickle_file = open(baseline_expanded_out_path, 'wb')
+        pickle.dump(df_public_basline_usable_expanded, public_pickle_file)
+        public_pickle_file.close()
+        print('baseline_expanded data is saved at {}'.format(baseline_expanded_out_path))
+
+        public_pickle_file = open(intervention_out_path, 'wb')
+        pickle.dump(df_public_intervention_usable, public_pickle_file)
+        public_pickle_file.close()
+        print('intervention data is saved at {}'.format(intervention_out_path))
+
+    return [df_public_basline_usable_expanded, df_public_intervention_usable]
 
 # Cell
 def adherent(s):
@@ -136,11 +146,12 @@ def adherent(s):
         return False
 
 # Cell
-def most_active_user(in_path, n, user_day_counts_path = 'data/public_top_users_day_counts.csv'):
+def most_active_user(in_path, n, export = False, user_day_counts_path = 'data/output/public_top_users_day_counts.csv'):
     """
     @param in_path : input path, file in pickle format\n
     @param n: number of users with most number of logging days\n
     @param user_data_counts_path: output path for top_users_day_counts in csv format\n
+    @param export : whether to save the processed dataframe locally\n
     @return: top_users_day_counts dataframe\n
 
     This function returns a dataframe in csv format that finds top n users with the most number of days that they logged.
@@ -165,18 +176,20 @@ def most_active_user(in_path, n, user_day_counts_path = 'data/public_top_users_d
                             [['date', 'unique_code']].groupby('unique_code')['date'].nunique())\
                             .sort_values(by = 'date', ascending = False).rename(columns = {'date': 'day_count'})
 
-    public_top_users_day_counts.to_csv(user_day_counts_path)
-
-    print('user day counts data is saved at {}'.format(user_day_counts_path))
+    if export == True:
+        public_top_users_day_counts.to_csv(user_day_counts_path)
+        print('user day counts data is saved at {}'.format(user_day_counts_path))
 
     return public_top_users_day_counts
 
 
 # Cell
-def convert_loggings(in_path, parsed_food_path='data/public_all_parsed.csv', ascending = False):
+def convert_loggings(in_path, export = False, parsed_food_path='data/output/public_all_parsed.csv', ascending = False):
     """
     @param in_path : input path, file in pickle format\n
     @param parsed_food_path : output path for cleaned food loggings in csv format \n
+    @param ascending: True to sort the item from lowest to highest frequency and vice versa\n
+    @param export: whether to save the converted dataframe locally\n
     @return: frequency count of food loggings in the descending order by default\n
 
     This function takes in a pickle file, convert all the loggings into individual items of food and count the frequency of all food loggings.
@@ -204,8 +217,9 @@ def convert_loggings(in_path, parsed_food_path='data/public_all_parsed.csv', asc
 
     public_all_parsed['cleaned'] = public_all_parsed['cleaned'].apply(lambda x: x[0])
 
-    public_all_parsed.to_csv(parsed_food_path)
-    print('cleaned food loggings is saved at {}'.format(parsed_food_path))
+    if export == True:
+        public_all_parsed.to_csv(parsed_food_path)
+        print('cleaned food loggings is saved at {}'.format(parsed_food_path))
 
     # count food
     all_count_dict = defaultdict(lambda : 0)
