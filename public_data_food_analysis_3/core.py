@@ -297,7 +297,7 @@ def get_certain_types(in_path, types, out_path=None, export = False):
     3. 'f' : food \n
     4. 'm' : medicine \n
     @param export: whether to save the dataframe locally\n
-    @param out_path: path of the saved file if export==True, csv format
+    @param out_path: path of the saved file if export==True, csv format\n
     @return: filtered dataframe with expected type/types with four columns: 'unique_code', 'desc_text', 'date', 'local_time'
     """
     if isinstance(in_path, str):
@@ -332,7 +332,7 @@ def breakfast_analysis_summary(in_path, out_path=None, export = False):
     """
     @param in_path: input path, file in pickle, csv or panda dataframe format\n
     @param export: whether to save the dataframe locally\n
-    @param out_path: path of the saved file if export==True, csv format
+    @param out_path: path of the saved file if export==True, csv format\n
     @return: 5%,10%,25%,50%,75%,90%,95% quantile of breakfast time for all subjects from the in_path file
     """
 
@@ -462,8 +462,7 @@ def dinner_analysis_variability(in_path, out_path=None, export = False):
     @param in_path: input path, file in pickle, csv or panda dataframe format\n
     @param export: whether to save the dataframe locally\n
     @param out_path: path of the saved file if export==True, csv format\n
-    @return: returns a dataframe that contains 5%,10%,25%,50%,75%,90%,95% quantile of dinner time minus 50% time for all subjects from the in_path file.\n
-    Also returns a histgram that represent the 90%-10% interval for all subjects.
+    @return: returns a dataframe that contains 5%,10%,25%,50%,75%,90%,95% quantile of dinner time minus 50% time for all subjects from the in_path file. Also returns a histgram that represent the 90%-10% interval for all subjects.
     """
 
     if isinstance(in_path, str):
