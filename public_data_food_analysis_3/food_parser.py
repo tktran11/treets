@@ -11,11 +11,6 @@ import pandas as pd
 import nltk
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import stopwords, words
-nltk.download('words')
-nltk.download('stopwords')
-nltk.download('wordnet')
-nltk.download('punkt')
-nltk.download('omw-1.4')
 import pkg_resources
 
 # Cell
