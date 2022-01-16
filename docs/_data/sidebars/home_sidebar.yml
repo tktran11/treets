@@ -13,9 +13,6 @@ entries:
       title: Public data food analysis
       url: core.html
     - output: web,pdf
-      title: App Data Functions
-      url: app_data.html
-    - output: web,pdf
       title: Food Parser
       url: food_parser.html
     output: web

@@ -12,11 +12,10 @@ index = {"load_public_data": "00_core.ipynb",
          "breakfast_analysis_variability": "00_core.ipynb",
          "dinner_analysis_summary": "00_core.ipynb",
          "dinner_analysis_variability": "00_core.ipynb",
-         "filtering_usable_data": "01_app_data.ipynb",
-         "FoodParser": "02_food_parser.ipynb"}
+         "filtering_usable_data": "00_core.ipynb",
+         "FoodParser": "01_food_parser.ipynb"}
 
 modules = ["core.py",
-           "app_data.py",
            "food_parser.py"]
 
 doc_url = "https://QiwenZz.github.io/public_data_food_analysis_3/"

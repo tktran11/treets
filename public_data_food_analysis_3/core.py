@@ -2,10 +2,10 @@
 
 __all__ = ['load_public_data', 'prepare_baseline_and_intervention_usable_data', 'get_adherent_column',
            'most_active_user', 'convert_loggings', 'get_certain_types', 'breakfast_analysis_summary',
-           'breakfast_analysis_variability', 'dinner_analysis_summary', 'dinner_analysis_variability']
+           'breakfast_analysis_variability', 'dinner_analysis_summary', 'dinner_analysis_variability',
+           'filtering_usable_data']
 
 # Cell
-from .app_data import *
 from .food_parser import *
 import warnings
 warnings.filterwarnings('ignore')
@@ -21,28 +21,36 @@ from datetime import datetime
 from collections import defaultdict
 
 # Cell
-def load_public_data(in_path, export = False, out_path = 'data/output/public.pickle'):
+def load_public_data(in_path):
     """
-    Load original public data and output processed data in pickle format.\n
+    Description:\n
+        Load original public data and output processed data in pickle format.\n
 
-    Process include:\n
-    1. Dropping 'foodimage_file_name' column.\n
-    2. Handling the format of time by generating a new column, 'original_logtime_notz'\n
-    3. Generating the date column, 'date'\n
-    4. Converting time into float number into a new column, 'local_time'\n
-    5. Converting time in the 'local_time' column so that day starts at 4 am.\n
-    6. Converting time to a format of HH:MM:SS, 'time'\n
-    7. Generating the column 'week_from_start' that contains the week number that the participants input the food item.\n
-    8. Generating 'year' column based on the input data.\n
-    9. Outputing the data into a pickle format file.\n
+        Process includes:\n
+        1. Dropping 'foodimage_file_name' column.\n
+        2. Handling the format of time by generating a new column, 'original_logtime_notz'\n
+        3. Generating the date column, 'date'\n
+        4. Converting time into float number into a new column, 'local_time'\n
+        5. Converting time in the 'local_time' column so that day starts at 4 am.\n
+        6. Converting time to a format of HH:MM:SS, 'time'\n
+        7. Generating the column 'week_from_start' that contains the week number that the participants input the food item.\n
+        8. Generating 'year' column based on the input data.\n
+        9. Outputing the data into a pickle format file.\n
 
-    \n
-    @param in_path : input path\n
-    @param out_path: output path\n
-    @param export : whether to save the processed dataframe locally\n
-    @return: processed dataframe
+    Input:\n
+        - in_path : input path, csv file\n
+
+    Output:\n
+        - public_all: the processed dataframe\n
+
+    Requirements:\n
+        csv file must have the following columns:\n
+            - foodimage_file_name\n
+            - original_logtime\n
+            - date\n
+            - unique_code\n
     """
-    public_all = pd.read_csv(in_path).drop(columns = ['foodimage_file_name'])
+    public_all = universal_key(in_path).drop(columns = ['foodimage_file_name'])
 
     def handle_public_time(s):
         tmp_s = s.replace('p.m.', '').replace('a.m.', '')
@@ -87,38 +95,31 @@ def load_public_data(in_path, export = False, out_path = 'data/output/public.pic
 
     public_all['year'] = public_all.date.apply(lambda d: d.year)
 
-    if export == True:
-        public_all_pickle_file = open(out_path, 'wb')
-        pickle.dump(public_all, public_all_pickle_file)
-        print('data is saved at {}'.format(out_path))
-        public_all_pickle_file.close()
-
     return public_all
 
 # Cell
-def prepare_baseline_and_intervention_usable_data(in_path,
-                                                  export = False,
-                                                  baseline_expanded_out_path='data/output/public_basline_usable_expanded.pickle',
-                                                 intervention_out_path = 'data/output/public_intervention_usable.pickle'):
+def prepare_baseline_and_intervention_usable_data(in_path):
     """
-    Filter and create baseline_expanded and intervention groups based on in_path pickle file.\n
-    @param in_path : input path, file in pickle, csv or pandas dataframe format\n
-    @param out_path: output path\n
-    @param export : whether to save the processed dataframes locally\n
-    @return: baseline expanded and intervention dataframes in a list format where index 0 is the baseline dataframe and 1 is the intervention dataframe.
+    Description:\n
+        Filter and create baseline_expanded and intervention groups based on in_path pickle file.\n
+
+    Input:\n
+        - in_path : input path, file in pickle, csv or pandas dataframe format\n
+
+    Return:\n
+        - baseline expanded and intervention dataframes in a list format where index 0 is the baseline dataframe and 1 is the intervention dataframe.\n
+
+    Requirements:\n
+        in_path file must have the following columns:\n
+            - week_from_start\n
+            - unique_code\n
+            - desc_text\n
+            - date\n
+
     """
 
-    if isinstance(in_path, str):
-        if in_path.split('.')[-1] == 'pickle':
-            # load data
-            public_all_pickle_file = open(in_path, 'rb')
-            public_all = pickle.load(public_all_pickle_file)
-            print('read the pickle file successfully.')
-        if in_path.split('.')[-1] == 'csv':
-            public_all = pd.read_csv(in_path)
-            print('read the csv file successfully.')
-    else:
-        public_all = in_path
+
+    public_all = universal_key(in_path)
 
     # create baseline data
     df_public_baseline = public_all.query('week_from_start <= 2')
@@ -135,28 +136,26 @@ def prepare_baseline_and_intervention_usable_data(in_path,
     df_public_basline_usable_expanded = public_all.loc[public_all.apply(lambda s: s.week_from_start <= 2 \
                                                     and s.unique_code in expanded_baseline_usable_id_set, axis = 1)]
 
-    if export == True:
-
-        # save baseline_expanded and intervention to pickle_file
-        public_pickle_file = open(baseline_expanded_out_path, 'wb')
-        pickle.dump(df_public_basline_usable_expanded, public_pickle_file)
-        public_pickle_file.close()
-        print('baseline_expanded data is saved at {}'.format(baseline_expanded_out_path))
-
-        public_pickle_file = open(intervention_out_path, 'wb')
-        pickle.dump(df_public_intervention_usable, public_pickle_file)
-        public_pickle_file.close()
-        print('intervention data is saved at {}'.format(intervention_out_path))
-
     return [df_public_basline_usable_expanded, df_public_intervention_usable]
 
 # Cell
-def get_adherent_column(in_path, out_path=None, export = False):
+def get_adherent_column(in_path):
     """
-    @param in_path: input path, file in pickle, csv or pandas dataframe format\n
-    @param out_path: path for out_put file in csv format if export==True.\n
-    @param export: whether to save processed df locally.\n
-    return True for a logging if the there are more than 2 loggings in one day w/ more than 4hrs apart from each other.
+    Description:\n
+        A logging is true if the there are more than 2 loggings in one day w/ more than 4hrs apart from the earliest logging and the latest logging and False otherwise.\n
+
+    Input:\n
+        - in_path : input path, file in pickle, csv or pandas dataframe format.\n
+
+    Return:\n
+        - A dataframe with a boolean column called adherence. Details on the criteria is in the description.\n
+
+    Requirements:\n
+        in_path file must have the following columns:\n
+            - unique_code\n
+            - local_time\n
+            - date\n
+
     """
     def adherent(s):
         if len(s.values) >= 2 and (max(s.values) - min(s.values)) >= 4:
@@ -164,93 +163,72 @@ def get_adherent_column(in_path, out_path=None, export = False):
         else:
             return False
 
-    if isinstance(in_path, str):
-        if in_path.split('.')[-1] == 'pickle':
-            # load data
-            public_all_pickle_file = open(in_path, 'rb')
-            df = pickle.load(public_all_pickle_file)
-            print('read the pickle file successfully.')
-        if in_path.split('.')[-1] == 'csv':
-            df = pd.read_csv(in_path)
-            print('read the csv file successfully.')
-    else:
-        df = in_path
+    df = universal_key(in_path)
 
     adherent_dict = dict(df.groupby(['unique_code', 'date'])['local_time'].agg(adherent))
     df['adherence'] = df.apply(lambda x: adherent_dict[(x.unique_code, x.date)], axis = 1)
 
-    if export == True:
-        df.to_csv(out_path)
-
     return df
 
 # Cell
-def most_active_user(in_path, n, export = False, user_day_counts_path = 'data/output/public_top_users_day_counts.csv'):
+def most_active_user(in_path, food_type = ["f", "b", "m", "w"]):
     """
-    @param in_path : input path, file in pickle, csv or pandas dataframe format\n
-    @param n: number of users with most number of logging days\n
-    @param user_data_counts_path: output path for top_users_day_counts in csv format\n
-    @param export : whether to save the processed dataframe locally\n
-    @return: top_users_day_counts dataframe\n
+    Description:\n
+        This function returns a dataframe reports the number of adherent logging days for each user in the in_path file. The default order is descending.\n
 
-    This function returns a dataframe in csv format that finds top n users with the most number of days that they logged.
+    Input:\n
+        - in_path : input path, file in pickle, csv or pandas dataframe format.\n
+        - food_type : food types to filter in a list format. Default: ["f", "b", "m", "w"]. Available food types:\n
+            1. 'w' : water \n
+            2. 'b' : beverage \n
+            3. 'f' : food \n
+            4. 'm' : medicine \n
+
+    Return:\n
+        - A dataframe contains the number of adherent logging days for each user.\n
+
+    Requirements:\n
+        in_path file must have the following columns:\n
+            - food_type\n
+            - unique_code\n
+            - date\n
+
     """
-    if isinstance(in_path, str):
-        if in_path.split('.')[-1] == 'pickle':
-            # load data
-            public_all_pickle_file = open(in_path, 'rb')
-            public_all = pickle.load(public_all_pickle_file)
-            print('read the pickle file successfully.')
-        if in_path.split('.')[-1] == 'csv':
-            public_all = pd.read_csv(in_path)
-            print('read the csv file successfully.')
-    else:
-        public_all = in_path
 
-    # filter the dataframe so it only contains food and beverage food type, then get the top n users who input the
-    # most loggings in descending order
-    top_users = public_all.query('food_type in ["f", "b"]')[['ID', 'unique_code']]\
-    .groupby('unique_code').agg('count').sort_values(by = 'ID', ascending = False).index[:n]
-    top_users = set(list(top_users))
-    public_top_users = public_all.query('food_type in ["f", "b"]')\
-    .loc[public_all.unique_code.apply(lambda x: x in top_users)].reset_index(drop = True)
+    public_all = universal_key(in_path)
 
+    # filter the dataframe so it only contains input food type
 
-    public_top_users = get_adherent_column(public_top_users)
+    filtered_users = public_all.query('food_type in @food_type')
 
-    public_top_users_day_counts = pd.DataFrame(public_top_users.query('adherence == True')\
+    filtered_users_w_adherence = get_adherent_column(filtered_users)
+
+    public_top_users_day_counts = pd.DataFrame(filtered_users_w_adherence.query('adherence == True')\
                             [['date', 'unique_code']].groupby('unique_code')['date'].nunique())\
                             .sort_values(by = 'date', ascending = False).rename(columns = {'date': 'day_count'})
 
-    if export == True:
-        public_top_users_day_counts.to_csv(user_day_counts_path)
-        print('user day counts data is saved at {}'.format(user_day_counts_path))
 
     return public_top_users_day_counts
 
-
 # Cell
-def convert_loggings(in_path, export = False, parsed_food_path='data/output/public_all_parsed.csv', ascending = False):
+def convert_loggings(in_path):
     """
-    @param in_path : input path, file in pickle, csv or panda dataframe format\n
-    @param parsed_food_path : output path for cleaned food loggings in csv format \n
-    @param ascending: True to sort the item from lowest to highest frequency and vice versa\n
-    @param export: whether to save the converted dataframe locally\n
-    @return: frequency count of food loggings in the descending order by default\n
+    Description:\n
+       This function convert all the loggings in the in_path file into a list of individual items based on the desc_text column.\n
+    Input:\n
+        - in_path : input path, file in pickle, csv or panda dataframe format.\n
 
-    This function takes in a pickle file, convert all the loggings into individual items of food and count the frequency of all food loggings.
+    Return:\n
+        - A dataframe contains the cleaned version of the desc_text.\n
+
+    Requirements:\n
+        in_path file must have the following columns:\n
+            - food_type\n
+            - desc_text\n
+
     """
-    if isinstance(in_path, str):
-        if in_path.split('.')[-1] == 'pickle':
-            # load data
-            public_all_pickle_file = open(in_path, 'rb')
-            public_all = pickle.load(public_all_pickle_file)
-            print('read the pickle file successfully.')
-        if in_path.split('.')[-1] == 'csv':
-            public_all = pd.read_csv(in_path)
-            print('read the csv file successfully.')
-    else:
-        public_all = in_path
+
+    public_all = universal_key(in_path)
 
     # initialize food parser instance
     fp = FoodParser()
@@ -258,8 +236,6 @@ def convert_loggings(in_path, export = False, parsed_food_path='data/output/publ
 
     # parse food
     parsed = [fp.parse_food(i, return_sentence_tag = True) for i in public_all.desc_text.values]
-
-    print('All food is parsed!')
 
     public_all_parsed = pd.DataFrame({
     'ID': public_all.unique_code,
@@ -270,85 +246,73 @@ def convert_loggings(in_path, export = False, parsed_food_path='data/output/publ
 
     public_all_parsed['cleaned'] = public_all_parsed['cleaned'].apply(lambda x: x[0])
 
-    if export == True:
-        public_all_parsed.to_csv(parsed_food_path)
-        print('cleaned food loggings is saved at {}'.format(parsed_food_path))
 
-    # count food
-    all_count_dict = defaultdict(lambda : 0)
-    for food in public_all_parsed.cleaned.values:
-        if len(food) > 0:
-            for f in food:
-                all_count_dict[f] += 1
-
-    print('All food is counted!')
-
-    all_count_dict = dict(all_count_dict)
-    public_freq_count = pd.DataFrame({
-        'food': list(all_count_dict.keys()),
-        'count': [all_count_dict[k] for k in list(all_count_dict.keys())]
-    }).sort_values(by = 'count', ascending = ascending).reset_index(drop = True)
-
-    return public_freq_count
+    return public_all_parsed
 
 # Cell
-def get_certain_types(in_path, types, out_path=None, export = False):
+def get_certain_types(in_path, food_type):
     """
-    @param in_path : input path, file in pickle, csv or panda dataframe format\n
-    @param types : expected types of the loggings for filtering, in format of list. Available types:  \n
-    1. 'w' : water \n
-    2. 'b' : beverage \n
-    3. 'f' : food \n
-    4. 'm' : medicine \n
-    @param export: whether to save the dataframe locally\n
-    @param out_path: path of the saved file if export==True, csv format\n
-    @return: filtered dataframe with expected type/types with four columns: 'unique_code', 'desc_text', 'date', 'local_time'
-    """
-    if isinstance(in_path, str):
-        if in_path.split('.')[-1] == 'pickle':
-            df = pickle.load(open(in_path,'rb'))
-            print('read the pickle file successfully.')
-        if in_path.split('.')[-1] == 'csv':
-            df = pd.read_csv(in_path)
-            print('read the csv file successfully.')
-    else:
-        df = in_path
+    Description:\n
+       This function filters with the expected food types and return a cleaner version of in_path file.\n
+    Input:\n
+        - in_path : input path, file in pickle, csv or panda dataframe format.\n
+        - food_type : expected types of the loggings for filtering, in format of list. Available types:  \n
+            1. 'w' : water \n
+            2. 'b' : beverage \n
+            3. 'f' : food \n
+            4. 'm' : medicine \n
 
-    if len(types) == 0:
+    Return:\n
+        - A filtered dataframe with expected food type/types with five columns: 'unique_code','food_type', 'desc_text', 'date', 'local_time'.\n
+
+    Requirements:\n
+        in_path file must have the following columns:\n
+            - food_type\n
+            - desc_text\n
+            - unique_code\n
+            - desc_text\n
+            - date\n
+            - local_time\n
+
+    """
+
+    df = universal_key(in_path)
+
+    if len(food_type) == 0:
         return df[['unique_code','food_type', 'desc_text', 'date', 'local_time']]
 
-    if len(types) == 1:
-        if types[0] not in ['w', 'b', 'f', 'm']:
+    if len(food_type) == 1:
+        if food_type[0] not in ['w', 'b', 'f', 'm']:
             raise Exception("not a valid logging type")
-        filtered = df[df['food_type']==types[0]][['unique_code','food_type', 'desc_text', 'date', 'local_time']].reset_index(drop = True)
+        filtered = df[df['food_type']==food_type[0]][['unique_code','food_type', 'desc_text', 'date', 'local_time']].reset_index(drop = True)
     else:
-        filtered = df[df['food_type'].isin(types)][['unique_code','food_type', 'desc_text', 'date', 'local_time']].reset_index(drop = True)
+        filtered = df[df['food_type'].isin(food_type)][['unique_code','food_type', 'desc_text', 'date', 'local_time']].reset_index(drop = True)
 
-    if export == True:
-        filtered.to_csv(out_path)
-        print('filtered dataframe is saved at {}.'.format(out_path))
 
     return filtered
 
 
 # Cell
-def breakfast_analysis_summary(in_path, out_path=None, export = False):
+def breakfast_analysis_summary(in_path):
     """
-    @param in_path: input path, file in pickle, csv or panda dataframe format\n
-    @param export: whether to save the dataframe locally\n
-    @param out_path: path of the saved file if export==True, csv format\n
-    @return: 5%,10%,25%,50%,75%,90%,95% quantile of breakfast time for all subjects from the in_path file
+    Description:\n
+       This function takes the adherent loggings and calculate the 5%,10%,25%,50%,75%,90%,95% quantile of breakfast time for each user.\n
+
+    Input:\n
+        - in_path : input path, file in pickle, csv or panda dataframe format.\n
+
+    Return:\n
+        - A summary table with 5%,10%,25%,50%,75%,90%,95% quantile of breakfast time for all subjects from the in_path file.\n
+
+    Requirements:\n
+        in_path file must have the following columns:\n
+            - unique_code\n
+            - date\n
+            - local_time\n
+
     """
 
-    if isinstance(in_path, str):
-        if in_path.split('.')[-1] == 'pickle':
-            df = pickle.load(open(in_path,'rb'))
-            print('read the pickle file successfully.')
-        if in_path.split('.')[-1] == 'csv':
-            df = pd.read_csv(in_path)
-            print('read the csv file successfully.')
-    else:
-        df = in_path
+    df = universal_key(in_path)
 
     # leave only the adherent loggings
     df = get_adherent_column(df)
@@ -365,30 +329,29 @@ def breakfast_analysis_summary(in_path, out_path=None, export = False):
         .rename(columns = {0.05: '5%', 0.1: '10%', 0.25: '25%', 0.5: '50%', 0.75: '75%', 0.9: '90%', 0.95: '95%'})\
         .drop_duplicates().reset_index(drop = True)
 
-    if export == True:
-        breakfast_summary_df.to_csv(out_path)
-
     return breakfast_summary_df
 
 # Cell
-def breakfast_analysis_variability(in_path, out_path=None, export = False):
+def breakfast_analysis_variability(in_path):
     """
-    @param in_path: input path, file in pickle, csv or panda dataframe format\n
-    @param export: whether to save the dataframe locally\n
-    @param out_path: path of the saved file if export==True, csv format\n
-    @return: returns a dataframe that contains 5%,10%,25%,50%,75%,90%,95% quantile of dinner time minus 50% time for all subjects from the in_path file.\n
-    Also returns a histgram that represent the 90%-10% interval for all subjects.
+    Description:\n
+       This function calculates the variability by subtracting 5%,10%,25%,50%,75%,90%,95% quantile of breakfast time from the 50% breakfast time. It also make a histogram that represents the 90%-10% interval for all subjects.\n
+
+    Input:\n
+        - in_path : input path, file in pickle, csv or panda dataframe format.\n
+
+    Return:\n
+        - A dataframe that contains 5%,10%,25%,50%,75%,90%,95% quantile of breakfast time minus 50% time for each subjects from the in_path file.\n
+
+    Requirements:\n
+        in_path file must have the following columns:\n
+            - unique_code\n
+            - date\n
+            - local_time\n
     """
 
-    if isinstance(in_path, str):
-        if in_path.split('.')[-1] == 'pickle':
-            df = pickle.load(open(in_path,'rb'))
-            print('read the pickle file successfully.')
-        if in_path.split('.')[-1] == 'csv':
-            df = pd.read_csv(in_path)
-            print('read the csv file successfully.')
-    else:
-        df = in_path
+
+    df = universal_key(in_path)
 
     # leave only the adherent loggings
     df = get_adherent_column(df)
@@ -416,29 +379,28 @@ def breakfast_analysis_variability(in_path, out_path=None, export = False):
     sns_plot = sns.distplot( breakfast_variability_df['90%'] - breakfast_variability_df['10%'] )
     ax.set(xlabel='Variation Distribution for Breakfast (90% - 10%)', ylabel='Kernel Density Estimation')
 
-    if export == True:
-        breakfast_variability_df.to_csv(out_path)
-
     return breakfast_variability_df
 
 # Cell
 def dinner_analysis_summary(in_path, out_path=None, export = False):
     """
-    @param in_path: input path, file in pickle, csv or panda dataframe format\n
-    @param export: whether to save the dataframe locally\n
-    @param out_path: path of the saved file if export==True, csv format\n
-    @return: 5%,10%,25%,50%,75%,90%,95% quantile of dinner time for all subjects from the in_path file
+    Description:\n
+       This function takes the adherent loggings and calculate the 5%,10%,25%,50%,75%,90%,95% quantile of dinner time for each user.\n
+
+    Input:\n
+        - in_path : input path, file in pickle, csv or panda dataframe format.\n
+
+    Return:\n
+        - A summary table with 5%,10%,25%,50%,75%,90%,95% quantile of dinner time for all subjects from the in_path file.\n
+
+    Requirements:\n
+        in_path file must have the following columns:\n
+            - unique_code\n
+            - date\n
+            - local_time\n
     """
 
-    if isinstance(in_path, str):
-        if in_path.split('.')[-1] == 'pickle':
-            df = pickle.load(open(in_path,'rb'))
-            print('read the pickle file successfully.')
-        if in_path.split('.')[-1] == 'csv':
-            df = pd.read_csv(in_path)
-            print('read the csv file successfully.')
-    else:
-        df = in_path
+    df = universal_key(in_path)
 
     # leave only the adherent loggings
     df = get_adherent_column(df)
@@ -455,29 +417,29 @@ def dinner_analysis_summary(in_path, out_path=None, export = False):
         .rename(columns = {0.05: '5%', 0.1: '10%', 0.25: '25%', 0.5: '50%', 0.75: '75%', 0.9: '90%', 0.95: '95%'})\
         .drop_duplicates().reset_index(drop = True)
 
-    if export == True:
-        dinner_summary_df.to_csv(out_path)
 
     return dinner_summary_df
 
 # Cell
 def dinner_analysis_variability(in_path, out_path=None, export = False):
     """
-    @param in_path: input path, file in pickle, csv or panda dataframe format\n
-    @param export: whether to save the dataframe locally\n
-    @param out_path: path of the saved file if export==True, csv format\n
-    @return: returns a dataframe that contains 5%,10%,25%,50%,75%,90%,95% quantile of dinner time minus 50% time for all subjects from the in_path file. Also returns a histgram that represent the 90%-10% interval for all subjects.
+     Description:\n
+       This function calculates the variability by subtracting 5%,10%,25%,50%,75%,90%,95% quantile of dinner time from the 50% dinner time. It also make a histogram that represents the 90%-10% interval for all subjects.\n
+
+    Input:\n
+        - in_path : input path, file in pickle, csv or panda dataframe format.\n
+
+    Return:\n
+        - A dataframe that contains 5%,10%,25%,50%,75%,90%,95% quantile of dinner time minus 50% time for each subjects from the in_path file.\n
+
+    Requirements:\n
+        in_path file must have the following columns:\n
+            - unique_code\n
+            - date\n
+            - local_time\n
     """
 
-    if isinstance(in_path, str):
-        if in_path.split('.')[-1] == 'pickle':
-            df = pickle.load(open(in_path,'rb'))
-            print('read the pickle file successfully.')
-        if in_path.split('.')[-1] == 'csv':
-            df = pd.read_csv(in_path)
-            print('read the csv file successfully.')
-    else:
-        df = in_path
+    df = universal_key(in_path)
 
     # leave only the adherent loggings
     df = get_adherent_column(df)
@@ -505,7 +467,48 @@ def dinner_analysis_variability(in_path, out_path=None, export = False):
     sns_plot = sns.distplot( dinner_variability_df['90%'] - dinner_variability_df['10%'] )
     ax.set(xlabel='Variation Distribution for Dinner (90% - 10%)', ylabel='Kernel Density Estimation')
 
-    if export == True:
-        dinner_variability_df.to_csv(out_path)
-
     return dinner_variability_df
+
+# Cell
+def filtering_usable_data(df, num_items, num_days):
+    '''
+    Description:\n
+        This function filters the cleaned app data given certain criteria\n
+    Input:\n
+        - df (pd.DataFrame): the dataframe to be filtered\n
+        - num_items (int):   number of items to be used as cut-off\n
+        - num_days (int):    number of days to be used as cut-off\n
+    Output:\n
+        - df_usable:         a panda DataFrame with filtered rows\n
+        - set_usable:        a set of unique_code to be included as "usable"\n
+    Side Effects:\n
+        None\n
+    Requirements:\n
+        df should have the following columns:\n
+            - unique_code\n
+            - desc_text\n
+            - date\n
+    Used in:\n
+        Analysis pipeline\n
+    '''
+    print(' => filtering_usable_data()')
+    print('  => using the following criteria:', num_items, 'items and', num_days, 'days logged in two weeks.')
+
+    # Item logged
+    log_item_count = df.groupby('unique_code').agg('count')[['desc_text']].rename(columns = {'desc_text': 'Total Logged'})
+
+    # Day counts
+    log_days_count = df[['unique_code', 'date']]\
+        .drop_duplicates().groupby('unique_code').agg('count').rename(columns = {'date': 'Day Count'})
+
+    item_count_passed = set(log_item_count[log_item_count['Total Logged'] >= num_items].index)
+    day_count_passed = set(log_days_count[log_days_count['Day Count'] >= num_days].index)
+
+    print('  => # of public users pass the criteria:', end = ' ')
+    print(len(item_count_passed & day_count_passed))
+    passed_participant_set = item_count_passed & day_count_passed
+    df_usable = df.loc[df.unique_code.apply(lambda c: c in passed_participant_set)]\
+        .dropna().copy().reset_index(drop = True)
+    # print('  => Now returning the pd.DataFrame object with the head like the following.')
+    # display(df_usable.head(5))
+    return df_usable, set(df_usable.unique_code.unique())

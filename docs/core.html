@@ -67,6 +67,141 @@ nb_path: "00_core.ipynb"
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">universal_key</span><span class="p">(</span><span class="n">in_path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Description:\n</span>
+<span class="sd">        This is a helper function that converts pickle and csv file into a pd dataframe.\n</span>
+<span class="sd">    </span>
+<span class="sd">    Input:\n</span>
+<span class="sd">        - in_path : input path, csv or pickle file\n</span>
+<span class="sd">    </span>
+<span class="sd">    Output:\n</span>
+<span class="sd">        - df : dataframe format of the in_path file.\n</span>
+<span class="sd">        </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">in_path</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">in_path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;pickle&#39;</span><span class="p">:</span>
+            <span class="c1"># load data</span>
+            <span class="n">pickle_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">in_path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">pickle_file</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;read the pickle file successfully.&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">in_path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;csv&#39;</span><span class="p">:</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">in_path</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;read the csv file successfully.&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">in_path</span>
+        
+    <span class="k">return</span> <span class="n">df</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">universal_key</span><span class="p">(</span><span class="s1">&#39;data/test_food_details.csv&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>read the csv file successfully.
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Unnamed: 0</th>
+      <th>ID</th>
+      <th>unique_code</th>
+      <th>research_info_id</th>
+      <th>desc_text</th>
+      <th>food_type</th>
+      <th>original_logtime</th>
+      <th>foodimage_file_name</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1340147</td>
+      <td>7572733</td>
+      <td>alqt14018795225</td>
+      <td>150</td>
+      <td>Water</td>
+      <td>w</td>
+      <td>2017-12-08 17:30:00+00:00</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1340148</td>
+      <td>411111</td>
+      <td>alqt14018795225</td>
+      <td>150</td>
+      <td>Coffee White</td>
+      <td>b</td>
+      <td>2017-12-09 00:01:00+00:00</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
 <div class="output">
@@ -75,34 +210,58 @@ nb_path: "00_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="load_public_data" class="doc_header"><code>load_public_data</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L24" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_public_data</code>(<strong><code>in_path</code></strong>, <strong><code>export</code></strong>=<em><code>False</code></em>, <strong><code>out_path</code></strong>=<em><code>'data/output/public.pickle'</code></em>)</p>
+<h4 id="load_public_data" class="doc_header"><code>load_public_data</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L24" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_public_data</code>(<strong><code>in_path</code></strong>)</p>
 </blockquote>
-<p>Load original public data and output processed data in pickle format.</p>
-<p>Process include:</p>
-<ol>
-<li><p>Dropping 'foodimage_file_name' column.</p>
-</li>
-<li><p>Handling the format of time by generating a new column, 'original_logtime_notz'</p>
-</li>
-<li><p>Generating the date column, 'date'</p>
-</li>
-<li><p>Converting time into float number into a new column, 'local_time'</p>
-</li>
-<li><p>Converting time in the 'local_time' column so that day starts at 4 am.</p>
-</li>
-<li><p>Converting time to a format of HH:MM:SS, 'time'</p>
-</li>
-<li><p>Generating the column 'week_from_start' that contains the week number that the participants input the food item.</p>
-</li>
-<li><p>Generating 'year' column based on the input data.</p>
-</li>
-<li><p>Outputing the data into a pickle format file.</p>
-</li>
-</ol>
-<p>@param in_path : input path</p>
-<p>@param out_path: output path</p>
-<p>@param export : whether to save the processed dataframe locally</p>
-<p>@return: processed dataframe</p>
+<p>Description:</p>
+
+<pre><code>Load original public data and output processed data in pickle format.
+
+
+Process includes:
+
+1. Dropping 'foodimage_file_name' column.
+
+2. Handling the format of time by generating a new column, 'original_logtime_notz'
+
+3. Generating the date column, 'date'
+
+4. Converting time into float number into a new column, 'local_time'
+
+5. Converting time in the 'local_time' column so that day starts at 4 am.
+
+6. Converting time to a format of HH:MM:SS, 'time'
+
+7. Generating the column 'week_from_start' that contains the week number that the participants input the food item.
+
+8. Generating 'year' column based on the input data.
+
+9. Outputing the data into a pickle format file.
+
+
+</code></pre>
+<p>Input:</p>
+
+<pre><code>- in_path : input path, csv file
+
+
+</code></pre>
+<p>Output:</p>
+
+<pre><code>- public_all: the processed dataframe
+
+
+</code></pre>
+<p>Requirements:</p>
+
+<pre><code>csv file must have the following columns:
+
+    - foodimage_file_name
+
+    - original_logtime
+
+    - date
+
+    - unique_code</code></pre>
 
 </div>
 
@@ -128,7 +287,7 @@ nb_path: "00_core.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">load_public_data</span><span class="p">(</span><span class="s1">&#39;data/test_food_details.csv&#39;</span><span class="p">,</span><span class="n">export</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">load_public_data</span><span class="p">(</span><span class="s1">&#39;data/test_food_details.csv&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -141,7 +300,7 @@ nb_path: "00_core.ipynb"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>data is saved at data/output/public.pickle
+<pre>read the csv file successfully.
 </pre>
 </div>
 </div>
@@ -240,13 +399,37 @@ nb_path: "00_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="prepare_baseline_and_intervention_usable_data" class="doc_header"><code>prepare_baseline_and_intervention_usable_data</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L99" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>prepare_baseline_and_intervention_usable_data</code>(<strong><code>in_path</code></strong>, <strong><code>export</code></strong>=<em><code>False</code></em>, <strong><code>baseline_expanded_out_path</code></strong>=<em><code>'data/output/public_basline_usable_expanded.pickle'</code></em>, <strong><code>intervention_out_path</code></strong>=<em><code>'data/output/public_intervention_usable.pickle'</code></em>)</p>
+<h4 id="prepare_baseline_and_intervention_usable_data" class="doc_header"><code>prepare_baseline_and_intervention_usable_data</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L101" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>prepare_baseline_and_intervention_usable_data</code>(<strong><code>in_path</code></strong>)</p>
 </blockquote>
-<p>Filter and create baseline_expanded and intervention groups based on in_path pickle file.</p>
-<p>@param in_path : input path, file in pickle, csv or pandas dataframe format</p>
-<p>@param out_path: output path</p>
-<p>@param export : whether to save the processed dataframes locally</p>
-<p>@return: baseline expanded and intervention dataframes in a list format where index 0 is the baseline dataframe and 1 is the intervention dataframe.</p>
+<p>Description:</p>
+
+<pre><code>Filter and create baseline_expanded and intervention groups based on in_path pickle file.
+
+
+</code></pre>
+<p>Input:</p>
+
+<pre><code>- in_path : input path, file in pickle, csv or pandas dataframe format
+
+
+</code></pre>
+<p>Return:</p>
+
+<pre><code>- baseline expanded and intervention dataframes in a list format where index 0 is the baseline dataframe and 1 is the intervention dataframe.
+
+
+</code></pre>
+<p>Requirements:</p>
+
+<pre><code>in_path file must have the following columns:
+
+    - week_from_start
+
+    - unique_code
+
+    - desc_text
+
+    - date</code></pre>
 
 </div>
 
@@ -272,7 +455,7 @@ nb_path: "00_core.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">prepare_baseline_and_intervention_usable_data</span><span class="p">(</span><span class="s1">&#39;data/output/public.pickle&#39;</span><span class="p">,</span><span class="n">export</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">prepare_baseline_and_intervention_usable_data</span><span class="p">(</span><span class="s1">&#39;data/output/public.pickle&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -292,8 +475,6 @@ nb_path: "00_core.ipynb"
  =&gt; filtering_usable_data()
   =&gt; using the following criteria: 20 items and 8 days logged in two weeks.
   =&gt; # of public users pass the criteria: 5
-baseline_expanded data is saved at data/output/public_basline_usable_expanded.pickle
-intervention data is saved at data/output/public_intervention_usable.pickle
 </pre>
 </div>
 </div>
@@ -301,114 +482,206 @@ intervention data is saved at data/output/public_intervention_usable.pickle
 <div class="output_area">
 
 
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
-<div class="output_text output_subarea output_execute_result">
-<pre>[      Unnamed: 0       ID      unique_code  research_info_id  \
- 0        1340147  7572733  alqt14018795225               150   
- 1        1340148   411111  alqt14018795225               150   
- 2        1340149  8409118  alqt14018795225               150   
- 488      2034996   879074  alqt78896444285               150   
- 489      2034997  4061186  alqt78896444285               150   
- ...          ...      ...              ...               ...   
- 6771     5374395  2037137  alqt62359040167               150   
- 6772     5374396  9702732  alqt62359040167               150   
- 6773     5374397  7896169  alqt62359040167               150   
- 6774     5374398  5248381  alqt62359040167               150   
- 6775     5374399  1985501  alqt62359040167               150   
- 
-                                      desc_text food_type  \
- 0                                        Water         w   
- 1                                 Coffee White         b   
- 2                                        Salad         f   
- 488                                      Water         w   
- 489             Water With Apple Cider Vinegar         w   
- ...                                        ...       ...   
- 6771    Eggs, Cheese, Chocolate, Corn Tortilla         f   
- 6772                                 Tangerine         f   
- 6773  Rice, Cucumber, Kiwee, Chickpeas, Quinoa         f   
- 6774                             Milk, Cookies         f   
- 6775    Eggs, Cheese, Chocolate, Corn Tortilla         f   
- 
-                original_logtime     original_logtime_notz        date  \
- 0     2017-12-08 17:30:00+00:00 2017-12-08 17:30:00+00:00  2017-12-08   
- 1     2017-12-09 00:01:00+00:00 2017-12-09 00:01:00+00:00  2017-12-08   
- 2     2017-12-09 00:58:00+00:00 2017-12-09 00:58:00+00:00  2017-12-08   
- 488   2018-06-06 09:06:00+00:00 2018-06-06 09:06:00+00:00  2018-06-06   
- 489   2018-06-06 09:39:00+00:00 2018-06-06 09:39:00+00:00  2018-06-06   
- ...                         ...                       ...         ...   
- 6771  2020-07-04 02:09:00+00:00 2020-07-04 02:09:00+00:00  2020-07-03   
- 6772  2020-07-04 02:09:00+00:00 2020-07-04 02:09:00+00:00  2020-07-03   
- 6773  2020-07-04 06:00:00+00:00 2020-07-04 06:00:00+00:00  2020-07-04   
- 6774  2020-07-04 09:30:00+00:00 2020-07-04 09:30:00+00:00  2020-07-04   
- 6775  2020-07-05 01:32:00+00:00 2020-07-05 01:32:00+00:00  2020-07-04   
- 
-       local_time      time  week_from_start  year  
- 0      17.500000  17:30:00                1  2017  
- 1      24.016667  00:01:00                1  2017  
- 2      24.966667  00:58:00                1  2017  
- 488     9.100000  09:06:00                1  2018  
- 489     9.650000  09:39:00                1  2018  
- ...          ...       ...              ...   ...  
- 6771   26.150000  02:09:00                2  2020  
- 6772   26.150000  02:09:00                2  2020  
- 6773    6.000000  06:00:00                2  2020  
- 6774    9.500000  09:30:00                2  2020  
- 6775   25.533333  01:32:00                2  2020  
- 
- [1222 rows x 13 columns],
-      Unnamed: 0       ID      unique_code  research_info_id  \
- 0       1340217  3806061  alqt14018795225               150   
- 1       1340218  8677718  alqt14018795225               150   
- 2       1340219  2361039  alqt14018795225               150   
- 3       1340220  7124815  alqt14018795225               150   
- 4       1340221  9651830  alqt14018795225               150   
- ..          ...      ...              ...               ...   
- 553     4735510  1374706  alqt16675467779               150   
- 554     4735511  3182264  alqt16675467779               150   
- 555     4735512   574940  alqt16675467779               150   
- 556     4735513  8811536  alqt16675467779               150   
- 557     4735514   107741  alqt16675467779               150   
- 
-                       desc_text food_type           original_logtime  \
- 0              Vegetarian Chili         f  2018-03-02 04:21:00+00:00   
- 1                      Icecream         f  2018-03-02 04:41:00+00:00   
- 2                    Wine White         b  2018-03-02 04:45:00+00:00   
- 3                     Croissant         f  2018-03-02 17:57:00+00:00   
- 4                        Muffin         f  2018-03-02 18:37:00+00:00   
- ..                          ...       ...                        ...   
- 553               Corn In A Cup         f  2020-03-26 05:45:00+00:00   
- 554  Philly Cheese Steak Dinner         f  2020-03-26 08:30:00+00:00   
- 555                      Cereal         f  2020-03-27 00:15:00+00:00   
- 556       Eggs N Potatoes Tacos         f  2020-03-27 02:00:00+00:00   
- 557                       Water         w  2020-03-27 01:00:00+00:00   
- 
-         original_logtime_notz        date  local_time      time  \
- 0   2018-03-02 04:21:00+00:00  2018-03-02    4.350000  04:21:00   
- 1   2018-03-02 04:41:00+00:00  2018-03-02    4.683333  04:41:00   
- 2   2018-03-02 04:45:00+00:00  2018-03-02    4.750000  04:45:00   
- 3   2018-03-02 17:57:00+00:00  2018-03-02   17.950000  17:57:00   
- 4   2018-03-02 18:37:00+00:00  2018-03-02   18.616667  18:37:00   
- ..                        ...         ...         ...       ...   
- 553 2020-03-26 05:45:00+00:00  2020-03-26    5.750000  05:45:00   
- 554 2020-03-26 08:30:00+00:00  2020-03-26    8.500000  08:30:00   
- 555 2020-03-27 00:15:00+00:00  2020-03-26   24.250000  00:15:00   
- 556 2020-03-27 02:00:00+00:00  2020-03-26   26.000000  02:00:00   
- 557 2020-03-27 01:00:00+00:00  2020-03-26   25.000000  01:00:00   
- 
-      week_from_start  year  
- 0                 13  2018  
- 1                 13  2018  
- 2                 13  2018  
- 3                 13  2018  
- 4                 13  2018  
- ..               ...   ...  
- 553               14  2020  
- 554               14  2020  
- 555               14  2020  
- 556               14  2020  
- 557               14  2020  
- 
- [558 rows x 13 columns]]</pre>
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Unnamed: 0</th>
+      <th>ID</th>
+      <th>unique_code</th>
+      <th>research_info_id</th>
+      <th>desc_text</th>
+      <th>food_type</th>
+      <th>original_logtime</th>
+      <th>original_logtime_notz</th>
+      <th>date</th>
+      <th>local_time</th>
+      <th>time</th>
+      <th>week_from_start</th>
+      <th>year</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1340147</td>
+      <td>7572733</td>
+      <td>alqt14018795225</td>
+      <td>150</td>
+      <td>Water</td>
+      <td>w</td>
+      <td>2017-12-08 17:30:00+00:00</td>
+      <td>2017-12-08 17:30:00+00:00</td>
+      <td>2017-12-08</td>
+      <td>17.500000</td>
+      <td>17:30:00</td>
+      <td>1</td>
+      <td>2017</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1340148</td>
+      <td>411111</td>
+      <td>alqt14018795225</td>
+      <td>150</td>
+      <td>Coffee White</td>
+      <td>b</td>
+      <td>2017-12-09 00:01:00+00:00</td>
+      <td>2017-12-09 00:01:00+00:00</td>
+      <td>2017-12-08</td>
+      <td>24.016667</td>
+      <td>00:01:00</td>
+      <td>1</td>
+      <td>2017</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">prepare_baseline_and_intervention_usable_data</span><span class="p">(</span><span class="s1">&#39;data/output/public.pickle&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>read the pickle file successfully.
+ =&gt; filtering_usable_data()
+  =&gt; using the following criteria: 40 items and 12 days logged in two weeks.
+  =&gt; # of public users pass the criteria: 9
+ =&gt; filtering_usable_data()
+  =&gt; using the following criteria: 20 items and 8 days logged in two weeks.
+  =&gt; # of public users pass the criteria: 5
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Unnamed: 0</th>
+      <th>ID</th>
+      <th>unique_code</th>
+      <th>research_info_id</th>
+      <th>desc_text</th>
+      <th>food_type</th>
+      <th>original_logtime</th>
+      <th>original_logtime_notz</th>
+      <th>date</th>
+      <th>local_time</th>
+      <th>time</th>
+      <th>week_from_start</th>
+      <th>year</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1340217</td>
+      <td>3806061</td>
+      <td>alqt14018795225</td>
+      <td>150</td>
+      <td>Vegetarian Chili</td>
+      <td>f</td>
+      <td>2018-03-02 04:21:00+00:00</td>
+      <td>2018-03-02 04:21:00+00:00</td>
+      <td>2018-03-02</td>
+      <td>4.350000</td>
+      <td>04:21:00</td>
+      <td>13</td>
+      <td>2018</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1340218</td>
+      <td>8677718</td>
+      <td>alqt14018795225</td>
+      <td>150</td>
+      <td>Icecream</td>
+      <td>f</td>
+      <td>2018-03-02 04:41:00+00:00</td>
+      <td>2018-03-02 04:41:00+00:00</td>
+      <td>2018-03-02</td>
+      <td>4.683333</td>
+      <td>04:41:00</td>
+      <td>13</td>
+      <td>2018</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1340219</td>
+      <td>2361039</td>
+      <td>alqt14018795225</td>
+      <td>150</td>
+      <td>Wine White</td>
+      <td>b</td>
+      <td>2018-03-02 04:45:00+00:00</td>
+      <td>2018-03-02 04:45:00+00:00</td>
+      <td>2018-03-02</td>
+      <td>4.750000</td>
+      <td>04:45:00</td>
+      <td>13</td>
+      <td>2018</td>
+    </tr>
+  </tbody>
+</table>
+</div>
 </div>
 
 </div>
@@ -430,12 +703,35 @@ intervention data is saved at data/output/public_intervention_usable.pickle
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_adherent_column" class="doc_header"><code>get_adherent_column</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L154" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_adherent_column</code>(<strong><code>in_path</code></strong>, <strong><code>out_path</code></strong>=<em><code>None</code></em>, <strong><code>export</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="get_adherent_column" class="doc_header"><code>get_adherent_column</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L142" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_adherent_column</code>(<strong><code>in_path</code></strong>)</p>
 </blockquote>
-<p>@param in_path: input path, file in pickle, csv or pandas dataframe format</p>
-<p>@param out_path: path for out_put file in csv format if export==True.</p>
-<p>@param export: whether to save processed df locally.</p>
-<p>return True for a logging if the there are more than 2 loggings in one day w/ more than 4hrs apart from each other.</p>
+<p>Description:</p>
+
+<pre><code>A logging is true if the there are more than 2 loggings in one day w/ more than 4hrs apart from the earliest logging and the latest logging and False otherwise.
+
+
+</code></pre>
+<p>Input:</p>
+
+<pre><code>- in_path : input path, file in pickle, csv or pandas dataframe format.
+
+
+</code></pre>
+<p>Return:</p>
+
+<pre><code>- A dataframe with a boolean column called adherence. Details on the criteria is in the description.
+
+
+</code></pre>
+<p>Requirements:</p>
+
+<pre><code>in_path file must have the following columns:
+
+    - unique_code
+
+    - local_time
+
+    - date</code></pre>
 
 </div>
 
@@ -471,6 +767,14 @@ intervention data is saved at data/output/public_intervention_usable.pickle
 
 <div class="output_wrapper">
 <div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>read the csv file successfully.
+</pre>
+</div>
+</div>
 
 <div class="output_area">
 
@@ -569,14 +873,45 @@ intervention data is saved at data/output/public_intervention_usable.pickle
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="most_active_user" class="doc_header"><code>most_active_user</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L188" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>most_active_user</code>(<strong><code>in_path</code></strong>, <strong><code>n</code></strong>, <strong><code>export</code></strong>=<em><code>False</code></em>, <strong><code>user_day_counts_path</code></strong>=<em><code>'data/output/public_top_users_day_counts.csv'</code></em>)</p>
+<h4 id="most_active_user" class="doc_header"><code>most_active_user</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L174" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>most_active_user</code>(<strong><code>in_path</code></strong>, <strong><code>food_type</code></strong>=<em><code>['f', 'b', 'm', 'w']</code></em>)</p>
 </blockquote>
-<p>@param in_path : input path, file in pickle, csv or pandas dataframe format</p>
-<p>@param n: number of users with most number of logging days</p>
-<p>@param user_data_counts_path: output path for top_users_day_counts in csv format</p>
-<p>@param export : whether to save the processed dataframe locally</p>
-<p>@return: top_users_day_counts dataframe</p>
-<p>This function returns a dataframe in csv format that finds top n users with the most number of days that they logged.</p>
+<p>Description:</p>
+
+<pre><code>This function returns a dataframe reports the number of adherent logging days for each user in the in_path file. The default order is descending.
+
+
+</code></pre>
+<p>Input:</p>
+
+<pre><code>- in_path : input path, file in pickle, csv or pandas dataframe format.
+
+- food_type : food types to filter in a list format. Default: ["f", "b", "m", "w"]. Available food types:
+
+    1. 'w' : water 
+
+    2. 'b' : beverage 
+
+    3. 'f' : food 
+
+    4. 'm' : medicine 
+
+
+</code></pre>
+<p>Return:</p>
+
+<pre><code>- A dataframe contains the number of adherent logging days for each user.
+
+
+</code></pre>
+<p>Requirements:</p>
+
+<pre><code>in_path file must have the following columns:
+
+    - food_type
+
+    - unique_code
+
+    - date</code></pre>
 
 </div>
 
@@ -602,7 +937,7 @@ intervention data is saved at data/output/public_intervention_usable.pickle
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">most_active_user</span><span class="p">(</span><span class="s1">&#39;data/output/public.pickle&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">export</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">most_active_user</span><span class="p">(</span><span class="s1">&#39;data/output/public.pickle&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -616,7 +951,82 @@ intervention data is saved at data/output/public_intervention_usable.pickle
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>read the pickle file successfully.
-user day counts data is saved at data/output/public_top_users_day_counts.csv
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>day_count</th>
+    </tr>
+    <tr>
+      <th>unique_code</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>alqt45631586569</th>
+      <td>147</td>
+    </tr>
+    <tr>
+      <th>alqt8668165687</th>
+      <td>137</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">most_active_user</span><span class="p">(</span><span class="s1">&#39;data/output/public.pickle&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;f&#39;</span><span class="p">,</span><span class="s1">&#39;b&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>read the pickle file successfully.
 </pre>
 </div>
 </div>
@@ -659,18 +1069,6 @@ user day counts data is saved at data/output/public_top_users_day_counts.csv
       <th>alqt8668165687</th>
       <td>135</td>
     </tr>
-    <tr>
-      <th>alqt21525720972</th>
-      <td>89</td>
-    </tr>
-    <tr>
-      <th>alqt78896444285</th>
-      <td>81</td>
-    </tr>
-    <tr>
-      <th>alqt14018795225</th>
-      <td>60</td>
-    </tr>
   </tbody>
 </table>
 </div>
@@ -695,14 +1093,29 @@ user day counts data is saved at data/output/public_top_users_day_counts.csv
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="convert_loggings" class="doc_header"><code>convert_loggings</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L233" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>convert_loggings</code>(<strong><code>in_path</code></strong>, <strong><code>export</code></strong>=<em><code>False</code></em>, <strong><code>parsed_food_path</code></strong>=<em><code>'data/output/public_all_parsed.csv'</code></em>, <strong><code>ascending</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="convert_loggings" class="doc_header"><code>convert_loggings</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L214" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>convert_loggings</code>(<strong><code>in_path</code></strong>)</p>
 </blockquote>
-<p>@param in_path : input path, file in pickle, csv or panda dataframe format</p>
-<p>@param parsed_food_path : output path for cleaned food loggings in csv format</p>
-<p>@param ascending: True to sort the item from lowest to highest frequency and vice versa</p>
-<p>@param export: whether to save the converted dataframe locally</p>
-<p>@return: frequency count of food loggings in the descending order by default</p>
-<p>This function takes in a pickle file, convert all the loggings into individual items of food and count the frequency of all food loggings.</p>
+<p>Description:</p>
+<p>This function convert all the loggings in the in_path file into a list of individual items based on the desc_text column.</p>
+<p>Input:</p>
+
+<pre><code>- in_path : input path, file in pickle, csv or panda dataframe format.
+
+
+</code></pre>
+<p>Return:</p>
+
+<pre><code>- A dataframe contains the cleaned version of the desc_text.
+
+
+</code></pre>
+<p>Requirements:</p>
+
+<pre><code>in_path file must have the following columns:
+
+    - food_type
+
+    - desc_text</code></pre>
 
 </div>
 
@@ -728,7 +1141,7 @@ user day counts data is saved at data/output/public_top_users_day_counts.csv
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">convert_loggings</span><span class="p">(</span><span class="s1">&#39;data/output/public.pickle&#39;</span><span class="p">,</span><span class="n">export</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">convert_loggings</span><span class="p">(</span><span class="s1">&#39;data/output/public.pickle&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -742,9 +1155,6 @@ user day counts data is saved at data/output/public_top_users_day_counts.csv
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>read the pickle file successfully.
-All food is parsed!
-cleaned food loggings is saved at data/output/public_all_parsed.csv
-All food is counted!
 </pre>
 </div>
 </div>
@@ -771,69 +1181,36 @@ All food is counted!
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>food</th>
-      <th>count</th>
+      <th>ID</th>
+      <th>food_type</th>
+      <th>desc_text</th>
+      <th>cleaned</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <th>0</th>
-      <td>water</td>
-      <td>1804</td>
+      <td>alqt14018795225</td>
+      <td>w</td>
+      <td>Water</td>
+      <td>[water]</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>glass</td>
-      <td>666</td>
+      <td>alqt14018795225</td>
+      <td>b</td>
+      <td>Coffee White</td>
+      <td>[coffee, white]</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>coffee</td>
-      <td>273</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>pint water</td>
-      <td>248</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>large</td>
-      <td>228</td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td>...</td>
-      <td>...</td>
-    </tr>
-    <tr>
-      <th>851</th>
-      <td>tomato soup</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>852</th>
-      <td>florentine</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>853</th>
-      <td>french fry</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>854</th>
-      <td>cheeseburger</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>855</th>
-      <td>ramen</td>
-      <td>1</td>
+      <td>alqt14018795225</td>
+      <td>f</td>
+      <td>Salad</td>
+      <td>[salad]</td>
     </tr>
   </tbody>
 </table>
-<p>856 rows × 2 columns</p>
 </div>
 </div>
 
@@ -856,23 +1233,47 @@ All food is counted!
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_certain_types" class="doc_header"><code>get_certain_types</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L295" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_certain_types</code>(<strong><code>in_path</code></strong>, <strong><code>types</code></strong>, <strong><code>out_path</code></strong>=<em><code>None</code></em>, <strong><code>export</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="get_certain_types" class="doc_header"><code>get_certain_types</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L253" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_certain_types</code>(<strong><code>in_path</code></strong>, <strong><code>food_type</code></strong>)</p>
 </blockquote>
-<p>@param in_path : input path, file in pickle, csv or panda dataframe format</p>
-<p>@param types : expected types of the loggings for filtering, in format of list. Available types:</p>
-<ol>
-<li><p>'w' : water</p>
-</li>
-<li><p>'b' : beverage</p>
-</li>
-<li><p>'f' : food</p>
-</li>
-<li><p>'m' : medicine</p>
-</li>
-</ol>
-<p>@param export: whether to save the dataframe locally</p>
-<p>@param out_path: path of the saved file if export==True, csv format</p>
-<p>@return: filtered dataframe with expected type/types with four columns: 'unique_code', 'desc_text', 'date', 'local_time'</p>
+<p>Description:</p>
+<p>This function filters with the expected food types and return a cleaner version of in_path file.</p>
+<p>Input:</p>
+
+<pre><code>- in_path : input path, file in pickle, csv or panda dataframe format.
+
+- food_type : expected types of the loggings for filtering, in format of list. Available types:  
+
+    1. 'w' : water 
+
+    2. 'b' : beverage 
+
+    3. 'f' : food 
+
+    4. 'm' : medicine 
+
+
+</code></pre>
+<p>Return:</p>
+
+<pre><code>- A filtered dataframe with expected food type/types with five columns: 'unique_code','food_type', 'desc_text', 'date', 'local_time'.
+
+
+</code></pre>
+<p>Requirements:</p>
+
+<pre><code>in_path file must have the following columns:
+
+    - food_type
+
+    - desc_text
+
+    - unique_code
+
+    - desc_text
+
+    - date
+
+    - local_time</code></pre>
 
 </div>
 
@@ -898,7 +1299,7 @@ All food is counted!
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">get_certain_types</span><span class="p">(</span><span class="s1">&#39;data/output/public_basline_usable_expanded.pickle&#39;</span><span class="p">,[</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="s1">&#39;f&#39;</span><span class="p">])</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">get_certain_types</span><span class="p">(</span><span class="s1">&#39;data/output/public_basline_usable_expanded.pickle&#39;</span><span class="p">,[</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="s1">&#39;f&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -970,73 +1371,8 @@ All food is counted!
       <td>2018-06-06</td>
       <td>9.100000</td>
     </tr>
-    <tr>
-      <th>3</th>
-      <td>alqt78896444285</td>
-      <td>w</td>
-      <td>Water With Apple Cider Vinegar</td>
-      <td>2018-06-06</td>
-      <td>9.650000</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>alqt78896444285</td>
-      <td>f</td>
-      <td>Burger Patty No Bun</td>
-      <td>2018-06-06</td>
-      <td>11.416667</td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-    </tr>
-    <tr>
-      <th>886</th>
-      <td>alqt62359040167</td>
-      <td>f</td>
-      <td>Eggs, Cheese, Chocolate, Corn Tortilla</td>
-      <td>2020-07-03</td>
-      <td>26.150000</td>
-    </tr>
-    <tr>
-      <th>887</th>
-      <td>alqt62359040167</td>
-      <td>f</td>
-      <td>Tangerine</td>
-      <td>2020-07-03</td>
-      <td>26.150000</td>
-    </tr>
-    <tr>
-      <th>888</th>
-      <td>alqt62359040167</td>
-      <td>f</td>
-      <td>Rice, Cucumber, Kiwee, Chickpeas, Quinoa</td>
-      <td>2020-07-04</td>
-      <td>6.000000</td>
-    </tr>
-    <tr>
-      <th>889</th>
-      <td>alqt62359040167</td>
-      <td>f</td>
-      <td>Milk, Cookies</td>
-      <td>2020-07-04</td>
-      <td>9.500000</td>
-    </tr>
-    <tr>
-      <th>890</th>
-      <td>alqt62359040167</td>
-      <td>f</td>
-      <td>Eggs, Cheese, Chocolate, Corn Tortilla</td>
-      <td>2020-07-04</td>
-      <td>25.533333</td>
-    </tr>
   </tbody>
 </table>
-<p>891 rows × 5 columns</p>
 </div>
 </div>
 
@@ -1055,8 +1391,8 @@ All food is counted!
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">load_public_data</span><span class="p">(</span><span class="s1">&#39;data/test_food_details.csv&#39;</span><span class="p">,</span><span class="n">export</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">get_certain_types</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;m&#39;</span><span class="p">])</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">load_public_data</span><span class="p">(</span><span class="s1">&#39;data/test_food_details.csv&#39;</span><span class="p">)</span>
+<span class="n">get_certain_types</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;m&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -1065,6 +1401,14 @@ All food is counted!
 
 <div class="output_wrapper">
 <div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>read the csv file successfully.
+</pre>
+</div>
+</div>
 
 <div class="output_area">
 
@@ -1102,7 +1446,7 @@ All food is counted!
       <td>m</td>
       <td>Caffeine</td>
       <td>2018-04-01</td>
-      <td>15.750000</td>
+      <td>15.75</td>
     </tr>
     <tr>
       <th>1</th>
@@ -1110,7 +1454,7 @@ All food is counted!
       <td>m</td>
       <td>Caffeine</td>
       <td>2018-04-07</td>
-      <td>15.500000</td>
+      <td>15.50</td>
     </tr>
     <tr>
       <th>2</th>
@@ -1118,75 +1462,10 @@ All food is counted!
       <td>m</td>
       <td>Caffeine</td>
       <td>2018-04-15</td>
-      <td>15.000000</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>alqt78896444285</td>
-      <td>m</td>
-      <td>Multivitamin, Probiotic</td>
-      <td>2018-06-07</td>
-      <td>6.216667</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>alqt78896444285</td>
-      <td>m</td>
-      <td>Omega Supplement</td>
-      <td>2018-06-07</td>
-      <td>8.400000</td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-    </tr>
-    <tr>
-      <th>212</th>
-      <td>alqt6695047873</td>
-      <td>m</td>
-      <td>Fluticasone Propionate Spray, Lansoprazole, Ty...</td>
-      <td>2019-03-20</td>
-      <td>7.283333</td>
-    </tr>
-    <tr>
-      <th>213</th>
-      <td>alqt6695047873</td>
-      <td>m</td>
-      <td>Clonazepam, Simvastatin, Metopolol Er Succinat...</td>
-      <td>2019-03-19</td>
-      <td>16.833333</td>
-    </tr>
-    <tr>
-      <th>214</th>
-      <td>alqt6695047873</td>
-      <td>m</td>
-      <td>Fluticasone Propionate Spray, Clonazepam, Simv...</td>
-      <td>2019-03-21</td>
-      <td>17.316667</td>
-    </tr>
-    <tr>
-      <th>215</th>
-      <td>alqt6695047873</td>
-      <td>m</td>
-      <td>Lansoprazole, Multivitamin 50plus, Tizanidine</td>
-      <td>2019-03-23</td>
-      <td>27.533333</td>
-    </tr>
-    <tr>
-      <th>216</th>
-      <td>alqt6695047873</td>
-      <td>m</td>
-      <td>Fluticasone Propionate Spray</td>
-      <td>2019-03-24</td>
-      <td>4.533333</td>
+      <td>15.00</td>
     </tr>
   </tbody>
 </table>
-<p>217 rows × 5 columns</p>
 </div>
 </div>
 
@@ -1209,12 +1488,31 @@ All food is counted!
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="breakfast_analysis_summary" class="doc_header"><code>breakfast_analysis_summary</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L335" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>breakfast_analysis_summary</code>(<strong><code>in_path</code></strong>, <strong><code>out_path</code></strong>=<em><code>None</code></em>, <strong><code>export</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="breakfast_analysis_summary" class="doc_header"><code>breakfast_analysis_summary</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L296" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>breakfast_analysis_summary</code>(<strong><code>in_path</code></strong>)</p>
 </blockquote>
-<p>@param in_path: input path, file in pickle, csv or panda dataframe format</p>
-<p>@param export: whether to save the dataframe locally</p>
-<p>@param out_path: path of the saved file if export==True, csv format</p>
-<p>@return: 5%,10%,25%,50%,75%,90%,95% quantile of breakfast time for all subjects from the in_path file</p>
+<p>Description:</p>
+<p>This function takes the adherent loggings and calculate the 5%,10%,25%,50%,75%,90%,95% quantile of breakfast time for each user.</p>
+<p>Input:</p>
+
+<pre><code>- in_path : input path, file in pickle, csv or panda dataframe format.
+
+
+</code></pre>
+<p>Return:</p>
+
+<pre><code>- A summary table with 5%,10%,25%,50%,75%,90%,95% quantile of breakfast time for all subjects from the in_path file.
+
+
+</code></pre>
+<p>Requirements:</p>
+
+<pre><code>in_path file must have the following columns:
+
+    - unique_code
+
+    - date
+
+    - local_time</code></pre>
 
 </div>
 
@@ -1240,7 +1538,7 @@ All food is counted!
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">breakfast_analysis_summary</span><span class="p">(</span><span class="s1">&#39;data/output/public_basline_usable_expanded.pickle&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">breakfast_analysis_summary</span><span class="p">(</span><span class="s1">&#39;data/output/public_basline_usable_expanded.pickle&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -1324,28 +1622,6 @@ All food is counted!
       <td>6.086667</td>
       <td>6.748333</td>
     </tr>
-    <tr>
-      <th>3</th>
-      <td>alqt21525720972</td>
-      <td>4.679167</td>
-      <td>5.025000</td>
-      <td>5.250000</td>
-      <td>6.725000</td>
-      <td>7.287500</td>
-      <td>7.815000</td>
-      <td>8.787500</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>alqt45631586569</td>
-      <td>5.913333</td>
-      <td>5.940000</td>
-      <td>5.966667</td>
-      <td>6.050000</td>
-      <td>6.483333</td>
-      <td>7.330000</td>
-      <td>8.593333</td>
-    </tr>
   </tbody>
 </table>
 </div>
@@ -1370,13 +1646,31 @@ All food is counted!
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="breakfast_analysis_variability" class="doc_header"><code>breakfast_analysis_variability</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L374" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>breakfast_analysis_variability</code>(<strong><code>in_path</code></strong>, <strong><code>out_path</code></strong>=<em><code>None</code></em>, <strong><code>export</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="breakfast_analysis_variability" class="doc_header"><code>breakfast_analysis_variability</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L335" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>breakfast_analysis_variability</code>(<strong><code>in_path</code></strong>)</p>
 </blockquote>
-<p>@param in_path: input path, file in pickle, csv or panda dataframe format</p>
-<p>@param export: whether to save the dataframe locally</p>
-<p>@param out_path: path of the saved file if export==True, csv format</p>
-<p>@return: returns a dataframe that contains 5%,10%,25%,50%,75%,90%,95% quantile of dinner time minus 50% time for all subjects from the in_path file.</p>
-<p>Also returns a histgram that represent the 90%-10% interval for all subjects.</p>
+<p>Description:</p>
+<p>This function calculates the variability by subtracting 5%,10%,25%,50%,75%,90%,95% quantile of breakfast time from the 50% breakfast time. It also make a histogram that represents the 90%-10% interval for all subjects.</p>
+<p>Input:</p>
+
+<pre><code>- in_path : input path, file in pickle, csv or panda dataframe format.
+
+
+</code></pre>
+<p>Return:</p>
+
+<pre><code>- A dataframe that contains 5%,10%,25%,50%,75%,90%,95% quantile of breakfast time minus 50% time for each subjects from the in_path file.
+
+
+</code></pre>
+<p>Requirements:</p>
+
+<pre><code>in_path file must have the following columns:
+
+    - unique_code
+
+    - date
+
+    - local_time</code></pre>
 
 </div>
 
@@ -1402,7 +1696,7 @@ All food is counted!
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">breakfast_analysis_variability</span><span class="p">(</span><span class="s1">&#39;data/output/public_basline_usable_expanded.pickle&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">breakfast_analysis_variability</span><span class="p">(</span><span class="s1">&#39;data/output/public_basline_usable_expanded.pickle&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -1486,28 +1780,6 @@ All food is counted!
       <td>1.086667</td>
       <td>1.748333</td>
     </tr>
-    <tr>
-      <th>3</th>
-      <td>alqt21525720972</td>
-      <td>-2.045833</td>
-      <td>-1.700000</td>
-      <td>-1.475000</td>
-      <td>0.0</td>
-      <td>0.562500</td>
-      <td>1.090000</td>
-      <td>2.062500</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>alqt45631586569</td>
-      <td>-0.136667</td>
-      <td>-0.110000</td>
-      <td>-0.083333</td>
-      <td>0.0</td>
-      <td>0.433333</td>
-      <td>1.280000</td>
-      <td>2.543333</td>
-    </tr>
   </tbody>
 </table>
 </div>
@@ -1544,12 +1816,31 @@ All food is counted!
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="dinner_analysis_summary" class="doc_header"><code>dinner_analysis_summary</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L425" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dinner_analysis_summary</code>(<strong><code>in_path</code></strong>, <strong><code>out_path</code></strong>=<em><code>None</code></em>, <strong><code>export</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="dinner_analysis_summary" class="doc_header"><code>dinner_analysis_summary</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L385" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dinner_analysis_summary</code>(<strong><code>in_path</code></strong>, <strong><code>out_path</code></strong>=<em><code>None</code></em>, <strong><code>export</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
-<p>@param in_path: input path, file in pickle, csv or panda dataframe format</p>
-<p>@param export: whether to save the dataframe locally</p>
-<p>@param out_path: path of the saved file if export==True, csv format</p>
-<p>@return: 5%,10%,25%,50%,75%,90%,95% quantile of dinner time for all subjects from the in_path file</p>
+<p>Description:</p>
+<p>This function takes the adherent loggings and calculate the 5%,10%,25%,50%,75%,90%,95% quantile of dinner time for each user.</p>
+<p>Input:</p>
+
+<pre><code>- in_path : input path, file in pickle, csv or panda dataframe format.
+
+
+</code></pre>
+<p>Return:</p>
+
+<pre><code>- A summary table with 5%,10%,25%,50%,75%,90%,95% quantile of dinner time for all subjects from the in_path file.
+
+
+</code></pre>
+<p>Requirements:</p>
+
+<pre><code>in_path file must have the following columns:
+
+    - unique_code
+
+    - date
+
+    - local_time</code></pre>
 
 </div>
 
@@ -1575,7 +1866,7 @@ All food is counted!
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dinner_analysis_summary</span><span class="p">(</span><span class="s1">&#39;data/output/public_basline_usable_expanded.pickle&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dinner_analysis_summary</span><span class="p">(</span><span class="s1">&#39;data/output/public_basline_usable_expanded.pickle&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -1659,28 +1950,6 @@ All food is counted!
       <td>27.475000</td>
       <td>27.650000</td>
     </tr>
-    <tr>
-      <th>3</th>
-      <td>alqt21525720972</td>
-      <td>18.721667</td>
-      <td>18.900000</td>
-      <td>19.350000</td>
-      <td>20.150000</td>
-      <td>20.862500</td>
-      <td>21.400000</td>
-      <td>23.097500</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>alqt45631586569</td>
-      <td>26.283333</td>
-      <td>26.283333</td>
-      <td>26.300000</td>
-      <td>26.350000</td>
-      <td>26.416667</td>
-      <td>26.480000</td>
-      <td>26.490000</td>
-    </tr>
   </tbody>
 </table>
 </div>
@@ -1705,12 +1974,31 @@ All food is counted!
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="dinner_analysis_variability" class="doc_header"><code>dinner_analysis_variability</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L464" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dinner_analysis_variability</code>(<strong><code>in_path</code></strong>, <strong><code>out_path</code></strong>=<em><code>None</code></em>, <strong><code>export</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="dinner_analysis_variability" class="doc_header"><code>dinner_analysis_variability</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L424" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dinner_analysis_variability</code>(<strong><code>in_path</code></strong>, <strong><code>out_path</code></strong>=<em><code>None</code></em>, <strong><code>export</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
-<p>@param in_path: input path, file in pickle, csv or panda dataframe format</p>
-<p>@param export: whether to save the dataframe locally</p>
-<p>@param out_path: path of the saved file if export==True, csv format</p>
-<p>@return: returns a dataframe that contains 5%,10%,25%,50%,75%,90%,95% quantile of dinner time minus 50% time for all subjects from the in_path file. Also returns a histgram that represent the 90%-10% interval for all subjects.</p>
+<p>Description:</p>
+<p>This function calculates the variability by subtracting 5%,10%,25%,50%,75%,90%,95% quantile of dinner time from the 50% dinner time. It also make a histogram that represents the 90%-10% interval for all subjects.</p>
+<p>Input:</p>
+
+<pre><code>- in_path : input path, file in pickle, csv or panda dataframe format.
+
+
+</code></pre>
+<p>Return:</p>
+
+<pre><code>- A dataframe that contains 5%,10%,25%,50%,75%,90%,95% quantile of dinner time minus 50% time for each subjects from the in_path file.
+
+
+</code></pre>
+<p>Requirements:</p>
+
+<pre><code>in_path file must have the following columns:
+
+    - unique_code
+
+    - date
+
+    - local_time</code></pre>
 
 </div>
 
@@ -1736,7 +2024,7 @@ All food is counted!
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dinner_analysis_variability</span><span class="p">(</span><span class="s1">&#39;data/output/public_basline_usable_expanded.pickle&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dinner_analysis_variability</span><span class="p">(</span><span class="s1">&#39;data/output/public_basline_usable_expanded.pickle&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -1796,7 +2084,7 @@ All food is counted!
       <td>0.0</td>
       <td>0.183333</td>
       <td>0.333333</td>
-      <td>0.6500</td>
+      <td>0.65</td>
     </tr>
     <tr>
       <th>1</th>
@@ -1807,7 +2095,7 @@ All food is counted!
       <td>0.0</td>
       <td>0.000000</td>
       <td>0.000000</td>
-      <td>0.0000</td>
+      <td>0.00</td>
     </tr>
     <tr>
       <th>2</th>
@@ -1818,29 +2106,7 @@ All food is counted!
       <td>0.0</td>
       <td>0.687500</td>
       <td>1.475000</td>
-      <td>1.6500</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>alqt21525720972</td>
-      <td>-1.428333</td>
-      <td>-1.250000</td>
-      <td>-0.800000</td>
-      <td>0.0</td>
-      <td>0.712500</td>
-      <td>1.250000</td>
-      <td>2.9475</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>alqt45631586569</td>
-      <td>-0.066667</td>
-      <td>-0.066667</td>
-      <td>-0.050000</td>
-      <td>0.0</td>
-      <td>0.066667</td>
-      <td>0.130000</td>
-      <td>0.1400</td>
+      <td>1.65</td>
     </tr>
   </tbody>
 </table>
@@ -1863,6 +2129,77 @@ All food is counted!
 
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="filtering_usable_data" class="doc_header"><code>filtering_usable_data</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L473" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>filtering_usable_data</code>(<strong><code>df</code></strong>, <strong><code>num_items</code></strong>, <strong><code>num_days</code></strong>)</p>
+</blockquote>
+<p>Description:</p>
+
+<pre><code>This function filters the cleaned app data given certain criteria
+
+</code></pre>
+<p>Input:</p>
+
+<pre><code>- df (pd.DataFrame): the dataframe to be filtered
+
+- num_items (int):   number of items to be used as cut-off
+
+- num_days (int):    number of days to be used as cut-off
+
+</code></pre>
+<p>Output:</p>
+
+<pre><code>- df_usable:         a panda DataFrame with filtered rows
+
+- set_usable:        a set of unique_code to be included as "usable"
+
+</code></pre>
+<p>Side Effects:</p>
+
+<pre><code>None
+
+</code></pre>
+<p>Requirements:</p>
+
+<pre><code>df should have the following columns:
+
+    - unique_code
+
+    - desc_text
+
+    - date
+
+</code></pre>
+<p>Used in:</p>
+
+<pre><code>Analysis pipeline</code></pre>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
