@@ -13,7 +13,6 @@ index = {"load_public_data": "00_core.ipynb",
          "dinner_analysis_summary": "00_core.ipynb",
          "dinner_analysis_variability": "00_core.ipynb",
          "filtering_usable_data": "00_core.ipynb",
-         "download_ntlk": "01_food_parser.ipynb",
          "FoodParser": "01_food_parser.ipynb"}
 
 modules = ["core.py",
