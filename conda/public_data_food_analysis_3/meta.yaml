@@ -1,0 +1,46 @@
+package:
+  name: public_data_food_analysis_3
+  version: 0.0.1
+source:
+  sha256: 7a813ba2c4a54eacbb3ea7b2046bdb7fe8cafe211c2f239d9d942f8cffcf47d7
+  url: https://files.pythonhosted.org/packages/c8/d0/65380be1d77d4e6a78fc5bd21f621e3a7fdfef1874ed496effff17443e34/public_data_food_analysis_3-0.0.1.tar.gz
+about:
+  dev_url: https://QiwenZz.github.io
+  doc_url: https://QiwenZz.github.io
+  home: https://QiwenZz.github.io
+  license: Apache Software
+  license_family: APACHE
+  summary: This project analyzes data from a few input sources.
+build:
+  noarch: python
+  number: '0'
+  script: '{{ PYTHON }} -m pip install . -vv'
+extra:
+  recipe-maintainers:
+  - QiwenZz
+requirements:
+  host:
+  - pip
+  - python
+  - packaging
+  - pandas
+  - numpy
+  - scipy
+  - seaborn
+  - matplotlib
+  - datetime
+  - nltk
+  run:
+  - pip
+  - python
+  - packaging
+  - pandas
+  - numpy
+  - scipy
+  - seaborn
+  - matplotlib
+  - datetime
+  - nltk
+test:
+  imports:
+  - public_data_food_analysis_3

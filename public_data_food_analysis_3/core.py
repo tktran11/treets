@@ -5,6 +5,10 @@ __all__ = ['load_public_data', 'prepare_baseline_and_intervention_usable_data', 
            'breakfast_analysis_variability', 'dinner_analysis_summary', 'dinner_analysis_variability']
 
 # Cell
+from .app_data import *
+from .food_parser import *
+import warnings
+warnings.filterwarnings('ignore')
 import pandas as pd
 import numpy as np
 from scipy import stats

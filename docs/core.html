@@ -26,6 +26,34 @@ nb_path: "00_core.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>[nltk_data] Downloading package words to
+[nltk_data]     /Users/qiwenzhang/nltk_data...
+[nltk_data]   Package words is already up-to-date!
+[nltk_data] Downloading package stopwords to
+[nltk_data]     /Users/qiwenzhang/nltk_data...
+[nltk_data]   Package stopwords is already up-to-date!
+[nltk_data] Downloading package wordnet to
+[nltk_data]     /Users/qiwenzhang/nltk_data...
+[nltk_data]   Package wordnet is already up-to-date!
+[nltk_data] Downloading package punkt to
+[nltk_data]     /Users/qiwenzhang/nltk_data...
+[nltk_data]   Package punkt is already up-to-date!
+[nltk_data] Downloading package omw-1.4 to
+[nltk_data]     /Users/qiwenzhang/nltk_data...
+[nltk_data]   Package omw-1.4 is already up-to-date!
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -47,7 +75,7 @@ nb_path: "00_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="load_public_data" class="doc_header"><code>load_public_data</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L20" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_public_data</code>(<strong><code>in_path</code></strong>, <strong><code>export</code></strong>=<em><code>False</code></em>, <strong><code>out_path</code></strong>=<em><code>'data/output/public.pickle'</code></em>)</p>
+<h4 id="load_public_data" class="doc_header"><code>load_public_data</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L24" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_public_data</code>(<strong><code>in_path</code></strong>, <strong><code>export</code></strong>=<em><code>False</code></em>, <strong><code>out_path</code></strong>=<em><code>'data/output/public.pickle'</code></em>)</p>
 </blockquote>
 <p>Load original public data and output processed data in pickle format.</p>
 <p>Process include:</p>
@@ -212,7 +240,7 @@ nb_path: "00_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="prepare_baseline_and_intervention_usable_data" class="doc_header"><code>prepare_baseline_and_intervention_usable_data</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L95" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>prepare_baseline_and_intervention_usable_data</code>(<strong><code>in_path</code></strong>, <strong><code>export</code></strong>=<em><code>False</code></em>, <strong><code>baseline_expanded_out_path</code></strong>=<em><code>'data/output/public_basline_usable_expanded.pickle'</code></em>, <strong><code>intervention_out_path</code></strong>=<em><code>'data/output/public_intervention_usable.pickle'</code></em>)</p>
+<h4 id="prepare_baseline_and_intervention_usable_data" class="doc_header"><code>prepare_baseline_and_intervention_usable_data</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L99" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>prepare_baseline_and_intervention_usable_data</code>(<strong><code>in_path</code></strong>, <strong><code>export</code></strong>=<em><code>False</code></em>, <strong><code>baseline_expanded_out_path</code></strong>=<em><code>'data/output/public_basline_usable_expanded.pickle'</code></em>, <strong><code>intervention_out_path</code></strong>=<em><code>'data/output/public_intervention_usable.pickle'</code></em>)</p>
 </blockquote>
 <p>Filter and create baseline_expanded and intervention groups based on in_path pickle file.</p>
 <p>@param in_path : input path, file in pickle, csv or pandas dataframe format</p>
@@ -402,7 +430,7 @@ intervention data is saved at data/output/public_intervention_usable.pickle
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_adherent_column" class="doc_header"><code>get_adherent_column</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L150" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_adherent_column</code>(<strong><code>in_path</code></strong>, <strong><code>out_path</code></strong>=<em><code>None</code></em>, <strong><code>export</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="get_adherent_column" class="doc_header"><code>get_adherent_column</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L154" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_adherent_column</code>(<strong><code>in_path</code></strong>, <strong><code>out_path</code></strong>=<em><code>None</code></em>, <strong><code>export</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>@param in_path: input path, file in pickle, csv or pandas dataframe format</p>
 <p>@param out_path: path for out_put file in csv format if export==True.</p>
@@ -541,7 +569,7 @@ intervention data is saved at data/output/public_intervention_usable.pickle
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="most_active_user" class="doc_header"><code>most_active_user</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L184" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>most_active_user</code>(<strong><code>in_path</code></strong>, <strong><code>n</code></strong>, <strong><code>export</code></strong>=<em><code>False</code></em>, <strong><code>user_day_counts_path</code></strong>=<em><code>'data/output/public_top_users_day_counts.csv'</code></em>)</p>
+<h4 id="most_active_user" class="doc_header"><code>most_active_user</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L188" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>most_active_user</code>(<strong><code>in_path</code></strong>, <strong><code>n</code></strong>, <strong><code>export</code></strong>=<em><code>False</code></em>, <strong><code>user_day_counts_path</code></strong>=<em><code>'data/output/public_top_users_day_counts.csv'</code></em>)</p>
 </blockquote>
 <p>@param in_path : input path, file in pickle, csv or pandas dataframe format</p>
 <p>@param n: number of users with most number of logging days</p>
@@ -667,7 +695,7 @@ user day counts data is saved at data/output/public_top_users_day_counts.csv
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="convert_loggings" class="doc_header"><code>convert_loggings</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L229" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>convert_loggings</code>(<strong><code>in_path</code></strong>, <strong><code>export</code></strong>=<em><code>False</code></em>, <strong><code>parsed_food_path</code></strong>=<em><code>'data/output/public_all_parsed.csv'</code></em>, <strong><code>ascending</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="convert_loggings" class="doc_header"><code>convert_loggings</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L233" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>convert_loggings</code>(<strong><code>in_path</code></strong>, <strong><code>export</code></strong>=<em><code>False</code></em>, <strong><code>parsed_food_path</code></strong>=<em><code>'data/output/public_all_parsed.csv'</code></em>, <strong><code>ascending</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>@param in_path : input path, file in pickle, csv or panda dataframe format</p>
 <p>@param parsed_food_path : output path for cleaned food loggings in csv format</p>
@@ -828,7 +856,7 @@ All food is counted!
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_certain_types" class="doc_header"><code>get_certain_types</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L291" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_certain_types</code>(<strong><code>in_path</code></strong>, <strong><code>types</code></strong>, <strong><code>out_path</code></strong>=<em><code>None</code></em>, <strong><code>export</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="get_certain_types" class="doc_header"><code>get_certain_types</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L295" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_certain_types</code>(<strong><code>in_path</code></strong>, <strong><code>types</code></strong>, <strong><code>out_path</code></strong>=<em><code>None</code></em>, <strong><code>export</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>@param in_path : input path, file in pickle, csv or panda dataframe format</p>
 <p>@param types : expected types of the loggings for filtering, in format of list. Available types:</p>
@@ -1181,7 +1209,7 @@ All food is counted!
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="breakfast_analysis_summary" class="doc_header"><code>breakfast_analysis_summary</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L331" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>breakfast_analysis_summary</code>(<strong><code>in_path</code></strong>, <strong><code>out_path</code></strong>=<em><code>None</code></em>, <strong><code>export</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="breakfast_analysis_summary" class="doc_header"><code>breakfast_analysis_summary</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L335" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>breakfast_analysis_summary</code>(<strong><code>in_path</code></strong>, <strong><code>out_path</code></strong>=<em><code>None</code></em>, <strong><code>export</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>@param in_path: input path, file in pickle, csv or panda dataframe format</p>
 <p>@param export: whether to save the dataframe locally</p>
@@ -1342,7 +1370,7 @@ All food is counted!
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="breakfast_analysis_variability" class="doc_header"><code>breakfast_analysis_variability</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L370" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>breakfast_analysis_variability</code>(<strong><code>in_path</code></strong>, <strong><code>out_path</code></strong>=<em><code>None</code></em>, <strong><code>export</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="breakfast_analysis_variability" class="doc_header"><code>breakfast_analysis_variability</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L374" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>breakfast_analysis_variability</code>(<strong><code>in_path</code></strong>, <strong><code>out_path</code></strong>=<em><code>None</code></em>, <strong><code>export</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>@param in_path: input path, file in pickle, csv or panda dataframe format</p>
 <p>@param export: whether to save the dataframe locally</p>
@@ -1516,7 +1544,7 @@ All food is counted!
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="dinner_analysis_summary" class="doc_header"><code>dinner_analysis_summary</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L421" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dinner_analysis_summary</code>(<strong><code>in_path</code></strong>, <strong><code>out_path</code></strong>=<em><code>None</code></em>, <strong><code>export</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="dinner_analysis_summary" class="doc_header"><code>dinner_analysis_summary</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L425" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dinner_analysis_summary</code>(<strong><code>in_path</code></strong>, <strong><code>out_path</code></strong>=<em><code>None</code></em>, <strong><code>export</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>@param in_path: input path, file in pickle, csv or panda dataframe format</p>
 <p>@param export: whether to save the dataframe locally</p>
@@ -1677,7 +1705,7 @@ All food is counted!
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="dinner_analysis_variability" class="doc_header"><code>dinner_analysis_variability</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L460" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dinner_analysis_variability</code>(<strong><code>in_path</code></strong>, <strong><code>out_path</code></strong>=<em><code>None</code></em>, <strong><code>export</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="dinner_analysis_variability" class="doc_header"><code>dinner_analysis_variability</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L464" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dinner_analysis_variability</code>(<strong><code>in_path</code></strong>, <strong><code>out_path</code></strong>=<em><code>None</code></em>, <strong><code>export</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>@param in_path: input path, file in pickle, csv or panda dataframe format</p>
 <p>@param export: whether to save the dataframe locally</p>
