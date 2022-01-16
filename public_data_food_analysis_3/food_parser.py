@@ -3,6 +3,7 @@
 __all__ = ['FoodParser']
 
 # Cell
+import nltk
 nltk.download('words')
 nltk.download('stopwords')
 nltk.download('wordnet')
@@ -14,7 +15,6 @@ import re
 import string
 import numpy as np
 import pandas as pd
-import nltk
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import stopwords, words
 import pkg_resources
