@@ -8,7 +8,6 @@ nltk.download('words')
 nltk.download('stopwords')
 nltk.download('wordnet')
 nltk.download('punkt')
-nltk.download('omw-1.4')
 
 import pickle
 import re
