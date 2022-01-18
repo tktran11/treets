@@ -2,13 +2,13 @@
 
 __all__ = ["index", "modules", "custom_doc_links", "git_url"]
 
-index = {"universal_key": "00_core.ipynb",
+index = {"FoodParser": "00_core.ipynb",
+         "universal_key": "00_core.ipynb",
          "load_public_data": "00_core.ipynb",
          "filtering_usable_data": "00_core.ipynb",
          "prepare_baseline_and_intervention_usable_data": "00_core.ipynb",
          "get_adherent_column": "00_core.ipynb",
          "most_active_user": "00_core.ipynb",
-         "FoodParser": "00_core.ipynb",
          "convert_loggings": "00_core.ipynb",
          "get_certain_types": "00_core.ipynb",
          "breakfast_analysis_summary": "00_core.ipynb",
