@@ -1,9 +1,9 @@
 package:
   name: public_data_food_analysis_3
-  version: 0.0.5
+  version: 0.0.7
 source:
-  sha256: 78bd69cee2862caa4c1c53d293fefbd4d16fc63aaeed1dbc30f0c5c07afb976b
-  url: https://files.pythonhosted.org/packages/32/02/32188337b355478d04119cc2e1f34edee77ae4e3946641967e52663f78a6/public_data_food_analysis_3-0.0.5.tar.gz
+  sha256: 82fb55f9f326ef030004a3fceb288b582547705594a3b9c848450f4ed45ad4db
+  url: https://files.pythonhosted.org/packages/58/08/6aa01ae000d00be2bba680aab50b572b7fe021b1618041d5cc9490871b1c/public_data_food_analysis_3-0.0.7.tar.gz
 about:
   dev_url: https://QiwenZz.github.io
   doc_url: https://QiwenZz.github.io

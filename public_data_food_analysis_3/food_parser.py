@@ -4,10 +4,10 @@ __all__ = ['FoodParser']
 
 # Cell
 import nltk
-nltk.download('words')
-nltk.download('stopwords')
-nltk.download('wordnet')
-nltk.download('punkt')
+nltk.download('words', quiet=True)
+nltk.download('stopwords', quiet=True)
+nltk.download('wordnet', quiet=True)
+nltk.download('punkt', quiet=True)
 
 import pickle
 import re
