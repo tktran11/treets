@@ -1,6 +1,7 @@
 from pkg_resources import parse_version
 from configparser import ConfigParser
 import setuptools,re,sys
+from distutils.core import setup
 assert parse_version(setuptools.__version__)>=parse_version('36.2')
 
 # note: all settings are in settings.ini; edit there, not here
@@ -42,8 +43,8 @@ for ext in ['png', 'svg']:
     long_description = re.sub(r'!\['+ext+'\]\((.*)\)', '!['+ext+']('+'https://raw.githubusercontent.com/{}/{}'.format(cfg['user'],cfg['lib_name'])+'/'+cfg['branch']+'/\\1)', long_description)
     long_description = re.sub(r'src=\"(.*)\.'+ext+'\"', 'src=\"https://raw.githubusercontent.com/{}/{}'.format(cfg['user'],cfg['lib_name'])+'/'+cfg['branch']+'/\\1.'+ext+'\"', long_description)
 
-setuptools.setup(
-    name = cfg['lib_name'],
+setup(
+    name = 'public_data_food_analysis_3',  
     license = lic[0],
     classifiers = [
         'Development Status :: ' + statuses[int(cfg['status'])],
@@ -51,10 +52,9 @@ setuptools.setup(
         'Natural Language :: ' + cfg['language'].title(),
     ] + ['Programming Language :: Python :: '+o for o in py_versions[py_versions.index(min_python):]] + (['License :: ' + lic[1] ] if lic[1] else []),
     url = cfg['git_url'],
-    packages = setuptools.find_packages(),
+    packages = ['public_data_food_analysis_3'],
     package_dir={'public_data_food_analysis_3': 'public_data_food_analysis_3'},
     package_data={'public_data_food_analysis_3': ['data/correction_dic.pickle', 'data/parser_keys.csv']},
-    include_package_data = True,
     install_requires = requirements,
     extras_require={ 'dev': dev_requirements },
     python_requires  = '>=' + cfg['min_python'],
