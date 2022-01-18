@@ -606,9 +606,9 @@ class FoodParser():
 
     def initialization(self):
         # 1. read in manually annotated file and bind it to the object
-        parser_keys_df = pd.read_csv( "./data/parser_keys.csv")
+        parser_keys_df = pd.read_csv( "/data/parser_keys.csv")
         all_gram_set, food_type_dict, food2tags = self.process_parser_keys_df(parser_keys_df)
-        correction_dic = pd.read_pickle('./data/correction_dic.pickle')
+        correction_dic = pd.read_pickle('/data/correction_dic.pickle')
         self.all_gram_set = all_gram_set
         self.food_type_dict = food_type_dict
         self.correction_dic = correction_dic
