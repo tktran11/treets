@@ -268,7 +268,7 @@ nb_path: "00_core.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">find_date</span><span class="p">(</span><span class="n">public_all</span><span class="p">,</span> <span class="s1">&#39;original_logtime&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">find_date</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;original_logtime&#39;</span><span class="p">)</span>
 <span class="n">df</span><span class="p">[[</span><span class="s1">&#39;original_logtime&#39;</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 
@@ -341,7 +341,7 @@ nb_path: "00_core.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">find_date</span><span class="p">(</span><span class="n">public_all</span><span class="p">,</span> <span class="s1">&#39;original_logtime&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">find_date</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;original_logtime&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
 <span class="n">df</span><span class="p">[[</span><span class="s1">&#39;original_logtime&#39;</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 <span class="c1"># last two rows shift one day earlier due to that a day starts at 4 </span>
 </pre></div>
@@ -415,7 +415,7 @@ nb_path: "00_core.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">find_date</span><span class="p">(</span><span class="n">public_all</span><span class="p">,</span> <span class="s1">&#39;original_logtime&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">find_date</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;original_logtime&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">)</span>
 <span class="n">df</span><span class="p">[[</span><span class="s1">&#39;original_logtime&#39;</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 <span class="c1"># last two rows shift one day later due to that a day ends at 20</span>
 </pre></div>
