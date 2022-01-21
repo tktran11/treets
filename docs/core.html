@@ -527,43 +527,53 @@ nb_path: "00_core.ipynb"
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
-<div class="input">
 
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">find_local_time</span><span class="p">(</span><span class="n">in_path</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Description:\n</span>
-<span class="sd">        Extract time information from a column and shift each time by h hours. (Day starts h hours early if h is negative and h hours late if h is positive)\n</span>
-<span class="sd">        </span>
-<span class="sd">    Input:\n</span>
-<span class="sd">        - in_path : input path, file in pickle, csv or pandas dataframe format\n</span>
-<span class="sd">        - col, pd.datetime object : column that contains the information of date and time that&#39;s 24 hours system.</span>
-<span class="sd">        - h, int : hours to shift the date. For example, when h = 4, everyday starts at 4 and ends at 28. When h = -4, everyday starts at -4 and ends at 20.</span>
-<span class="sd">        </span>
-<span class="sd">    Return:\n</span>
-<span class="sd">        - a numpy array represents the date extracted from col.\n</span>
+<div class="output_wrapper">
+<div class="output">
 
-<span class="sd">    Requirements:\n</span>
-<span class="sd">        Elements in col should be pd.datetime objects</span>
-<span class="sd">            </span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    
-    <span class="n">df</span> <span class="o">=</span> <span class="n">universal_key</span><span class="p">(</span><span class="n">in_path</span><span class="p">)</span>
-    <span class="n">local_time</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">())</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span> <span class="o">/</span><span class="mf">3600.</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">h</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">local_time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">local_time</span> <span class="o">&lt;</span> <span class="n">h</span><span class="p">,</span> <span class="mi">24</span><span class="o">+</span> <span class="n">local_time</span><span class="p">,</span> <span class="n">local_time</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">local_time</span>
-    <span class="k">if</span> <span class="n">h</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">local_time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">local_time</span> <span class="o">&gt;</span> <span class="p">(</span><span class="mi">24</span><span class="o">+</span><span class="n">h</span><span class="p">),</span> <span class="n">local_time</span><span class="o">-</span><span class="mf">24.</span><span class="p">,</span> <span class="n">local_time</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">local_time</span>
-    <span class="k">return</span> <span class="n">local_time</span>
-    
-</pre></div>
+<div class="output_area">
 
-    </div>
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="find_local_time" class="doc_header"><code>find_local_time</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L91" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>find_local_time</code>(<strong><code>in_path</code></strong>, <strong><code>col</code></strong>, <strong><code>h</code></strong>=<em><code>0</code></em>)</p>
+</blockquote>
+<p>Description:</p>
+
+<pre><code>Extract time information from a column and shift each time by h hours. (Day starts h hours early if h is negative and h hours late if h is positive)
+
+
+</code></pre>
+<p>Input:</p>
+
+<pre><code>- in_path : input path, file in pickle, csv or pandas dataframe format
+
+- col, pd.datetime object : column that contains the information of date and time that's 24 hours system.
+- h, int : hours to shift the date. For example, when h = 4, everyday starts at 4 and ends at 28. When h = -4, everyday starts at -4 and ends at 20.
+
+</code></pre>
+<p>Return:</p>
+
+<pre><code>- a numpy array represents the date extracted from col.
+
+
+</code></pre>
+<p>Requirements:</p>
+
+<pre><code>Elements in col should be pd.datetime objects</code></pre>
+
+</div>
+
+</div>
+
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -846,39 +856,52 @@ nb_path: "00_core.ipynb"
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
-<div class="input">
 
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">week_from_start</span><span class="p">(</span><span class="n">in_path</span><span class="p">,</span> <span class="n">identifier</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Description:\n</span>
-<span class="sd">            Calculate the number of weeks for each logging since the first day of the logging for each participant(identifier).</span>
-<span class="sd">        Input:\n</span>
-<span class="sd">            - in_path : input path, file in pickle, csv or pandas dataframe format\n</span>
-<span class="sd">            - identifier : unique_id or ID, or name that identifies people.</span>
+<div class="output_wrapper">
+<div class="output">
 
-<span class="sd">        Return:\n</span>
-<span class="sd">            - a numpy array represents the date extracted from col.\n</span>
+<div class="output_area">
 
-<span class="sd">        Requirements:\n</span>
-<span class="sd">            in_path file must have the following columns:\n</span>
-<span class="sd">                - date\n</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        
-        <span class="n">df</span> <span class="o">=</span> <span class="n">universal_key</span><span class="p">(</span><span class="n">in_path</span><span class="p">)</span>
-        <span class="c1"># Handle week from start</span>
-        <span class="n">df_dic</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">identifier</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">)[</span><span class="s1">&#39;date&#39;</span><span class="p">])</span>
 
-        <span class="k">def</span> <span class="nf">count_week_public</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
-            <span class="k">return</span> <span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">date</span> <span class="o">-</span> <span class="n">df_dic</span><span class="p">[</span><span class="n">s</span><span class="p">[</span><span class="n">identifier</span><span class="p">]])</span><span class="o">.</span><span class="n">days</span> <span class="o">//</span> <span class="mi">7</span> <span class="o">+</span> <span class="mi">1</span>
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="week_from_start" class="doc_header"><code>week_from_start</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L121" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>week_from_start</code>(<strong><code>in_path</code></strong>, <strong><code>identifier</code></strong>)</p>
+</blockquote>
+<p>Description:</p>
+
+<pre><code>Calculate the number of weeks for each logging since the first day of the logging for each participant(identifier).
+</code></pre>
+<p>Input:</p>
+
+<pre><code>- in_path : input path, file in pickle, csv or pandas dataframe format
+
+- identifier : unique_id or ID, or name that identifies people.
+
+</code></pre>
+<p>Return:</p>
+
+<pre><code>- a numpy array represents the date extracted from col.
+
+
+</code></pre>
+<p>Requirements:</p>
+
+<pre><code>in_path file must have the following columns:
+
+    - date</code></pre>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
     
-        <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">count_week_public</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -998,7 +1021,7 @@ nb_path: "00_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="load_public_data" class="doc_header"><code>load_public_data</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L91" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_public_data</code>(<strong><code>in_path</code></strong>)</p>
+<h4 id="load_public_data" class="doc_header"><code>load_public_data</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L147" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_public_data</code>(<strong><code>in_path</code></strong>)</p>
 </blockquote>
 <p>Description:</p>
 
@@ -1183,7 +1206,7 @@ Process includes:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="filtering_usable_data" class="doc_header"><code>filtering_usable_data</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L158" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>filtering_usable_data</code>(<strong><code>df</code></strong>, <strong><code>num_items</code></strong>, <strong><code>num_days</code></strong>)</p>
+<h4 id="filtering_usable_data" class="doc_header"><code>filtering_usable_data</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L214" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>filtering_usable_data</code>(<strong><code>df</code></strong>, <strong><code>num_items</code></strong>, <strong><code>num_days</code></strong>)</p>
 </blockquote>
 <p>Description:</p>
 
@@ -1339,7 +1362,7 @@ Process includes:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="prepare_baseline_and_intervention_usable_data" class="doc_header"><code>prepare_baseline_and_intervention_usable_data</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L202" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>prepare_baseline_and_intervention_usable_data</code>(<strong><code>in_path</code></strong>)</p>
+<h4 id="prepare_baseline_and_intervention_usable_data" class="doc_header"><code>prepare_baseline_and_intervention_usable_data</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L258" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>prepare_baseline_and_intervention_usable_data</code>(<strong><code>in_path</code></strong>)</p>
 </blockquote>
 <p>Description:</p>
 
@@ -1643,7 +1666,7 @@ Process includes:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_adherent_column" class="doc_header"><code>get_adherent_column</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L243" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_adherent_column</code>(<strong><code>in_path</code></strong>)</p>
+<h4 id="get_adherent_column" class="doc_header"><code>get_adherent_column</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L299" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_adherent_column</code>(<strong><code>in_path</code></strong>)</p>
 </blockquote>
 <p>Description:</p>
 
@@ -1813,7 +1836,7 @@ Process includes:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="most_active_user" class="doc_header"><code>most_active_user</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L275" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>most_active_user</code>(<strong><code>in_path</code></strong>, <strong><code>food_type</code></strong>=<em><code>['f', 'b', 'm', 'w']</code></em>)</p>
+<h4 id="most_active_user" class="doc_header"><code>most_active_user</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L331" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>most_active_user</code>(<strong><code>in_path</code></strong>, <strong><code>food_type</code></strong>=<em><code>['f', 'b', 'm', 'w']</code></em>)</p>
 </blockquote>
 <p>Description:</p>
 
@@ -2033,7 +2056,7 @@ Process includes:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="convert_loggings" class="doc_header"><code>convert_loggings</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L315" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>convert_loggings</code>(<strong><code>in_path</code></strong>)</p>
+<h4 id="convert_loggings" class="doc_header"><code>convert_loggings</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L371" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>convert_loggings</code>(<strong><code>in_path</code></strong>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function convert all the loggings in the in_path file into a list of individual items based on the desc_text column.</p>
@@ -2173,7 +2196,7 @@ Process includes:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_certain_types" class="doc_header"><code>get_certain_types</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L354" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_certain_types</code>(<strong><code>in_path</code></strong>, <strong><code>food_type</code></strong>)</p>
+<h4 id="get_certain_types" class="doc_header"><code>get_certain_types</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L410" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_certain_types</code>(<strong><code>in_path</code></strong>, <strong><code>food_type</code></strong>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function filters with the expected food types and return a cleaner version of in_path file.</p>
@@ -2428,7 +2451,7 @@ Process includes:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="breakfast_analysis_summary" class="doc_header"><code>breakfast_analysis_summary</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L397" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>breakfast_analysis_summary</code>(<strong><code>in_path</code></strong>)</p>
+<h4 id="breakfast_analysis_summary" class="doc_header"><code>breakfast_analysis_summary</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L453" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>breakfast_analysis_summary</code>(<strong><code>in_path</code></strong>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function takes the adherent loggings and calculate the 5%,10%,25%,50%,75%,90%,95% quantile of breakfast time for each user.</p>
@@ -2586,7 +2609,7 @@ Process includes:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="breakfast_analysis_variability" class="doc_header"><code>breakfast_analysis_variability</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L436" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>breakfast_analysis_variability</code>(<strong><code>in_path</code></strong>)</p>
+<h4 id="breakfast_analysis_variability" class="doc_header"><code>breakfast_analysis_variability</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L492" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>breakfast_analysis_variability</code>(<strong><code>in_path</code></strong>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function calculates the variability by subtracting 5%,10%,25%,50%,75%,90%,95% quantile of breakfast time from the 50% breakfast time. It also make a histogram that represents the 90%-10% interval for all subjects.</p>
@@ -2756,7 +2779,7 @@ Process includes:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="dinner_analysis_summary" class="doc_header"><code>dinner_analysis_summary</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L486" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dinner_analysis_summary</code>(<strong><code>in_path</code></strong>, <strong><code>out_path</code></strong>=<em><code>None</code></em>, <strong><code>export</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="dinner_analysis_summary" class="doc_header"><code>dinner_analysis_summary</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L542" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dinner_analysis_summary</code>(<strong><code>in_path</code></strong>, <strong><code>out_path</code></strong>=<em><code>None</code></em>, <strong><code>export</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function takes the adherent loggings and calculate the 5%,10%,25%,50%,75%,90%,95% quantile of dinner time for each user.</p>
@@ -2914,7 +2937,7 @@ Process includes:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="dinner_analysis_variability" class="doc_header"><code>dinner_analysis_variability</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L525" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dinner_analysis_variability</code>(<strong><code>in_path</code></strong>, <strong><code>out_path</code></strong>=<em><code>None</code></em>, <strong><code>export</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="dinner_analysis_variability" class="doc_header"><code>dinner_analysis_variability</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L581" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dinner_analysis_variability</code>(<strong><code>in_path</code></strong>, <strong><code>out_path</code></strong>=<em><code>None</code></em>, <strong><code>export</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function calculates the variability by subtracting 5%,10%,25%,50%,75%,90%,95% quantile of dinner time from the 50% dinner time. It also make a histogram that represents the 90%-10% interval for all subjects.</p>
@@ -3084,7 +3107,7 @@ Process includes:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FoodParser" class="doc_header"><code>class</code> <code>FoodParser</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L574" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FoodParser</code>()</p>
+<h2 id="FoodParser" class="doc_header"><code>class</code> <code>FoodParser</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L630" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FoodParser</code>()</p>
 </blockquote>
 <p>A class that reads in food loggings from the app. Used as helper function for the function convert_loggings().</p>
 
