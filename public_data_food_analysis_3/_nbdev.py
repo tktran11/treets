@@ -3,6 +3,7 @@
 __all__ = ["index", "modules", "custom_doc_links", "git_url"]
 
 index = {"universal_key": "00_core.ipynb",
+         "find_date": "00_core.ipynb",
          "load_public_data": "00_core.ipynb",
          "filtering_usable_data": "00_core.ipynb",
          "prepare_baseline_and_intervention_usable_data": "00_core.ipynb",
