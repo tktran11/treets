@@ -62,12 +62,12 @@ def universal_key(in_path):
 def find_date(in_path, col, h=0):
     """
     Description:\n
-        Extract date information from a column and shift the date by h hours. \(Day starts h hours early if h is negative and h hours late if h is positive\)\n
+        Extract date information from a column and shift each date in the column by h hours. (Day starts h hours early if h is negative and h hours late if h is positive)\n
 
     Input:\n
         - in_path : input path, file in pickle, csv or pandas dataframe format\n
         - col, pd.datetime object : column that contains the information of date and time that's 24 hours system.
-        - h, int : hours to shift the date. For example, when h = 4, everyday starts and ends 4 hours later
+        - h, int : hours to shift the date. For example, when h = 4, everyday starts and ends 4 hours later than normal.
 
     Return:\n
         - a numpy array represents the date extracted from col.\n
@@ -95,14 +95,12 @@ def load_public_data(in_path):
 
         Process includes:\n
         1. Dropping 'foodimage_file_name' column.\n
-        2. Handling the format of time by generating a new column, 'original_logtime_notz'\n
-        3. Generating the date column, 'date'\n
-        4. Converting time into float number into a new column, 'local_time'\n
-        5. Converting time in the 'local_time' column so that day starts at 4 am.\n
-        6. Converting time to a format of HH:MM:SS, 'time'\n
-        7. Generating the column 'week_from_start' that contains the week number that the participants input the food item.\n
-        8. Generating 'year' column based on the input data.\n
-        9. Outputing the data into a pickle format file.\n
+        2. Handling the format of time by deleting am/pm by generating a new column, 'original_logtime_notz'\n
+        3. Generating the date column with possible hour shifts, 'date'\n
+        4. Converting time into float number into a new column with possible hour shifts, 'local_time'\n
+        5. Converting time to a format of HH:MM:SS, 'time'\n
+        6. Generating the column 'week_from_start' that contains the week number that the participants input the food item.\n
+        7. Generating 'year' column based on the input data.\n
 
     Input:\n
         - in_path : input path, csv file\n
@@ -111,7 +109,7 @@ def load_public_data(in_path):
         - public_all: the processed dataframe\n
 
     Requirements:\n
-        csv file must have the following columns:\n
+        in_path file must have the following columns:\n
             - foodimage_file_name\n
             - original_logtime\n
             - date\n
@@ -134,37 +132,23 @@ def load_public_data(in_path):
             except:
                 return np.nan
 
-#     original_logtime_notz_lst = []
-#     for t in (public_all.original_logtime.values):
-#         original_logtime_notz_lst.append(handle_public_time(t))
-#     public_all['original_logtime_notz'] = original_logtime_notz_lst
-
-    # same as above but more efficient
     public_all['original_logtime_notz'] = public_all['original_logtime'].apply(handle_public_time)
 
     public_all = public_all.dropna().reset_index(drop = True)
 
-    def find_date(d):
-        if d.hour < 4:
-            return d.date() - pd.Timedelta('1 day')
-        else:
-            return d.date()
-    public_all['date'] = public_all['original_logtime_notz'].apply(find_date)
+
+    public_all['date'] = find_date(public_all, 'original_logtime_notz', 4)
 
 
     # Handle the time - Time in floating point format
-    public_all['local_time'] = public_all.original_logtime_notz.apply(lambda x: pd.Timedelta(x.time().isoformat()).total_seconds() /3600.).values
-    day_begins_at = 4
-    public_all.loc[(public_all['local_time'] < day_begins_at), 'local_time'] = 24.0 + public_all.loc[(public_all['local_time'] < day_begins_at), 'local_time']
+
+    public_all['local_time'] = find_local_time(public_all, 'original_logtime_notz', 4)
 
     # Handle the time - Time in Datetime object format
     public_all['time'] = pd.DatetimeIndex(public_all.original_logtime_notz).time
 
     # Handle week from start
-    public_start_time_dic = dict(public_all.groupby('unique_code').agg(np.min)['date'])
-    def count_week_public(s):
-        return (s.date - public_start_time_dic[s.unique_code]).days // 7 + 1
-    public_all['week_from_start'] = public_all.apply(count_week_public, axis = 1)
+    public_all['week_from_start'] = week_from_start(public_all,'unique_code')
 
     public_all['year'] = public_all.date.apply(lambda d: d.year)
 
