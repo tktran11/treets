@@ -1666,7 +1666,7 @@ Process includes:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="in_good_logging_day" class="doc_header"><code>in_good_logging_day</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L299" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>in_good_logging_day</code>(<strong><code>in_path</code></strong>, <strong><code>min_log_num</code></strong>=<em><code>2</code></em>, <strong><code>min_seperation</code></strong>=<em><code>4</code></em>)</p>
+<h4 id="in_good_logging_day" class="doc_header"><code>in_good_logging_day</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L299" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>in_good_logging_day</code>(<strong><code>in_path</code></strong>, <strong><code>identifier</code></strong>=<em><code>'unique_code'</code></em>, <strong><code>time_col</code></strong>=<em><code>'local_time'</code></em>, <strong><code>min_log_num</code></strong>=<em><code>2</code></em>, <strong><code>min_seperation</code></strong>=<em><code>4</code></em>)</p>
 </blockquote>
 <p>Description:</p>
 
@@ -1677,6 +1677,14 @@ Process includes:
 <p>Input:</p>
 
 <pre><code>- in_path : input path, file in pickle, csv or pandas dataframe format.
+
+- identifier : id-like column that's used to identify a subject.
+
+- time_col : column that contains time in float format.
+
+- min_log_num : filteration criteria on the minimum number of loggings each day.
+
+- min_seperation: filteration criteria on the minimum separations between the earliest and latest loggings each day.
 
 
 </code></pre>
@@ -1837,7 +1845,7 @@ Process includes:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="most_active_user" class="doc_header"><code>most_active_user</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L331" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>most_active_user</code>(<strong><code>in_path</code></strong>, <strong><code>food_type</code></strong>=<em><code>['f', 'b', 'm', 'w']</code></em>)</p>
+<h4 id="most_active_user" class="doc_header"><code>most_active_user</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L335" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>most_active_user</code>(<strong><code>in_path</code></strong>, <strong><code>food_type</code></strong>=<em><code>['f', 'b', 'm', 'w']</code></em>)</p>
 </blockquote>
 <p>Description:</p>
 
@@ -2057,7 +2065,7 @@ Process includes:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="convert_loggings" class="doc_header"><code>convert_loggings</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L371" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>convert_loggings</code>(<strong><code>in_path</code></strong>)</p>
+<h4 id="convert_loggings" class="doc_header"><code>convert_loggings</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L375" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>convert_loggings</code>(<strong><code>in_path</code></strong>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function convert all the loggings in the in_path file into a list of individual items based on the desc_text column.</p>
@@ -2197,7 +2205,7 @@ Process includes:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_certain_types" class="doc_header"><code>get_certain_types</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L410" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_certain_types</code>(<strong><code>in_path</code></strong>, <strong><code>food_type</code></strong>)</p>
+<h4 id="get_certain_types" class="doc_header"><code>get_certain_types</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L414" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_certain_types</code>(<strong><code>in_path</code></strong>, <strong><code>food_type</code></strong>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function filters with the expected food types and return a cleaner version of in_path file.</p>
@@ -2436,7 +2444,7 @@ Process includes:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="breakfast_analysis_summary" class="doc_header"><code>breakfast_analysis_summary</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L453" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>breakfast_analysis_summary</code>(<strong><code>in_path</code></strong>)</p>
+<h4 id="breakfast_analysis_summary" class="doc_header"><code>breakfast_analysis_summary</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L457" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>breakfast_analysis_summary</code>(<strong><code>in_path</code></strong>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function takes the loggings in good logging days and calculate the 5%,10%,25%,50%,75%,90%,95% quantile of breakfast time for each user.</p>
@@ -2594,7 +2602,7 @@ Process includes:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="breakfast_analysis_variability" class="doc_header"><code>breakfast_analysis_variability</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L492" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>breakfast_analysis_variability</code>(<strong><code>in_path</code></strong>)</p>
+<h4 id="breakfast_analysis_variability" class="doc_header"><code>breakfast_analysis_variability</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L496" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>breakfast_analysis_variability</code>(<strong><code>in_path</code></strong>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function calculates the variability by subtracting 5%,10%,25%,50%,75%,90%,95% quantile of breakfast time from the 50% breakfast time. It also make a histogram that represents the 90%-10% interval for all subjects.</p>
@@ -2764,7 +2772,7 @@ Process includes:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="dinner_analysis_summary" class="doc_header"><code>dinner_analysis_summary</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L542" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dinner_analysis_summary</code>(<strong><code>in_path</code></strong>, <strong><code>out_path</code></strong>=<em><code>None</code></em>, <strong><code>export</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="dinner_analysis_summary" class="doc_header"><code>dinner_analysis_summary</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L546" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dinner_analysis_summary</code>(<strong><code>in_path</code></strong>, <strong><code>out_path</code></strong>=<em><code>None</code></em>, <strong><code>export</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function takes the loggings in good logging days and calculate the 5%,10%,25%,50%,75%,90%,95% quantile of dinner time for each user.</p>
@@ -2922,7 +2930,7 @@ Process includes:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="dinner_analysis_variability" class="doc_header"><code>dinner_analysis_variability</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L581" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dinner_analysis_variability</code>(<strong><code>in_path</code></strong>, <strong><code>out_path</code></strong>=<em><code>None</code></em>, <strong><code>export</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="dinner_analysis_variability" class="doc_header"><code>dinner_analysis_variability</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L585" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dinner_analysis_variability</code>(<strong><code>in_path</code></strong>, <strong><code>out_path</code></strong>=<em><code>None</code></em>, <strong><code>export</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function calculates the variability by subtracting 5%,10%,25%,50%,75%,90%,95% quantile of dinner time from the 50% dinner time. It also make a histogram that represents the 90%-10% interval for all subjects.</p>
@@ -3092,7 +3100,7 @@ Process includes:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FoodParser" class="doc_header"><code>class</code> <code>FoodParser</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L630" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FoodParser</code>()</p>
+<h2 id="FoodParser" class="doc_header"><code>class</code> <code>FoodParser</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L634" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FoodParser</code>()</p>
 </blockquote>
 <p>A class that reads in food loggings from the app. Used as helper function for the function convert_loggings().</p>
 

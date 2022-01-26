@@ -296,13 +296,17 @@ def prepare_baseline_and_intervention_usable_data(in_path):
     return [df_public_basline_usable_expanded, df_public_intervention_usable]
 
 # Cell
-def in_good_logging_day(in_path, min_log_num = 2, min_seperation = 4):
+def in_good_logging_day(in_path, identifier='unique_code', time_col='local_time', min_log_num = 2, min_seperation = 4):
     """
     Description:\n
         A logging's in a good logging day if the there are more than 2 loggings in one day w/ more than 4hrs apart from the earliest logging and the latest logging and False otherwise.\n
 
     Input:\n
         - in_path : input path, file in pickle, csv or pandas dataframe format.\n
+        - identifier : id-like column that's used to identify a subject.\n
+        - time_col : column that contains time in float format.\n
+        - min_log_num : filteration criteria on the minimum number of loggings each day.\n
+        - min_seperation: filteration criteria on the minimum separations between the earliest and latest loggings each day.\n
 
     Return:\n
         - A boolean numpy array indicating whether the corresponding row is in a good logging day. Details on the criteria is in the description.\n
@@ -322,7 +326,7 @@ def in_good_logging_day(in_path, min_log_num = 2, min_seperation = 4):
 
     df = universal_key(in_path)
 
-    adherent_dict = dict(df.groupby(['unique_code', 'date'])['local_time'].agg(adherent))
+    adherent_dict = dict(df.groupby([identifier, 'date'])[time_col].agg(adherent))
 
 
     return df.apply(lambda x: adherent_dict[(x.unique_code, x.date)], axis = 1)
