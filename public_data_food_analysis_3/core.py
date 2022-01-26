@@ -329,7 +329,7 @@ def in_good_logging_day(in_path, identifier='unique_code', time_col='local_time'
     adherent_dict = dict(df.groupby([identifier, 'date'])[time_col].agg(adherent))
 
 
-    return df.apply(lambda x: adherent_dict[(x.unique_code, x.date)], axis = 1)
+    return df.apply(lambda x: adherent_dict[(x[identifier], x.date)], axis = 1)
 
 # Cell
 def most_active_user(in_path, food_type = ["f", "b", "m", "w"]):
