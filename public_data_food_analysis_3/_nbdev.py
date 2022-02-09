@@ -17,9 +17,20 @@ index = {"universal_key": "00_core.ipynb",
          "breakfast_analysis_variability": "00_core.ipynb",
          "dinner_analysis_summary": "00_core.ipynb",
          "dinner_analysis_variability": "00_core.ipynb",
-         "FoodParser": "00_core.ipynb"}
+         "FoodParser": "00_core.ipynb",
+         "read_logging_data": "01_columbia.ipynb",
+         "get_phase_duration": "01_columbia.ipynb",
+         "caloric_entries": "01_columbia.ipynb",
+         "mean_daily_eating_duration": "01_columbia.ipynb",
+         "std_daily_eating_duration": "01_columbia.ipynb",
+         "earliest_entry": "01_columbia.ipynb",
+         "find_percentiles": "01_columbia.ipynb",
+         "logging_day_counts": "01_columbia.ipynb",
+         "good_lwa_day_counts": "01_columbia.ipynb",
+         "make_table": "01_columbia.ipynb"}
 
-modules = ["core.py"]
+modules = ["core.py",
+           "columbia.py"]
 
 doc_url = "https://QiwenZz.github.io/public_data_food_analysis_3/"
 

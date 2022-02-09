@@ -54,7 +54,10 @@ setup(
     url = cfg['git_url'],
     packages = ['public_data_food_analysis_3'],
     package_dir={'public_data_food_analysis_3': 'public_data_food_analysis_3'},
-    package_data={'public_data_food_analysis_3': ['data/correction_dic.pickle', 'data/parser_keys.csv']},
+    package_data={'public_data_food_analysis_3': ['data/correction_dic.pickle'\
+                                                    , 'data/parser_keys.csv'\
+                                                    ,'data/col_test_data/yrt1999_food_data.csv'\
+                                                    ,'data/col_test_data/toy_data_17May2021.xlsx']},
     install_requires = requirements,
     extras_require={ 'dev': dev_requirements },
     python_requires  = '>=' + cfg['min_python'],
