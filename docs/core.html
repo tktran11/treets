@@ -238,6 +238,8 @@ nb_path: "00_core.ipynb"
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">universal_key</span><span class="p">(</span><span class="s1">&#39;data/test_food_details.csv&#39;</span><span class="p">)</span>
 <span class="n">df</span><span class="p">[</span><span class="s1">&#39;original_logtime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;original_logtime&#39;</span><span class="p">])</span>
+<span class="n">df</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">find_date</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;original_logtime&#39;</span><span class="p">)</span>
+<span class="n">df</span><span class="p">[[</span><span class="s1">&#39;original_logtime&#39;</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -254,30 +256,6 @@ nb_path: "00_core.ipynb"
 </pre>
 </div>
 </div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">find_date</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;original_logtime&#39;</span><span class="p">)</span>
-<span class="n">df</span><span class="p">[[</span><span class="s1">&#39;original_logtime&#39;</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
 
 <div class="output_area">
 
@@ -484,38 +462,6 @@ nb_path: "00_core.ipynb"
 </div>
 </div>
 
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">universal_key</span><span class="p">(</span><span class="s1">&#39;data/test_food_details.csv&#39;</span><span class="p">)</span>
-<span class="n">df</span><span class="p">[</span><span class="s1">&#39;original_logtime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;original_logtime&#39;</span><span class="p">])</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>read the csv file successfully.
-</pre>
-</div>
 </div>
 
 </div>
@@ -2127,6 +2073,7 @@ Process includes:
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>read the pickle file successfully.
+read the pickle file successfully.
 </pre>
 </div>
 </div>

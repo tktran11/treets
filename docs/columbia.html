@@ -51,7 +51,20 @@ nb_path: "01_columbia.ipynb"
 </blockquote>
 <p>@param folder_path: folder name that contains the participants' data.
 read all participants data in the data folder into a data frame. The files should be csv format start with yrt921 and contain
-_food_data in the middle</p>
+_food_data in the middle
+Description:</p>
+
+<pre><code>This is a function that calculates the studys days for each phase, include the start and end date.
+
+</code></pre>
+<p>Input:</p>
+
+<pre><code>- df : information dataframe that contains columns: Start_Day, End_day
+
+</code></pre>
+<p>Output:</p>
+
+<pre><code>- a dataframe contains all the csv files in the folder given.</code></pre>
 
 </div>
 
@@ -158,10 +171,26 @@ _food_data in the middle</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_phase_duration" class="doc_header"><code>get_phase_duration</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/columbia.py#L30" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_phase_duration</code>(<strong><code>df</code></strong>)</p>
+<h4 id="get_phase_duration" class="doc_header"><code>get_phase_duration</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/columbia.py#L39" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_phase_duration</code>(<strong><code>df</code></strong>)</p>
 </blockquote>
-<p>@params df: information dataframe that contains columns: Start_Day, End_day
-Calculate the studys days for each phase, include the start and end date.</p>
+<p>Description:</p>
+
+<pre><code>This is a function that calculates the studys days for each phase, include the start and end date.
+
+</code></pre>
+<p>Input:</p>
+
+<pre><code>- df : information dataframe that contains columns: Start_Day, End_day
+
+</code></pre>
+<p>Output:</p>
+
+<pre><code>- a dataframe contains the phase_duration column.
+
+</code></pre>
+<p>Requirement:</p>
+
+<pre><code>- 'Start_day' and 'End_day' column existed in the df.</code></pre>
 
 </div>
 
@@ -231,6 +260,10 @@ Calculate the studys days for each phase, include the start and end date.</p>
       <th>1</th>
       <td>4 days</td>
     </tr>
+    <tr>
+      <th>2</th>
+      <td>3 days</td>
+    </tr>
   </tbody>
 </table>
 </div>
@@ -255,7 +288,7 @@ Calculate the studys days for each phase, include the start and end date.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="caloric_entries" class="doc_header"><code>caloric_entries</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/columbia.py#L39" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>caloric_entries</code>(<strong><code>df</code></strong>, <strong><code>start_date</code></strong>=<em><code>'not_defined'</code></em>, <strong><code>end_date</code></strong>=<em><code>'not_defined'</code></em>)</p>
+<h4 id="caloric_entries" class="doc_header"><code>caloric_entries</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/columbia.py#L57" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>caloric_entries</code>(<strong><code>df</code></strong>, <strong><code>start_date</code></strong>=<em><code>'not_defined'</code></em>, <strong><code>end_date</code></strong>=<em><code>'not_defined'</code></em>)</p>
 </blockquote>
 <p>Description:</p>
 
@@ -358,7 +391,7 @@ Calculate the studys days for each phase, include the start and end date.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="mean_daily_eating_duration" class="doc_header"><code>mean_daily_eating_duration</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/columbia.py#L65" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>mean_daily_eating_duration</code>(<strong><code>df</code></strong>, <strong><code>col</code></strong>, <strong><code>start_date</code></strong>=<em><code>None</code></em>, <strong><code>end_date</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="mean_daily_eating_duration" class="doc_header"><code>mean_daily_eating_duration</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/columbia.py#L83" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>mean_daily_eating_duration</code>(<strong><code>df</code></strong>, <strong><code>col</code></strong>, <strong><code>start_date</code></strong>=<em><code>'not_defined'</code></em>, <strong><code>end_date</code></strong>=<em><code>'not_defined'</code></em>)</p>
 </blockquote>
 <p>Description:</p>
 
@@ -447,7 +480,7 @@ Calculate the studys days for each phase, include the start and end date.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="std_daily_eating_duration" class="doc_header"><code>std_daily_eating_duration</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/columbia.py#L96" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>std_daily_eating_duration</code>(<strong><code>df</code></strong>, <strong><code>col</code></strong>, <strong><code>start_date</code></strong>=<em><code>None</code></em>, <strong><code>end_date</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="std_daily_eating_duration" class="doc_header"><code>std_daily_eating_duration</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/columbia.py#L114" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>std_daily_eating_duration</code>(<strong><code>df</code></strong>, <strong><code>col</code></strong>, <strong><code>start_date</code></strong>=<em><code>'not_defined'</code></em>, <strong><code>end_date</code></strong>=<em><code>'not_defined'</code></em>)</p>
 </blockquote>
 <p>Description:</p>
 
@@ -536,7 +569,7 @@ Calculate the studys days for each phase, include the start and end date.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="earliest_entry" class="doc_header"><code>earliest_entry</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/columbia.py#L128" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>earliest_entry</code>(<strong><code>df</code></strong>, <strong><code>col</code></strong>, <strong><code>start_date</code></strong>=<em><code>None</code></em>, <strong><code>end_date</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="earliest_entry" class="doc_header"><code>earliest_entry</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/columbia.py#L146" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>earliest_entry</code>(<strong><code>df</code></strong>, <strong><code>col</code></strong>, <strong><code>start_date</code></strong>=<em><code>'not_defined'</code></em>, <strong><code>end_date</code></strong>=<em><code>'not_defined'</code></em>)</p>
 </blockquote>
 <p>Description:</p>
 
@@ -620,7 +653,7 @@ Calculate the studys days for each phase, include the start and end date.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="find_percentiles" class="doc_header"><code>find_percentiles</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/columbia.py#L159" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>find_percentiles</code>(<strong><code>df</code></strong>, <strong><code>col</code></strong>, <strong><code>percentiles</code></strong>, <strong><code>start_date</code></strong>=<em><code>None</code></em>, <strong><code>end_date</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="find_percentiles" class="doc_header"><code>find_percentiles</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/columbia.py#L177" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>find_percentiles</code>(<strong><code>df</code></strong>, <strong><code>col</code></strong>, <strong><code>percentiles</code></strong>, <strong><code>start_date</code></strong>=<em><code>'not_defined'</code></em>, <strong><code>end_date</code></strong>=<em><code>'not_defined'</code></em>)</p>
 </blockquote>
 <p>Description:</p>
 
@@ -713,7 +746,7 @@ Name: float_time, dtype: float64</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="logging_day_counts" class="doc_header"><code>logging_day_counts</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/columbia.py#L189" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>logging_day_counts</code>(<strong><code>df</code></strong>, <strong><code>start_date</code></strong>=<em><code>None</code></em>, <strong><code>end_date</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="logging_day_counts" class="doc_header"><code>logging_day_counts</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/columbia.py#L207" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>logging_day_counts</code>(<strong><code>df</code></strong>, <strong><code>start_date</code></strong>=<em><code>'not_defined'</code></em>, <strong><code>end_date</code></strong>=<em><code>'not_defined'</code></em>)</p>
 </blockquote>
 <p>Description:</p>
 
@@ -796,7 +829,7 @@ Name: float_time, dtype: float64</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="good_lwa_day_counts" class="doc_header"><code>good_lwa_day_counts</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/columbia.py#L218" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>good_lwa_day_counts</code>(<strong><code>df</code></strong>, <strong><code>window_start</code></strong>, <strong><code>window_end</code></strong>, <strong><code>min_log_num</code></strong>=<em><code>2</code></em>, <strong><code>min_seperation</code></strong>=<em><code>5</code></em>, <strong><code>buffer_time</code></strong>=<em><code>'15 minutes'</code></em>, <strong><code>h</code></strong>=<em><code>4</code></em>, <strong><code>start_date</code></strong>=<em><code>None</code></em>, <strong><code>end_date</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="good_lwa_day_counts" class="doc_header"><code>good_lwa_day_counts</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/columbia.py#L236" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>good_lwa_day_counts</code>(<strong><code>df</code></strong>, <strong><code>window_start</code></strong>, <strong><code>window_end</code></strong>, <strong><code>min_log_num</code></strong>=<em><code>2</code></em>, <strong><code>min_seperation</code></strong>=<em><code>5</code></em>, <strong><code>buffer_time</code></strong>=<em><code>'15 minutes'</code></em>, <strong><code>h</code></strong>=<em><code>4</code></em>, <strong><code>start_date</code></strong>=<em><code>'not_defined'</code></em>, <strong><code>end_date</code></strong>=<em><code>'not_defined'</code></em>)</p>
 </blockquote>
 <p>Description:</p>
 
@@ -894,28 +927,27 @@ Name: float_time, dtype: float64</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="make_table" class="doc_header"><code>make_table</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/columbia.py#L291" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>make_table</code>(<strong><code>food_data</code></strong>, <strong><code>ref_tbl</code></strong>, <strong><code>min_log_num</code></strong>=<em><code>2</code></em>, <strong><code>min_seperation</code></strong>=<em><code>5</code></em>, <strong><code>buffer_time</code></strong>=<em><code>'15 minutes'</code></em>, <strong><code>h</code></strong>=<em><code>4</code></em>, <strong><code>start_date</code></strong>=<em><code>None</code></em>, <strong><code>end_date</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="find_missing_logging_days" class="doc_header"><code>find_missing_logging_days</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/columbia.py#L312" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>find_missing_logging_days</code>(<strong><code>df</code></strong>, <strong><code>start_date</code></strong>=<em><code>'not_defined'</code></em>, <strong><code>end_date</code></strong>=<em><code>'not_defined'</code></em>)</p>
 </blockquote>
 <p>Description:</p>
 
-<pre><code>This is a comprehensive function that performs all of the functionalities needed.
-
+<pre><code>This function finds the days during which there's no logging within the period from start_date to end_date.
 </code></pre>
 <p>Input:</p>
 
-<pre><code>- food_data : food_logging data.
-- ref_tbl : table that contains window information and study phase information for each participant.
-- h : hour manipulation so that the starting and ending time for each day is more realistic.
+<pre><code>- df : food_logging data.
+- start_date : start date of the period of calculation.
+- end_date : end date of the period of calculation.
 
 </code></pre>
 <p>Output:</p>
 
-<pre><code>- df : dataframe that has all the variables needed and has the same row number as the ref_tbl.
+<pre><code>- a list that contains all of the dates that don't contain loggings.
 
 </code></pre>
-<p>Assumption:</p>
+<p>Requirement:</p>
 
-<pre><code>food_data is already read from all files in the directories into a dataframe</code></pre>
+<pre><code>- 'date' column existed in the df.</code></pre>
 
 </div>
 
@@ -941,10 +973,248 @@ Name: float_time, dtype: float64</pre>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">make_table</span><span class="p">(</span><span class="n">read_logging_data</span><span class="p">(</span><span class="s1">&#39;data/col_test_data&#39;</span><span class="p">),</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="s1">&#39;data/col_test_data/toy_data_17May2021.xlsx&#39;</span><span class="p">))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;original_logtime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;original_logtime&#39;</span><span class="p">])</span>
+<span class="n">df</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pdfa</span><span class="o">.</span><span class="n">find_date</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;original_logtime&#39;</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
+<span class="n">find_missing_logging_days</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;PID&#39;</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39;yrt1999&#39;</span><span class="p">],</span> <span class="n">ref_tbl</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;Start_Day&#39;</span><span class="p">],</span><span class="n">ref_tbl</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;End_day&#39;</span><span class="p">])</span>
 </pre></div>
 
     </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[datetime.date(2021, 5, 18)]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="make_table" class="doc_header"><code>make_table</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/columbia.py#L348" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>make_table</code>(<strong><code>food_data</code></strong>, <strong><code>ref_tbl</code></strong>, <strong><code>min_log_num</code></strong>=<em><code>2</code></em>, <strong><code>min_seperation</code></strong>=<em><code>5</code></em>, <strong><code>buffer_time</code></strong>=<em><code>'15 minutes'</code></em>, <strong><code>h</code></strong>=<em><code>4</code></em>)</p>
+</blockquote>
+<p>Description:</p>
+
+<pre><code>This is a comprehensive function that performs all of the functionalities needed.
+
+</code></pre>
+<p>Input:</p>
+
+<pre><code>- food_data : food_logging data.
+- ref_tbl : table that contains window information and study phase information for each participant.
+- h : hour manipulation so that the starting and ending time for each day is more realistic.
+- min_log_num: minimum number of loggings to qualify a day as a good logging day.
+- min_seperation: minimum period of separation between earliest and latest loggings to qualify a day as a good logging day
+- buffer_time: wiggle room for to be added/subtracted on the ends of windows.
+- h: hours to be pushed back.
+
+</code></pre>
+<p>Output:</p>
+
+<pre><code>- df : dataframe that has all the variables needed and has the same row number as the ref_tbl.
+
+</code></pre>
+<p>Requirement:</p>
+
+<pre><code>- food logging data is already read from all files in the directories into a dataframe, which will be passed in as the variable food_data.
+- Columns 'Start_Day', 'End_day', 'mCC_ID', 'Eating_Window_Start', 'Eating_Window_End' existed in the ref_tbl.
+- For eating window without restriction(HABIT or TRE not in intervention period), Eating_Window_Start is 0:00, Eating_Window_End is 23:59.</code></pre>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">make_table</span><span class="p">(</span><span class="n">read_logging_data</span><span class="p">(</span><span class="s1">&#39;data/col_test_data&#39;</span><span class="p">),</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="s1">&#39;data/col_test_data/toy_data_17May2021.xlsx&#39;</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Participant yrt1999 didn&#39;t log any food items in the following day(s):
+2021-05-18
+Participant yrt2000 didn&#39;t log any food items in the following day(s):
+2021-05-12
+2021-05-13
+2021-05-14
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>mCC_ID</th>
+      <th>Participant_Study_ID</th>
+      <th>Study Phase</th>
+      <th>Intervention group (TRE or HABIT)</th>
+      <th>Start_Day</th>
+      <th>End_day</th>
+      <th>Eating_Window_Start</th>
+      <th>Eating_Window_End</th>
+      <th>phase_duration</th>
+      <th>caloric_entries</th>
+      <th>...</th>
+      <th>logging_day_counts</th>
+      <th>%_logging_day_counts</th>
+      <th>good_logging_days</th>
+      <th>%_good_logging_days</th>
+      <th>good_window_days</th>
+      <th>%_good_window_days</th>
+      <th>outside_window_days</th>
+      <th>%_outside_window_days</th>
+      <th>adherent_days</th>
+      <th>%_adherent_days</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>yrt1999</td>
+      <td>2</td>
+      <td>S-REM</td>
+      <td>TRE</td>
+      <td>2021-05-12</td>
+      <td>2021-05-14</td>
+      <td>00:00:00</td>
+      <td>23:59:00</td>
+      <td>3 days</td>
+      <td>7</td>
+      <td>...</td>
+      <td>3</td>
+      <td>1.00</td>
+      <td>2.0</td>
+      <td>0.666667</td>
+      <td>3</td>
+      <td>1.00</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>2</td>
+      <td>0.666667</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>yrt1999</td>
+      <td>2</td>
+      <td>T3-INT</td>
+      <td>TRE</td>
+      <td>2021-05-15</td>
+      <td>2021-05-18</td>
+      <td>08:00:00</td>
+      <td>18:00:00</td>
+      <td>4 days</td>
+      <td>8</td>
+      <td>...</td>
+      <td>3</td>
+      <td>0.75</td>
+      <td>2.0</td>
+      <td>0.500000</td>
+      <td>1</td>
+      <td>0.25</td>
+      <td>2</td>
+      <td>0.5</td>
+      <td>1</td>
+      <td>0.250000</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>yrt2000</td>
+      <td>3</td>
+      <td>T3-INT</td>
+      <td>TRE</td>
+      <td>2021-05-12</td>
+      <td>2021-05-14</td>
+      <td>08:00:00</td>
+      <td>16:00:00</td>
+      <td>3 days</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0.00</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0</td>
+      <td>0.00</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>0.000000</td>
+    </tr>
+  </tbody>
+</table>
+<p>3 rows × 26 columns</p>
+</div>
+</div>
+
+</div>
+
 </div>
 </div>
 

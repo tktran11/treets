@@ -77,6 +77,10 @@ def find_date(in_path, col, h=0):
 
     """
     df = universal_key(in_path)
+
+    if df[col].dtype == 'O':
+        raise TypeError("'{}' column must be converted to datetime object".format(col))
+
     def find_date(d, h):
         if h > 0:
             if d.hour < h:
@@ -105,8 +109,9 @@ def find_float_time(in_path, col, h=0):
         Elements in col should be pd.datetime objects
 
     """
-
     df = universal_key(in_path)
+    if df[col].dtype == 'O':
+        raise TypeError("'{}' column must be converted to datetime object".format(col))
     local_time = df[col].apply(lambda x: pd.Timedelta(x.time().isoformat()).total_seconds() /3600.)
     if h > 0:
         local_time = np.where(local_time < h, 24+ local_time, local_time)
@@ -299,7 +304,7 @@ def prepare_baseline_and_intervention_usable_data(in_path):
 def in_good_logging_day(in_path, identifier='unique_code', time_col='local_time', min_log_num = 2, min_seperation = 4):
     """
     Description:\n
-        A logging's in a good logging day if the there are more than 2 loggings in one day w/ more than 4hrs apart from the earliest logging and the latest logging and False otherwise.\n
+        A logging's in a good logging day if the there are more than min_log_num loggings in one day w/ more than min_seperation hoursx apart from the earliest logging and the latest logging and False otherwise.\n
 
     Input:\n
         - in_path : input path, file in pickle, csv or pandas dataframe format.\n
@@ -686,8 +691,10 @@ class FoodParser():
     def initialization(self):
         # 1. read in manually annotated file and bind it to the object
         parser_keys_df = pd.read_csv(pkg_resources.resource_stream(__name__, "/data/parser_keys.csv"))
+        #parser_keys_df = pd.read_csv("data/parser_keys.csv")
         all_gram_set, food_type_dict, food2tags = self.process_parser_keys_df(parser_keys_df)
         correction_dic = pickle.load(pkg_resources.resource_stream(__name__, "/data/correction_dic.pickle"))
+        #correction_dic = universal_key("data/correction_dic.pickle")
         self.all_gram_set = all_gram_set
         self.food_type_dict = food_type_dict
         self.correction_dic = correction_dic
