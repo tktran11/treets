@@ -440,7 +440,7 @@ def make_table(food_data, ref_tbl, min_log_num=2, min_seperation=5, buffer_time=
         if x in ['logging_day_counts','good_logging_days', 'good_window_days', 'outside_window_days', 'adherent_days']:
             returned['%_'+x] = returned[x]/returned['phase_duration'].dt.days
 
-
+    # reorder the columns
     returned = returned[['mCC_ID', 'Participant_Study_ID', 'Study Phase',
        'Intervention group (TRE or HABIT)', 'Start_Day', 'End_day',
        'Eating_Window_Start','Eating_Window_End', 'phase_duration',
@@ -450,6 +450,12 @@ def make_table(food_data, ref_tbl, min_log_num=2, min_seperation=5, buffer_time=
         '%_good_logging_days','good_window_days', '%_good_window_days',
         'outside_window_days','%_outside_window_days', 'adherent_days',
        '%_adherent_days']]
+
+    # get rid of the np.nan key-value pairs returned
+    for k, v in list(missing_dates.items()):
+        if isinstance(v, list)==False:
+            if np.isnan(v):
+                del missing_dates[k]
 
     # print out missing dates with participant's id
     for x in missing_dates:
