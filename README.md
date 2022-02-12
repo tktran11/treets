@@ -1,5 +1,5 @@
 # Public data food analysis 
-> 
+
 
 
 ## Install
@@ -18,6 +18,14 @@ df = pdfac.make_table(pdfac.read_logging_data('data/col_test_data')\
                       , pd.read_excel('data/col_test_data/toy_data_17May2021.xlsx'))
 ```
 
+    Participant yrt1999 didn't log any food items in the following day(s):
+    2021-05-18
+    Participant yrt2000 didn't log any food items in the following day(s):
+    2021-05-12
+    2021-05-13
+    2021-05-14
+
+
 ```python
 df
 ```
@@ -26,7 +34,19 @@ df
 
 
 <div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -70,7 +90,7 @@ df
       <td>...</td>
       <td>3</td>
       <td>1.00</td>
-      <td>2</td>
+      <td>2.0</td>
       <td>0.666667</td>
       <td>3</td>
       <td>1.00</td>
@@ -94,7 +114,7 @@ df
       <td>...</td>
       <td>3</td>
       <td>0.75</td>
-      <td>2</td>
+      <td>2.0</td>
       <td>0.500000</td>
       <td>1</td>
       <td>0.25</td>
@@ -103,9 +123,33 @@ df
       <td>1</td>
       <td>0.250000</td>
     </tr>
+    <tr>
+      <th>2</th>
+      <td>yrt2000</td>
+      <td>3</td>
+      <td>T3-INT</td>
+      <td>TRE</td>
+      <td>2021-05-12</td>
+      <td>2021-05-14</td>
+      <td>08:00:00</td>
+      <td>16:00:00</td>
+      <td>3 days</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0.00</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0</td>
+      <td>0.00</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>0.000000</td>
+    </tr>
   </tbody>
 </table>
-<p>2 rows × 26 columns</p>
+<p>3 rows × 26 columns</p>
 </div>
 
 
@@ -135,7 +179,7 @@ df.iloc[0]
     duration mid 95%                                  23.025
     logging_day_counts                                     3
     %_logging_day_counts                                 1.0
-    good_logging_days                                      2
+    good_logging_days                                    2.0
     %_good_logging_days                             0.666667
     good_window_days                                       3
     %_good_window_days                                   1.0
@@ -172,7 +216,7 @@ df.iloc[1]
     duration mid 95%                                    16.2
     logging_day_counts                                     3
     %_logging_day_counts                                0.75
-    good_logging_days                                      2
+    good_logging_days                                    2.0
     %_good_logging_days                                  0.5
     good_window_days                                       1
     %_good_window_days                                  0.25
