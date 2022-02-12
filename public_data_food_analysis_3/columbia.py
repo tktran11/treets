@@ -404,10 +404,12 @@ def make_table(food_data, ref_tbl, min_log_num=2, min_seperation=5, buffer_time=
                                      rows.append(x)
         matrix.append(rows)
         date_lst = find_missing_logging_days(df[df['PID']==id_], row['Start_Day'],row['End_day'])
-        if id_ in missing_dates:
-            missing_dates[id_] += date_lst
-        else:
-            missing_dates[id_] = date_lst
+        # only consider when the result is not nan
+        if isinstance(date_lst, list)==True:
+            if id_ in missing_dates:
+                missing_dates[id_] += date_lst
+            else:
+                missing_dates[id_] = date_lst
 
     # create a temp dataframe
     tmp = pd.DataFrame(matrix, columns = ['caloric_entries', 'mean_daily_eating_window', 'std_daily_eating_window', 'earliest_entry', 'logging_day_counts'\
@@ -451,18 +453,12 @@ def make_table(food_data, ref_tbl, min_log_num=2, min_seperation=5, buffer_time=
         'outside_window_days','%_outside_window_days', 'adherent_days',
        '%_adherent_days']]
 
-    # get rid of the np.nan key-value pairs returned
-    for k, v in list(missing_dates.items()):
-        if isinstance(v, list)==False:
-            if np.isnan(v):
-                del missing_dates[k]
-
     # print out missing dates with participant's id
     for x in missing_dates:
-        # flatten the dictionary values
-        print("Participant {} didn't log any food items in the following day(s):".format(x))
-        for date in missing_dates[x]:
-            print(date)
+        if len(missing_dates[x])>0:
+            print("Participant {} didn't log any food items in the following day(s):".format(x))
+            for date in missing_dates[x]:
+                print(date)
 
 
 
