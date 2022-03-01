@@ -382,6 +382,7 @@ def convert_loggings(in_path):
     """
     Description:\n
        This function convert all the loggings in the in_path file into a list of individual items based on the desc_text column.\n
+
     Input:\n
         - in_path : input path, file in pickle, csv or panda dataframe format.\n
 
@@ -421,6 +422,7 @@ def get_certain_types(in_path, food_type):
     """
     Description:\n
        This function filters with the expected food types and return a cleaner version of in_path file.\n
+
     Input:\n
         - in_path : input path, file in pickle, csv or panda dataframe format.\n
         - food_type : expected types of the loggings for filtering, in format of list. Available types:  \n
@@ -551,7 +553,7 @@ def breakfast_analysis_variability(in_path):
 # Cell
 def breakfast_distplot(in_path, n):
     """
-     Description:\n
+    Description:\n
        This function plots the distplot for the breakfast time from n participants that will be randomly selected.\n
 
     Input:\n
@@ -620,7 +622,7 @@ def dinner_analysis_summary(in_path, out_path=None, export = False):
 # Cell
 def dinner_analysis_variability(in_path, out_path=None, export = False):
     """
-     Description:\n
+    Description:\n
        This function calculates the variability by subtracting 5%,10%,25%,50%,75%,90%,95% quantile of dinner time from the 50% dinner time. It also make a histogram that represents the 90%-10% interval for all subjects.\n
 
     Input:\n
@@ -669,7 +671,7 @@ def dinner_analysis_variability(in_path, out_path=None, export = False):
 # Cell
 def dinner_distplot(in_path, n):
     """
-     Description:\n
+    Description:\n
        This function plots the distplot for the dinner time from n participants that will be randomly selected.\n
 
     Input:\n
@@ -699,7 +701,7 @@ def dinner_distplot(in_path, n):
 # Cell
 def swarmplot(in_path, max_loggings):
     """
-     Description:\n
+    Description:\n
        This function plots the swarmplot the participants from the in_path file.\n
 
     Input:\n
