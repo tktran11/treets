@@ -14,14 +14,12 @@ import public_data_food_analysis_3.core as pdfa
 # Cell
 def read_logging_data(folder_path):
     """
-    @param folder_path: folder name that contains the participants' data.
-    read all participants data in the data folder into a data frame. The files should be csv format start with yrt921 and contain
-    _food_data in the middle
     Description:\n
-        This is a function that calculates the studys days for each phase, include the start and end date.
+        This function reads all csv files in the folder_path folder into one dataframe. The files should be csv format and the name of each file should start with yrt and contain
+    _food_data in the middle.
 
     Input:\n
-        - df : information dataframe that contains columns: Start_Day, End_day
+        - folder_path : path to the folder that contain the data.
 
     Output:\n
         - a dataframe contains all the csv files in the folder given.
@@ -61,8 +59,8 @@ def caloric_entries(df, start_date='not_defined', end_date='not_defined'):
 
     Input:\n
         - df : food_logging data.
-        - start_date : start date of the period of counting.
-        - end_date : end date of the period of counting.
+        - start_date : start date of the period of counting. If not defined, it will be automatically set to be the earliest date in df.
+        - end_date : end date of the period of counting. If not defined, it will be automatically set to be the latest date in df.
 
     Output:\n
         - a float representing the number of caloric entries.
@@ -88,8 +86,8 @@ def mean_daily_eating_duration(df, col, start_date='not_defined', end_date='not_
     Input:\n
         - df : food_logging data.
         - col : contains the float time data for each logging.
-        - start_date : start date of the period of calculation.
-        - end_date : end date of the period of calculation.
+        - start_date : start date of the period of calculation. If not defined, it will be automatically set to be the earliest date in df.
+        - end_date : end date of the period of calculation. If not defined, it will be automatically set to be the latest date in df.
 
     Output:\n
         - a float representing the mean daily eating window.
@@ -119,8 +117,8 @@ def std_daily_eating_duration(df, col, start_date='not_defined', end_date='not_d
     Input:\n
         - df : food_logging data.
         - col : contains the float time data for each logging.
-        - start_date : start date of the period of calculation.
-        - end_date : end date of the period of calculation.
+        - start_date : start date of the period of calculation. If not defined, it will be automatically set to be the earliest date in df.
+        - end_date : end date of the period of calculation. If not defined, it will be automatically set to be the latest date in df.
 
     Output:\n
         - a float representing the standard deviation of daily eating window.
@@ -150,8 +148,8 @@ def earliest_entry(df,col, start_date='not_defined', end_date='not_defined'):
     Input:\n
         - df : food_logging data.
         - col : contains information of logging time in float.
-        - start_date : start date of the period of calculation.
-        - end_date : end date of the period of calculation.
+        - start_date : start date of the period of calculation. If not defined, it will be automatically set to be the earliest date in df.
+        - end_date : end date of the period of calculation. If not defined, it will be automatically set to be the latest date in df.
 
     Output:\n
         - the earliest caloric time in float on any day in the study period.
@@ -181,8 +179,8 @@ def find_percentiles(df, col, percentiles, start_date='not_defined', end_date='n
     Input:\n
         - df : food_logging data.
         - col : contains information of logging time in float.
-        - start_date : start date of the period of calculation.
-        - end_date : end date of the period of calculation.
+        - start_date : start date of the period of calculation. If not defined, it will be automatically set to be the earliest date in df.
+        - end_date : end date of the period of calculation. If not defined, it will be automatically set to be the latest date in df.
 
     Output:\n
         - a pd series data contains information of percentiles and also basic descriptive information such as count, mean, std, etc.
@@ -210,8 +208,8 @@ def logging_day_counts(df, start_date='not_defined', end_date='not_defined'):
         This function calculates the number of days that contains any loggings.
     Input:\n
         - df : food_logging data.
-        - start_date : start date of the period of calculation.
-        - end_date : end date of the period of calculation.
+        - start_date : start date of the period of calculation. If not defined, it will be automatically set to be the earliest date in df.
+        - end_date : end date of the period of calculation. If not defined, it will be automatically set to be the latest date in df.
 
     Output:\n
         - an integer that represents the number of logging days.
@@ -245,8 +243,8 @@ def good_lwa_day_counts(df, window_start, window_end, min_log_num=2, min_seperat
         - min_seperation: minimum period of separation between earliest and latest loggings to qualify a day as a good logging day
         - buffer_time: wiggle room for to be added/subtracted on the ends of windows.
         - h: hours to be pushed back
-        - start_date : start date of the period of calculation.
-        - end_date : end date of the period of calculation.
+        - start_date : start date of the period of calculation. If not defined, it will be automatically set to be the earliest date in df.
+        - end_date : end date of the period of calculation. If not defined, it will be automatically set to be the latest date in df.
 
     Output:\n
         - a list that represents the number of good logging days, good window days, outside window days and adherent days.
@@ -315,8 +313,8 @@ def find_missing_logging_days(df, start_date='not_defined', end_date='not_define
         This function finds the days during which there's no logging within the period from start_date to end_date.
     Input:\n
         - df : food_logging data.
-        - start_date : start date of the period of calculation.
-        - end_date : end date of the period of calculation.
+        - start_date : start date of the period of calculation. If not defined, it will be automatically set to be the earliest date in df.
+        - end_date : end date of the period of calculation. If not defined, it will be automatically set to be the latest date in df.
 
     Output:\n
         - a list that contains all of the dates that don't contain loggings.

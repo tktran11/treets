@@ -3,7 +3,8 @@
 __all__ = ['universal_key', 'find_date', 'find_float_time', 'week_from_start', 'load_public_data',
            'filtering_usable_data', 'prepare_baseline_and_intervention_usable_data', 'in_good_logging_day',
            'most_active_user', 'convert_loggings', 'get_certain_types', 'breakfast_analysis_summary',
-           'breakfast_analysis_variability', 'dinner_analysis_summary', 'dinner_analysis_variability', 'FoodParser']
+           'breakfast_analysis_variability', 'breakfast_distplot', 'dinner_analysis_summary',
+           'dinner_analysis_variability', 'dinner_distplot', 'swarmplot', 'FoodParser']
 
 # Cell
 import warnings
@@ -548,6 +549,36 @@ def breakfast_analysis_variability(in_path):
     return breakfast_variability_df
 
 # Cell
+def breakfast_distplot(in_path, n):
+    """
+     Description:\n
+       This function plots the distplot for the breakfast time from n participants that will be randomly selected.\n
+
+    Input:\n
+        - in_path : input path, file in pickle, csv or panda dataframe format.\n
+        - n : the number of distplot in the output figure
+
+    Return:\n
+        - None
+
+    Requirements:\n
+        in_path file must have the following columns:\n
+            - unique_code\n
+            - date\n
+            - local_time\n
+    """
+    df = universal_key(in_path)
+    df = df[df['food_type'].isin(['f','b'])]
+    breakfast_by_person = pd.DataFrame(df.groupby(['unique_code', 'date'])\
+                                       ['local_time'].min())
+    fig, ax = plt.subplots(1, 1, figsize = (10, 10), dpi=80)
+
+    print('Plotting distplots for the following users:')
+    for i in np.random.choice(np.array(list(set(breakfast_by_person.index.droplevel('date')))), n):
+        print(i)
+        sns.distplot(breakfast_by_person['local_time'].loc[i])
+
+# Cell
 def dinner_analysis_summary(in_path, out_path=None, export = False):
     """
     Description:\n
@@ -634,6 +665,92 @@ def dinner_analysis_variability(in_path, out_path=None, export = False):
     ax.set(xlabel='Variation Distribution for Dinner (90% - 10%)', ylabel='Kernel Density Estimation')
 
     return dinner_variability_df
+
+# Cell
+def dinner_distplot(in_path, n):
+    """
+     Description:\n
+       This function plots the distplot for the dinner time from n participants that will be randomly selected.\n
+
+    Input:\n
+        - in_path : input path, file in pickle, csv or panda dataframe format.\n
+        - n : the number of participants that will be randomly selected in the output figure
+
+    Return:\n
+        - None
+
+    Requirements:\n
+        in_path file must have the following columns:\n
+            - unique_code\n
+            - date\n
+            - local_time\n
+    """
+    df = universal_key(in_path)
+    df = df[df['food_type'].isin(['f','b'])]
+    dinner_by_person = pd.DataFrame(df.groupby(['unique_code', 'date'])\
+                                       ['local_time'].max())
+    fig, ax = plt.subplots(1, 1, figsize = (10, 10), dpi=80)
+
+    print('Plotting distplots for the following users:')
+    for i in np.random.choice(np.array(list(set(dinner_by_person.index.droplevel('date')))), n):
+        print(i)
+        sns.distplot(dinner_by_person['local_time'].loc[i])
+
+# Cell
+def swarmplot(in_path, max_loggings):
+    """
+     Description:\n
+       This function plots the swarmplot the participants from the in_path file.\n
+
+    Input:\n
+        - in_path : input path, file in pickle, csv or panda dataframe format.\n
+        - max_loggings : the max number of loggings to be plotted for each participants, loggings will be randomly selected.
+
+    Return:\n
+        - None
+
+    Requirements:\n
+        in_path file must have the following columns:\n
+            - unique_code\n
+            - date\n
+            - local_time\n
+    """
+
+    df = universal_key(in_path)
+
+    def subsamp_by_cond(alldat):
+        alld = []
+        for apart in alldat.unique_code.unique():
+            dat = alldat.query('unique_code == @apart')
+            f_n_b = dat.query('food_type in ["f", "b"]')
+            n = min([f_n_b.shape[0], max_loggings])
+            sub = f_n_b.sample(n = n, axis=0)
+            alld.append(sub)
+        return pd.concat(alld)
+
+    sample = subsamp_by_cond(df)
+    fig, ax = plt.subplots(1, 1, figsize = (10, 30), dpi=300)
+
+
+    ax.axvspan(3.5,6, alpha=0.2, color=[0.8, 0.8, 0.8]  )
+    ax.axvspan(18,28.5, alpha=0.2, color=[0.8, 0.8, 0.8]  )
+    # plt.xlabel('Hour of day')
+    plt.xticks([4,8,12,16,20,24,28],[4,8,12,16,20,24,4])
+    plt.title('Food events for TRE group')
+
+    ax = sns.swarmplot(data = sample,
+                  y = 'unique_code',
+                  x = 'local_time',
+                  dodge = True,
+                  color = sns.xkcd_rgb['golden rod'],
+                 )
+
+    ax.set(
+        facecolor = 'white',
+        title = 'Food events (F & B)',
+        ylabel = 'Participant',
+        xlabel = 'Local time of consumption'
+    )
 
 # Cell
 class FoodParser():
