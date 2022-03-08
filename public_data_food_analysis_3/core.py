@@ -3,8 +3,9 @@
 __all__ = ['universal_key', 'find_date', 'find_float_time', 'week_from_start', 'load_public_data',
            'filtering_usable_data', 'prepare_baseline_and_intervention_usable_data', 'in_good_logging_day',
            'most_active_user', 'convert_loggings', 'get_certain_types', 'breakfast_analysis_summary',
-           'breakfast_analysis_variability', 'breakfast_sample_distplot', 'dinner_analysis_summary',
-           'dinner_analysis_variability', 'dinner_sample_distplot', 'swarmplot', 'FoodParser']
+           'breakfast_analysis_variability', 'breakfast_avg_histplot', 'breakfast_sample_distplot',
+           'dinner_analysis_summary', 'dinner_analysis_variability', 'dinner_avg_histplot', 'dinner_sample_distplot',
+           'swarmplot', 'FoodParser']
 
 # Cell
 import warnings
@@ -551,6 +552,33 @@ def breakfast_analysis_variability(in_path):
     return breakfast_variability_df
 
 # Cell
+def breakfast_avg_histplot(in_path):
+    """
+    Description:\n
+       This function take the first caloric event (no water or med) and calculate average event's time for “each participant”.\n
+
+    Input:\n
+        - in_path : input path, file in pickle, csv or panda dataframe format.\n
+
+    Return:\n
+        - None
+
+    Requirements:\n
+        in_path file must have the following columns:\n
+            - unique_code\n
+            - date\n
+            - local_time\n
+            - food_type\n
+    """
+    df = universal_key(in_path)
+    df = df.query('food_type in ["f", "b"]')
+    breakfast_time = df.groupby(['unique_code', 'date'])['local_time'].min()
+    avg_breakfast_time = breakfast_time.reset_index().groupby('unique_code').mean()
+    fig, ax = plt.subplots(1, 1, figsize = (10, 10), dpi=80)
+    sns.distplot(avg_breakfast_time['local_time'], kde = False)
+    ax.set(xlabel='First Meal Time - Averaged by Person', ylabel='Frequency Count')
+
+# Cell
 def breakfast_sample_distplot(in_path, n):
     """
     Description:\n
@@ -667,6 +695,33 @@ def dinner_analysis_variability(in_path, out_path=None, export = False):
     ax.set(xlabel='Variation Distribution for Dinner (90% - 10%)', ylabel='Kernel Density Estimation')
 
     return dinner_variability_df
+
+# Cell
+def dinner_avg_histplot(in_path):
+    """
+    Description:\n
+       This function take the last caloric event (no water or med) and calculate average event's time for “each participant”.\n
+
+    Input:\n
+        - in_path : input path, file in pickle, csv or panda dataframe format.\n
+
+    Return:\n
+        - None
+
+    Requirements:\n
+        in_path file must have the following columns:\n
+            - unique_code\n
+            - date\n
+            - local_time\n
+            - food_type\n
+    """
+    df = universal_key(in_path)
+    df = df.query('food_type in ["f", "b"]')
+    breakfast_time = df.groupby(['unique_code', 'date'])['local_time'].max()
+    avg_breakfast_time = breakfast_time.reset_index().groupby('unique_code').mean()
+    fig, ax = plt.subplots(1, 1, figsize = (10, 10), dpi=80)
+    sns.distplot(avg_breakfast_time['local_time'], kde = False)
+    ax.set(xlabel='Last Meal Time - Averaged by Person', ylabel='Frequency Count')
 
 # Cell
 def dinner_sample_distplot(in_path, n):
