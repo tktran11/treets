@@ -1688,90 +1688,17 @@ Process includes:
 
 <div class="output_area">
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>read the csv file successfully.
-</pre>
+<div class="output_subarea output_text output_error">
+<pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
+<span class="ansi-green-fg">&lt;ipython-input-7-6df839800b5e&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
+<span class="ansi-green-fg">----&gt; 1</span><span class="ansi-red-fg"> </span>df <span class="ansi-blue-fg">=</span> load_public_data<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;data/test_food_details.csv&#39;</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">      2</span> df<span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">&#39;in_good_logging_day&#39;</span><span class="ansi-blue-fg">]</span> <span class="ansi-blue-fg">=</span> in_good_logging_day<span class="ansi-blue-fg">(</span>df<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">      3</span> df<span class="ansi-blue-fg">.</span>head<span class="ansi-blue-fg">(</span><span class="ansi-cyan-fg">2</span><span class="ansi-blue-fg">)</span>
+
+<span class="ansi-red-fg">NameError</span>: name &#39;load_public_data&#39; is not defined</pre>
 </div>
-</div>
-
-<div class="output_area">
-
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>Unnamed: 0</th>
-      <th>ID</th>
-      <th>unique_code</th>
-      <th>research_info_id</th>
-      <th>desc_text</th>
-      <th>food_type</th>
-      <th>original_logtime</th>
-      <th>original_logtime_notz</th>
-      <th>date</th>
-      <th>local_time</th>
-      <th>time</th>
-      <th>week_from_start</th>
-      <th>year</th>
-      <th>in_good_logging_day</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>1340147</td>
-      <td>7572733</td>
-      <td>alqt14018795225</td>
-      <td>150</td>
-      <td>Water</td>
-      <td>w</td>
-      <td>2017-12-08 17:30:00+00:00</td>
-      <td>2017-12-08 17:30:00+00:00</td>
-      <td>2017-12-08</td>
-      <td>17.500000</td>
-      <td>17:30:00</td>
-      <td>1</td>
-      <td>2017</td>
-      <td>True</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>1340148</td>
-      <td>411111</td>
-      <td>alqt14018795225</td>
-      <td>150</td>
-      <td>Coffee White</td>
-      <td>b</td>
-      <td>2017-12-09 00:01:00+00:00</td>
-      <td>2017-12-09 00:01:00+00:00</td>
-      <td>2017-12-08</td>
-      <td>24.016667</td>
-      <td>00:01:00</td>
-      <td>1</td>
-      <td>2017</td>
-      <td>True</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
 </div>
 
 </div>
@@ -2453,29 +2380,83 @@ read the pickle file successfully.
 
 <div class="output_area">
 
-<div class="output_subarea output_text output_error">
-<pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
-<span class="ansi-green-fg">&lt;ipython-input-6-80c5cbb6524e&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
-<span class="ansi-green-fg">----&gt; 1</span><span class="ansi-red-fg"> </span>breakfast_analysis_summary<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;data/output/public_basline_usable_expanded.pickle&#39;</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">.</span>head<span class="ansi-blue-fg">(</span><span class="ansi-cyan-fg">3</span><span class="ansi-blue-fg">)</span>
-
-<span class="ansi-green-fg">&lt;ipython-input-5-a6aa5b778cef&gt;</span> in <span class="ansi-cyan-fg">breakfast_analysis_summary</span><span class="ansi-blue-fg">(in_path)</span>
-<span class="ansi-green-intense-fg ansi-bold">     19</span>     &#34;&#34;&#34;
-<span class="ansi-green-intense-fg ansi-bold">     20</span> 
-<span class="ansi-green-fg">---&gt; 21</span><span class="ansi-red-fg">     </span>df <span class="ansi-blue-fg">=</span> universal_key<span class="ansi-blue-fg">(</span>in_path<span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">     22</span> 
-<span class="ansi-green-intense-fg ansi-bold">     23</span>     <span class="ansi-red-fg"># leave only the loggings in a good logging day</span>
-
-<span class="ansi-green-fg">&lt;ipython-input-3-8020772d65dc&gt;</span> in <span class="ansi-cyan-fg">universal_key</span><span class="ansi-blue-fg">(in_path)</span>
-<span class="ansi-green-intense-fg ansi-bold">     17</span>             <span class="ansi-red-fg"># load data</span>
-<span class="ansi-green-intense-fg ansi-bold">     18</span>             pickle_file <span class="ansi-blue-fg">=</span> open<span class="ansi-blue-fg">(</span>in_path<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">&#39;rb&#39;</span><span class="ansi-blue-fg">)</span>
-<span class="ansi-green-fg">---&gt; 19</span><span class="ansi-red-fg">             </span>df <span class="ansi-blue-fg">=</span> pickle<span class="ansi-blue-fg">.</span>load<span class="ansi-blue-fg">(</span>pickle_file<span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">     20</span>             print<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;read the pickle file successfully.&#39;</span><span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">     21</span>         <span class="ansi-green-fg">if</span> in_path<span class="ansi-blue-fg">.</span>split<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;.&#39;</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">-</span><span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">]</span> <span class="ansi-blue-fg">==</span> <span class="ansi-blue-fg">&#39;csv&#39;</span><span class="ansi-blue-fg">:</span>
-
-<span class="ansi-red-fg">NameError</span>: name &#39;pickle&#39; is not defined</pre>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>read the pickle file successfully.
+</pre>
 </div>
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>id</th>
+      <th>5%</th>
+      <th>10%</th>
+      <th>25%</th>
+      <th>50%</th>
+      <th>75%</th>
+      <th>90%</th>
+      <th>95%</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>alqt1148284857</td>
+      <td>4.141667</td>
+      <td>4.283333</td>
+      <td>4.450000</td>
+      <td>4.783333</td>
+      <td>5.375000</td>
+      <td>7.250000</td>
+      <td>7.883333</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>alqt14018795225</td>
+      <td>17.500000</td>
+      <td>17.500000</td>
+      <td>17.500000</td>
+      <td>17.500000</td>
+      <td>17.500000</td>
+      <td>17.500000</td>
+      <td>17.500000</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>alqt16675467779</td>
+      <td>4.210833</td>
+      <td>4.393333</td>
+      <td>4.570833</td>
+      <td>5.000000</td>
+      <td>5.566667</td>
+      <td>6.086667</td>
+      <td>6.748333</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
 </div>
 
 </div>
@@ -2657,6 +2638,90 @@ read the pickle file successfully.
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">breakfast_avg_histplot</span><span class="p">(</span><span class="n">in_path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Description:\n</span>
+<span class="sd">       This function take the first caloric event (no water or med) and calculate average event&#39;s time for “each participant”.\n</span>
+<span class="sd">    </span>
+<span class="sd">    Input:\n</span>
+<span class="sd">        - in_path : input path, file in pickle, csv or panda dataframe format.\n</span>
+
+<span class="sd">    Return:\n</span>
+<span class="sd">        - None</span>
+<span class="sd">        </span>
+<span class="sd">    Requirements:\n</span>
+<span class="sd">        in_path file must have the following columns:\n</span>
+<span class="sd">            - unique_code\n</span>
+<span class="sd">            - date\n</span>
+<span class="sd">            - local_time\n</span>
+<span class="sd">            - food_type\n</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">universal_key</span><span class="p">(</span><span class="n">in_path</span><span class="p">)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;food_type in [&quot;f&quot;, &quot;b&quot;]&#39;</span><span class="p">)</span>
+    <span class="n">breakfast_time</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;unique_code&#39;</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span><span class="p">])[</span><span class="s1">&#39;local_time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+    <span class="n">avg_breakfast_time</span> <span class="o">=</span> <span class="n">breakfast_time</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;unique_code&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+    <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">80</span><span class="p">)</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">distplot</span><span class="p">(</span><span class="n">avg_breakfast_time</span><span class="p">[</span><span class="s1">&#39;local_time&#39;</span><span class="p">],</span> <span class="n">kde</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;First Meal Time - Averaged by Person&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Frequency Count&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">breakfast_avg_histplot</span><span class="p">(</span><span class="s1">&#39;data/output/public_basline_usable_expanded.pickle&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>read the pickle file successfully.
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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
+"
+>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
 <div class="output">
@@ -2665,7 +2730,7 @@ read the pickle file successfully.
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="breakfast_distplot" class="doc_header"><code>breakfast_distplot</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L554" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>breakfast_distplot</code>(<strong><code>in_path</code></strong>, <strong><code>n</code></strong>)</p>
+<h4 id="breakfast_sample_distplot" class="doc_header"><code>breakfast_sample_distplot</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L554" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>breakfast_sample_distplot</code>(<strong><code>in_path</code></strong>, <strong><code>n</code></strong>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function plots the distplot for the breakfast time from n participants that will be randomly selected.</p>
@@ -2715,7 +2780,7 @@ read the pickle file successfully.
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">breakfast_distplot</span><span class="p">(</span><span class="s1">&#39;data/output/public_intervention_usable.pickle&#39;</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">breakfast_sample_distplot</span><span class="p">(</span><span class="s1">&#39;data/output/public_intervention_usable.pickle&#39;</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -3088,6 +3153,90 @@ alqt8668165687
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">dinner_avg_histplot</span><span class="p">(</span><span class="n">in_path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Description:\n</span>
+<span class="sd">       This function take the last caloric event (no water or med) and calculate average event&#39;s time for “each participant”.\n</span>
+<span class="sd">    </span>
+<span class="sd">    Input:\n</span>
+<span class="sd">        - in_path : input path, file in pickle, csv or panda dataframe format.\n</span>
+
+<span class="sd">    Return:\n</span>
+<span class="sd">        - None</span>
+<span class="sd">        </span>
+<span class="sd">    Requirements:\n</span>
+<span class="sd">        in_path file must have the following columns:\n</span>
+<span class="sd">            - unique_code\n</span>
+<span class="sd">            - date\n</span>
+<span class="sd">            - local_time\n</span>
+<span class="sd">            - food_type\n</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">universal_key</span><span class="p">(</span><span class="n">in_path</span><span class="p">)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;food_type in [&quot;f&quot;, &quot;b&quot;]&#39;</span><span class="p">)</span>
+    <span class="n">breakfast_time</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;unique_code&#39;</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span><span class="p">])[</span><span class="s1">&#39;local_time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+    <span class="n">avg_breakfast_time</span> <span class="o">=</span> <span class="n">breakfast_time</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;unique_code&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+    <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">80</span><span class="p">)</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">distplot</span><span class="p">(</span><span class="n">avg_breakfast_time</span><span class="p">[</span><span class="s1">&#39;local_time&#39;</span><span class="p">],</span> <span class="n">kde</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Last Meal Time - Averaged by Person&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Frequency Count&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dinner_avg_histplot</span><span class="p">(</span><span class="s1">&#39;data/output/public_basline_usable_expanded.pickle&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>read the pickle file successfully.
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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
+"
+>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 <div class="output_wrapper">
 <div class="output">
@@ -3096,7 +3245,7 @@ alqt8668165687
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="dinner_distplot" class="doc_header"><code>dinner_distplot</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L672" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dinner_distplot</code>(<strong><code>in_path</code></strong>, <strong><code>n</code></strong>)</p>
+<h4 id="dinner_sample_distplot" class="doc_header"><code>dinner_sample_distplot</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L672" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dinner_sample_distplot</code>(<strong><code>in_path</code></strong>, <strong><code>n</code></strong>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function plots the distplot for the dinner time from n participants that will be randomly selected.</p>
@@ -3221,6 +3370,8 @@ alqt8668165687
 
     - unique_code
 
+    - food_type
+
     - date
 
     - local_time</code></pre>
@@ -3296,7 +3447,7 @@ alqt8668165687
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FoodParser" class="doc_header"><code>class</code> <code>FoodParser</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L758" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FoodParser</code>()</p>
+<h2 id="FoodParser" class="doc_header"><code>class</code> <code>FoodParser</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L759" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FoodParser</code>()</p>
 </blockquote>
 <p>A class that reads in food loggings from the app. Used as helper function for the function convert_loggings().</p>
 

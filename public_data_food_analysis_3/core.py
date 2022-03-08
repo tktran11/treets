@@ -3,8 +3,8 @@
 __all__ = ['universal_key', 'find_date', 'find_float_time', 'week_from_start', 'load_public_data',
            'filtering_usable_data', 'prepare_baseline_and_intervention_usable_data', 'in_good_logging_day',
            'most_active_user', 'convert_loggings', 'get_certain_types', 'breakfast_analysis_summary',
-           'breakfast_analysis_variability', 'breakfast_distplot', 'dinner_analysis_summary',
-           'dinner_analysis_variability', 'dinner_distplot', 'swarmplot', 'FoodParser']
+           'breakfast_analysis_variability', 'breakfast_sample_distplot', 'dinner_analysis_summary',
+           'dinner_analysis_variability', 'dinner_sample_distplot', 'swarmplot', 'FoodParser']
 
 # Cell
 import warnings
@@ -551,7 +551,7 @@ def breakfast_analysis_variability(in_path):
     return breakfast_variability_df
 
 # Cell
-def breakfast_distplot(in_path, n):
+def breakfast_sample_distplot(in_path, n):
     """
     Description:\n
        This function plots the distplot for the breakfast time from n participants that will be randomly selected.\n
@@ -669,7 +669,7 @@ def dinner_analysis_variability(in_path, out_path=None, export = False):
     return dinner_variability_df
 
 # Cell
-def dinner_distplot(in_path, n):
+def dinner_sample_distplot(in_path, n):
     """
     Description:\n
        This function plots the distplot for the dinner time from n participants that will be randomly selected.\n
@@ -714,6 +714,7 @@ def swarmplot(in_path, max_loggings):
     Requirements:\n
         in_path file must have the following columns:\n
             - unique_code\n
+            - food_type\n
             - date\n
             - local_time\n
     """
