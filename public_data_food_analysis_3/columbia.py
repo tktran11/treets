@@ -2,7 +2,7 @@
 
 __all__ = ['read_logging_data', 'get_phase_duration', 'caloric_entries', 'mean_daily_eating_duration',
            'std_daily_eating_duration', 'earliest_entry', 'find_percentiles', 'logging_day_counts',
-           'find_missing_logging_days', 'make_table']
+           'good_lwa_day_counts', 'find_missing_logging_days', 'make_table']
 
 # Cell
 import glob
@@ -229,6 +229,97 @@ def logging_day_counts(df, start_date='not_defined', end_date='not_defined'):
     df = df[(df['date']>=start_date) & (df['date']<=end_date)]
 
     return df.date.nunique()
+
+# Cell
+def good_lwa_day_counts(df, window_start, window_end, min_log_num=2, min_seperation=5, buffer_time= '15 minutes',h=4, start_date='not_defined', end_date='not_defined'):
+    """
+    Description:\n
+        This function calculates the number of good logging days, good window days, outside window days and adherent days. Good logging day is defined as a day that the person makes at least min_log_num number of loggings and the time separation between the earliest and the latest logging are greater than min_seperation.\n
+        A good window day is defined as a date that all the food loggings are within the assigned restricted window. An adherent day is defined as a date that is both a good logging day and a good window day.
+    Input:\n
+        - df(pandas df): food_logging data.
+        - window_start(datetime.time object): start time of the restriction window.
+        - window_end(datetime.time object): end time of the restriction window.
+        - min_log_num(count, int): minimum number of loggings to qualify a day as a good logging day
+        - min_seperation(hours, int): minimum period of separation between earliest and latest loggings to qualify a day as a good logging day
+        - buffer_time(time in string that can be passed into pd.Timedelta()): wiggle room for to be added/subtracted on the ends of windows.
+        - h(hours, int): hours to be pushed back
+        - start_date(datetime.date object): start date of the period for calculation. If not defined, it will be automatically set to be the earliest date in df.
+        - end_date(datetime.date object): end date of the period for calculation. If not defined, it will be automatically set to be the latest date in df.
+    Output:\n
+        - a list that represents the number of good logging days, good window days, outside window days and adherent days.
+    Requirement:\n
+        - 'date' column existed in the df.
+        - float time is calculated.
+    """
+    # if start_date or end_date is missing, return nan
+    if pd.isnull(start_date) or pd.isnull(end_date):
+        return [np.nan,np.nan,np.nan,np.nan], [[],[],[]]
+
+    # if window start or window end are nan, make the windows the same as control's window time.
+    if pd.isnull(window_start):
+        window_start = datetime.time(0,0)
+    if pd.isnull(window_end):
+        window_end = datetime.time(23,59)
+
+    # if there is no input on start_date or end_date, use earliest date and latest date
+    if start_date=='not_defined':
+        start_date = df['date'].min()
+    if end_date=='not_defined':
+        end_date = df['date'].max()
+
+    # helper function to determine a good logging
+    def good_logging(float_time_series):
+        if len(float_time_series.values) >= min_log_num and (max(float_time_series.values) - min(float_time_series.values)) >= min_seperation:
+            return True
+        else:
+            return False
+
+    df = df[(df['date']>=start_date) & (df['date']<=end_date)]
+    df = df[df['food_type'].isin(['f','b'])]
+    df['original_logtime'] = df['original_logtime'].dt.tz_localize(None)
+
+    buffer_time = pd.Timedelta(buffer_time).total_seconds()/3600.
+
+    in_window_count = []
+    daily_count = []
+    good_logging_count = []
+    cur_dates = df['date'].sort_values(ascending = True).unique()
+    for aday in cur_dates:
+        window_start_daily = window_start.hour+window_start.minute/60- buffer_time
+        window_end_daily = window_end.hour+window_end.minute/60 + buffer_time
+        tmp = df[df['date']==aday]
+        if (window_start == datetime.time(0,0)) and (window_end == datetime.time(23,59)):
+            in_window_count.append(tmp[(tmp['float_time']>=window_start_daily+h) & (tmp['float_time']<=window_end_daily+h)].shape[0])
+        else:
+            in_window_count.append(tmp[(tmp['float_time']>=window_start_daily) & (tmp['float_time']<=window_end_daily)].shape[0])
+        daily_count.append(df[df['date']==aday].shape[0])
+        good_logging_count.append(good_logging(df[df['date']==aday].float_time))
+
+    in_window_count = np.array(in_window_count)
+    daily_count = np.array(daily_count)
+    good_logging_count = np.array(good_logging_count)
+    good_logging_by_date = [cur_dates[i] for i, x in enumerate(good_logging_count) if x == False]
+
+    good_window_days = (in_window_count==daily_count)
+    good_window_day_counts = good_window_days.sum()
+    good_window_by_date = [cur_dates[i] for i, x in enumerate(good_window_days) if x == False]
+
+    outside_window_days = in_window_count.size - good_window_days.sum()
+    good_logging_days = good_logging_count.sum()
+    if good_logging_count.size == 0:
+        adherent_day_counts = 0
+        adherent_days_by_date = []
+    else:
+        adherent_days = (good_logging_count & (in_window_count==daily_count))
+        adherent_days_by_date = [cur_dates[i] for i, x in enumerate(adherent_days) if x == False]
+        adherent_day_counts = adherent_days.sum()
+
+    rows = [good_logging_days, good_window_day_counts, outside_window_days, adherent_day_counts]
+    bad_dates = (good_logging_by_date, good_window_by_date, adherent_days_by_date)
+
+    return rows, bad_dates
+
 
 # Cell
 def find_missing_logging_days(df, start_date='not_defined', end_date='not_defined'):

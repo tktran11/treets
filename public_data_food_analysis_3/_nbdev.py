@@ -31,6 +31,7 @@ index = {"universal_key": "00_core.ipynb",
          "earliest_entry": "01_columbia.ipynb",
          "find_percentiles": "01_columbia.ipynb",
          "logging_day_counts": "01_columbia.ipynb",
+         "good_lwa_day_counts": "01_columbia.ipynb",
          "find_missing_logging_days": "01_columbia.ipynb",
          "make_table": "01_columbia.ipynb"}
 
