@@ -49,17 +49,14 @@ nb_path: "01_columbia.ipynb"
 <div class="output_markdown rendered_html output_subarea ">
 <h4 id="read_logging_data" class="doc_header"><code>read_logging_data</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/columbia.py#L15" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>read_logging_data</code>(<strong><code>folder_path</code></strong>)</p>
 </blockquote>
-<p>@param folder_path: folder name that contains the participants' data.
-read all participants data in the data folder into a data frame. The files should be csv format start with yrt921 and contain
-_food_data in the middle
-Description:</p>
+<p>Description:</p>
 
-<pre><code>This is a function that calculates the studys days for each phase, include the start and end date.
-
+<pre><code>This function reads all csv files in the folder_path folder into one dataframe. The files should be csv format and the name of each file should start with yrt and contain
 </code></pre>
+<p>_food_data in the middle.</p>
 <p>Input:</p>
 
-<pre><code>- df : information dataframe that contains columns: Start_Day, End_day
+<pre><code>- folder_path(string) : path to the folder that contain the data.
 
 </code></pre>
 <p>Output:</p>
@@ -171,7 +168,7 @@ Description:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_phase_duration" class="doc_header"><code>get_phase_duration</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/columbia.py#L39" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_phase_duration</code>(<strong><code>df</code></strong>)</p>
+<h4 id="get_phase_duration" class="doc_header"><code>get_phase_duration</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/columbia.py#L37" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_phase_duration</code>(<strong><code>df</code></strong>)</p>
 </blockquote>
 <p>Description:</p>
 
@@ -180,7 +177,7 @@ Description:</p>
 </code></pre>
 <p>Input:</p>
 
-<pre><code>- df : information dataframe that contains columns: Start_Day, End_day
+<pre><code>- df(pandas df) : information dataframe that contains columns: Start_Day, End_day
 
 </code></pre>
 <p>Output:</p>
@@ -264,6 +261,14 @@ Description:</p>
       <th>2</th>
       <td>3 days</td>
     </tr>
+    <tr>
+      <th>3</th>
+      <td>4 days</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>NaT</td>
+    </tr>
   </tbody>
 </table>
 </div>
@@ -288,7 +293,7 @@ Description:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="caloric_entries" class="doc_header"><code>caloric_entries</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/columbia.py#L57" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>caloric_entries</code>(<strong><code>df</code></strong>, <strong><code>start_date</code></strong>=<em><code>'not_defined'</code></em>, <strong><code>end_date</code></strong>=<em><code>'not_defined'</code></em>)</p>
+<h4 id="caloric_entries" class="doc_header"><code>caloric_entries</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/columbia.py#L55" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>caloric_entries</code>(<strong><code>df</code></strong>, <strong><code>start_date</code></strong>=<em><code>'not_defined'</code></em>, <strong><code>end_date</code></strong>=<em><code>'not_defined'</code></em>)</p>
 </blockquote>
 <p>Description:</p>
 
@@ -297,9 +302,9 @@ Description:</p>
 </code></pre>
 <p>Input:</p>
 
-<pre><code>- df : food_logging data.
-- start_date : start date of the period of counting.
-- end_date : end date of the period of counting.
+<pre><code>- df(pandas df) : food_logging data.
+- start_date(datetime.date object) : start date of the period of counting. If not defined, it will be automatically set to be the earliest date in df.
+- end_date(datetime.date object) : end date of the period of counting. If not defined, it will be automatically set to be the latest date in df.
 
 </code></pre>
 <p>Output:</p>
@@ -391,7 +396,7 @@ Description:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="mean_daily_eating_duration" class="doc_header"><code>mean_daily_eating_duration</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/columbia.py#L83" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>mean_daily_eating_duration</code>(<strong><code>df</code></strong>, <strong><code>col</code></strong>, <strong><code>start_date</code></strong>=<em><code>'not_defined'</code></em>, <strong><code>end_date</code></strong>=<em><code>'not_defined'</code></em>)</p>
+<h4 id="mean_daily_eating_duration" class="doc_header"><code>mean_daily_eating_duration</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/columbia.py#L81" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>mean_daily_eating_duration</code>(<strong><code>df</code></strong>, <strong><code>col</code></strong>, <strong><code>start_date</code></strong>=<em><code>'not_defined'</code></em>, <strong><code>end_date</code></strong>=<em><code>'not_defined'</code></em>)</p>
 </blockquote>
 <p>Description:</p>
 
@@ -400,10 +405,10 @@ Description:</p>
 </code></pre>
 <p>Input:</p>
 
-<pre><code>- df : food_logging data.
-- col : contains the float time data for each logging.
-- start_date : start date of the period of calculation.
-- end_date : end date of the period of calculation.
+<pre><code>- df(pandas df) : food_logging data.
+- col(column existed in df, string) : contains the float time data for each logging.
+- start_date(datetime.date object) : start date of the period of calculation. If not defined, it will be automatically set to be the earliest date in df.
+- end_date(datetime.date object) : end date of the period of calculation. If not defined, it will be automatically set to be the latest date in df.
 
 </code></pre>
 <p>Output:</p>
@@ -480,7 +485,7 @@ Description:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="std_daily_eating_duration" class="doc_header"><code>std_daily_eating_duration</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/columbia.py#L114" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>std_daily_eating_duration</code>(<strong><code>df</code></strong>, <strong><code>col</code></strong>, <strong><code>start_date</code></strong>=<em><code>'not_defined'</code></em>, <strong><code>end_date</code></strong>=<em><code>'not_defined'</code></em>)</p>
+<h4 id="std_daily_eating_duration" class="doc_header"><code>std_daily_eating_duration</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/columbia.py#L112" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>std_daily_eating_duration</code>(<strong><code>df</code></strong>, <strong><code>col</code></strong>, <strong><code>start_date</code></strong>=<em><code>'not_defined'</code></em>, <strong><code>end_date</code></strong>=<em><code>'not_defined'</code></em>)</p>
 </blockquote>
 <p>Description:</p>
 
@@ -489,10 +494,10 @@ Description:</p>
 </code></pre>
 <p>Input:</p>
 
-<pre><code>- df : food_logging data.
-- col : contains the float time data for each logging.
-- start_date : start date of the period of calculation.
-- end_date : end date of the period of calculation.
+<pre><code>- df(pandas df) : food_logging data.
+- col(column existed in df, string) : contains the float time data for each logging.
+- start_date(datetime.date object) : start date of the period of calculation. If not defined, it will be automatically set to be the earliest date in df.
+- end_date(datetime.date object) : end date of the period of calculation. If not defined, it will be automatically set to be the latest date in df.
 
 </code></pre>
 <p>Output:</p>
@@ -569,7 +574,7 @@ Description:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="earliest_entry" class="doc_header"><code>earliest_entry</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/columbia.py#L146" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>earliest_entry</code>(<strong><code>df</code></strong>, <strong><code>col</code></strong>, <strong><code>start_date</code></strong>=<em><code>'not_defined'</code></em>, <strong><code>end_date</code></strong>=<em><code>'not_defined'</code></em>)</p>
+<h4 id="earliest_entry" class="doc_header"><code>earliest_entry</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/columbia.py#L144" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>earliest_entry</code>(<strong><code>df</code></strong>, <strong><code>col</code></strong>, <strong><code>start_date</code></strong>=<em><code>'not_defined'</code></em>, <strong><code>end_date</code></strong>=<em><code>'not_defined'</code></em>)</p>
 </blockquote>
 <p>Description:</p>
 
@@ -577,10 +582,10 @@ Description:</p>
 </code></pre>
 <p>Input:</p>
 
-<pre><code>- df : food_logging data.
-- col : contains information of logging time in float.
-- start_date : start date of the period of calculation.
-- end_date : end date of the period of calculation.
+<pre><code>- df(pandas df) : food_logging data.
+- col(column existed in df, string) : contains information of logging time in float.
+- start_date(datetime.date object) : start date of the period of calculation. If not defined, it will be automatically set to be the earliest date in df.
+- end_date(datetime.date object) : end date of the period of calculation. If not defined, it will be automatically set to be the latest date in df.
 
 </code></pre>
 <p>Output:</p>
@@ -653,7 +658,7 @@ Description:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="find_percentiles" class="doc_header"><code>find_percentiles</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/columbia.py#L177" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>find_percentiles</code>(<strong><code>df</code></strong>, <strong><code>col</code></strong>, <strong><code>percentiles</code></strong>, <strong><code>start_date</code></strong>=<em><code>'not_defined'</code></em>, <strong><code>end_date</code></strong>=<em><code>'not_defined'</code></em>)</p>
+<h4 id="find_percentiles" class="doc_header"><code>find_percentiles</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/columbia.py#L175" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>find_percentiles</code>(<strong><code>df</code></strong>, <strong><code>col</code></strong>, <strong><code>percentiles</code></strong>, <strong><code>start_date</code></strong>=<em><code>'not_defined'</code></em>, <strong><code>end_date</code></strong>=<em><code>'not_defined'</code></em>)</p>
 </blockquote>
 <p>Description:</p>
 
@@ -661,10 +666,10 @@ Description:</p>
 </code></pre>
 <p>Input:</p>
 
-<pre><code>- df : food_logging data.
-- col : contains information of logging time in float.
-- start_date : start date of the period of calculation.
-- end_date : end date of the period of calculation.
+<pre><code>- df(pandas df) : food_logging data.
+- col(column existed in df, string) : contains information of logging time in float.
+- start_date(datatime.date object) : start date of the period of calculation. If not defined, it will be automatically set to be the earliest date in df.
+- end_date(datetime.date object) : end date of the period of calculation. If not defined, it will be automatically set to be the latest date in df.
 
 </code></pre>
 <p>Output:</p>
@@ -746,7 +751,7 @@ Name: float_time, dtype: float64</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="logging_day_counts" class="doc_header"><code>logging_day_counts</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/columbia.py#L207" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>logging_day_counts</code>(<strong><code>df</code></strong>, <strong><code>start_date</code></strong>=<em><code>'not_defined'</code></em>, <strong><code>end_date</code></strong>=<em><code>'not_defined'</code></em>)</p>
+<h4 id="logging_day_counts" class="doc_header"><code>logging_day_counts</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/columbia.py#L205" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>logging_day_counts</code>(<strong><code>df</code></strong>, <strong><code>start_date</code></strong>=<em><code>'not_defined'</code></em>, <strong><code>end_date</code></strong>=<em><code>'not_defined'</code></em>)</p>
 </blockquote>
 <p>Description:</p>
 
@@ -755,8 +760,8 @@ Name: float_time, dtype: float64</pre>
 <p>Input:</p>
 
 <pre><code>- df : food_logging data.
-- start_date : start date of the period of calculation.
-- end_date : end date of the period of calculation.
+- start_date : start date of the period of calculation. If not defined, it will be automatically set to be the earliest date in df.
+- end_date : end date of the period of calculation. If not defined, it will be automatically set to be the latest date in df.
 
 </code></pre>
 <p>Output:</p>
@@ -821,47 +826,101 @@ Name: float_time, dtype: float64</pre>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+<div class="input">
 
-<div class="output_wrapper">
-<div class="output">
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">good_lwa_day_counts</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">window_start</span><span class="p">,</span> <span class="n">window_end</span><span class="p">,</span> <span class="n">min_log_num</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">min_seperation</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">buffer_time</span><span class="o">=</span> <span class="s1">&#39;15 minutes&#39;</span><span class="p">,</span><span class="n">h</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">start_date</span><span class="o">=</span><span class="s1">&#39;not_defined&#39;</span><span class="p">,</span> <span class="n">end_date</span><span class="o">=</span><span class="s1">&#39;not_defined&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Description:\n</span>
+<span class="sd">        This function calculates the number of good logging days, good window days, outside window days and adherent days. Good logging day is defined as a day that the person makes at least min_log_num number of loggings and the time separation between the earliest and the latest logging are greater than min_seperation.\n</span>
+<span class="sd">        A good window day is defined as a date that all the food loggings are within the assigned restricted window. An adherent day is defined as a date that is both a good logging day and a good window day.</span>
+<span class="sd">    Input:\n</span>
+<span class="sd">        - df(pandas df): food_logging data.</span>
+<span class="sd">        - window_start(datetime.time object): start time of the restriction window.</span>
+<span class="sd">        - window_end(datetime.time object): end time of the restriction window.</span>
+<span class="sd">        - min_log_num(count, int): minimum number of loggings to qualify a day as a good logging day</span>
+<span class="sd">        - min_seperation(hours, int): minimum period of separation between earliest and latest loggings to qualify a day as a good logging day</span>
+<span class="sd">        - buffer_time(time in string that can be passed into pd.Timedelta()): wiggle room for to be added/subtracted on the ends of windows.</span>
+<span class="sd">        - h(hours, int): hours to be pushed back</span>
+<span class="sd">        - start_date(datetime.date object): start date of the period for calculation. If not defined, it will be automatically set to be the earliest date in df.</span>
+<span class="sd">        - end_date(datetime.date object): end date of the period for calculation. If not defined, it will be automatically set to be the latest date in df.</span>
+<span class="sd">    Output:\n</span>
+<span class="sd">        - a list that represents the number of good logging days, good window days, outside window days and adherent days.</span>
+<span class="sd">    Requirement:\n</span>
+<span class="sd">        - &#39;date&#39; column existed in the df.</span>
+<span class="sd">        - float time is calculated.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># if start_date or end_date is missing, return nan</span>
+    <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">isnull</span><span class="p">(</span><span class="n">start_date</span><span class="p">)</span> <span class="ow">or</span> <span class="n">pd</span><span class="o">.</span><span class="n">isnull</span><span class="p">(</span><span class="n">end_date</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">],</span> <span class="p">[[],[],[]]</span>
+    
+    <span class="c1"># if window start or window end are nan, make the windows the same as control&#39;s window time.</span>
+    <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">isnull</span><span class="p">(</span><span class="n">window_start</span><span class="p">):</span>
+        <span class="n">window_start</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">time</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">isnull</span><span class="p">(</span><span class="n">window_end</span><span class="p">):</span>
+        <span class="n">window_end</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">time</span><span class="p">(</span><span class="mi">23</span><span class="p">,</span><span class="mi">59</span><span class="p">)</span>
+        
+    <span class="c1"># if there is no input on start_date or end_date, use earliest date and latest date</span>
+    <span class="k">if</span> <span class="n">start_date</span><span class="o">==</span><span class="s1">&#39;not_defined&#39;</span><span class="p">:</span>
+        <span class="n">start_date</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">end_date</span><span class="o">==</span><span class="s1">&#39;not_defined&#39;</span><span class="p">:</span>
+        <span class="n">end_date</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
 
-<div class="output_area">
+    <span class="c1"># helper function to determine a good logging</span>
+    <span class="k">def</span> <span class="nf">good_logging</span><span class="p">(</span><span class="n">float_time_series</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">float_time_series</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">min_log_num</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">float_time_series</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="n">float_time_series</span><span class="o">.</span><span class="n">values</span><span class="p">))</span> <span class="o">&gt;=</span> <span class="n">min_seperation</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
 
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span><span class="o">&gt;=</span><span class="n">start_date</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span><span class="o">&lt;=</span><span class="n">end_date</span><span class="p">)]</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;food_type&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s1">&#39;f&#39;</span><span class="p">,</span><span class="s1">&#39;b&#39;</span><span class="p">])]</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;original_logtime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;original_logtime&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">tz_localize</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
 
-<div class="output_markdown rendered_html output_subarea ">
-<h4 id="good_lwa_day_counts" class="doc_header"><code>good_lwa_day_counts</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/columbia.py#L236" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>good_lwa_day_counts</code>(<strong><code>df</code></strong>, <strong><code>window_start</code></strong>, <strong><code>window_end</code></strong>, <strong><code>min_log_num</code></strong>=<em><code>2</code></em>, <strong><code>min_seperation</code></strong>=<em><code>5</code></em>, <strong><code>buffer_time</code></strong>=<em><code>'15 minutes'</code></em>, <strong><code>h</code></strong>=<em><code>4</code></em>, <strong><code>start_date</code></strong>=<em><code>'not_defined'</code></em>, <strong><code>end_date</code></strong>=<em><code>'not_defined'</code></em>)</p>
-</blockquote>
-<p>Description:</p>
+    <span class="n">buffer_time</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">(</span><span class="n">buffer_time</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span><span class="o">/</span><span class="mf">3600.</span>
 
-<pre><code>This function calculates the number of good logging days, good window days, outside window days and adherent days.
-</code></pre>
-<p>Input:</p>
+    <span class="n">in_window_count</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">daily_count</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">good_logging_count</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">cur_dates</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">ascending</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">aday</span> <span class="ow">in</span> <span class="n">cur_dates</span><span class="p">:</span>
+        <span class="n">window_start_daily</span> <span class="o">=</span> <span class="n">window_start</span><span class="o">.</span><span class="n">hour</span><span class="o">+</span><span class="n">window_start</span><span class="o">.</span><span class="n">minute</span><span class="o">/</span><span class="mi">60</span><span class="o">-</span> <span class="n">buffer_time</span>
+        <span class="n">window_end_daily</span> <span class="o">=</span> <span class="n">window_end</span><span class="o">.</span><span class="n">hour</span><span class="o">+</span><span class="n">window_end</span><span class="o">.</span><span class="n">minute</span><span class="o">/</span><span class="mi">60</span> <span class="o">+</span> <span class="n">buffer_time</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span><span class="o">==</span><span class="n">aday</span><span class="p">]</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">window_start</span> <span class="o">==</span> <span class="n">datetime</span><span class="o">.</span><span class="n">time</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span> <span class="ow">and</span> <span class="p">(</span><span class="n">window_end</span> <span class="o">==</span> <span class="n">datetime</span><span class="o">.</span><span class="n">time</span><span class="p">(</span><span class="mi">23</span><span class="p">,</span><span class="mi">59</span><span class="p">)):</span>
+            <span class="n">in_window_count</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmp</span><span class="p">[(</span><span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;float_time&#39;</span><span class="p">]</span><span class="o">&gt;=</span><span class="n">window_start_daily</span><span class="o">+</span><span class="n">h</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;float_time&#39;</span><span class="p">]</span><span class="o">&lt;=</span><span class="n">window_end_daily</span><span class="o">+</span><span class="n">h</span><span class="p">)]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">in_window_count</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmp</span><span class="p">[(</span><span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;float_time&#39;</span><span class="p">]</span><span class="o">&gt;=</span><span class="n">window_start_daily</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;float_time&#39;</span><span class="p">]</span><span class="o">&lt;=</span><span class="n">window_end_daily</span><span class="p">)]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">daily_count</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span><span class="o">==</span><span class="n">aday</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">good_logging_count</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">good_logging</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span><span class="o">==</span><span class="n">aday</span><span class="p">]</span><span class="o">.</span><span class="n">float_time</span><span class="p">))</span>
 
-<pre><code>- df: food_logging data.
-- window_start: start time of the restriction window
-- window_end: end time of the restriction window
-- min_log_num: minimum number of loggings to qualify a day as a good logging day
-- min_seperation: minimum period of separation between earliest and latest loggings to qualify a day as a good logging day
-- buffer_time: wiggle room for to be added/subtracted on the ends of windows.
-- h: hours to be pushed back
-- start_date : start date of the period of calculation.
-- end_date : end date of the period of calculation.
+    <span class="n">in_window_count</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">in_window_count</span><span class="p">)</span>
+    <span class="n">daily_count</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">daily_count</span><span class="p">)</span>
+    <span class="n">good_logging_count</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">good_logging_count</span><span class="p">)</span>
+    <span class="n">good_logging_by_date</span> <span class="o">=</span> <span class="p">[</span><span class="n">cur_dates</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">good_logging_count</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="kc">False</span><span class="p">]</span>
 
-</code></pre>
-<p>Output:</p>
+    <span class="n">good_window_days</span> <span class="o">=</span> <span class="p">(</span><span class="n">in_window_count</span><span class="o">==</span><span class="n">daily_count</span><span class="p">)</span>
+    <span class="n">good_window_day_counts</span> <span class="o">=</span> <span class="n">good_window_days</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="n">good_window_by_date</span> <span class="o">=</span> <span class="p">[</span><span class="n">cur_dates</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">good_window_days</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="kc">False</span><span class="p">]</span>
+    
+    <span class="n">outside_window_days</span> <span class="o">=</span> <span class="n">in_window_count</span><span class="o">.</span><span class="n">size</span> <span class="o">-</span> <span class="n">good_window_days</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="n">good_logging_days</span> <span class="o">=</span> <span class="n">good_logging_count</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">good_logging_count</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">adherent_day_counts</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">adherent_days_by_date</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">adherent_days</span> <span class="o">=</span> <span class="p">(</span><span class="n">good_logging_count</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">in_window_count</span><span class="o">==</span><span class="n">daily_count</span><span class="p">))</span>
+        <span class="n">adherent_days_by_date</span> <span class="o">=</span> <span class="p">[</span><span class="n">cur_dates</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">adherent_days</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="kc">False</span><span class="p">]</span>
+        <span class="n">adherent_day_counts</span> <span class="o">=</span> <span class="n">adherent_days</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    
+    <span class="n">rows</span> <span class="o">=</span> <span class="p">[</span><span class="n">good_logging_days</span><span class="p">,</span> <span class="n">good_window_day_counts</span><span class="p">,</span> <span class="n">outside_window_days</span><span class="p">,</span> <span class="n">adherent_day_counts</span><span class="p">]</span>
+    <span class="n">bad_dates</span> <span class="o">=</span> <span class="p">(</span><span class="n">good_logging_by_date</span><span class="p">,</span> <span class="n">good_window_by_date</span><span class="p">,</span> <span class="n">adherent_days_by_date</span><span class="p">)</span>
 
-<pre><code>- a list that represents the number of good logging days, good window days, outside window days and adherent days.
+    <span class="k">return</span> <span class="n">rows</span><span class="p">,</span> <span class="n">bad_dates</span>
+</pre></div>
 
-</code></pre>
-<p>Requirement:</p>
-
-<pre><code>- 'date' column existed in the df.
-- float time is calculated.</code></pre>
-
-</div>
-
-</div>
-
+    </div>
 </div>
 </div>
 
@@ -871,6 +930,117 @@ Name: float_time, dtype: float64</pre>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ref_tbl</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>mCC_ID</th>
+      <th>Participant_Study_ID</th>
+      <th>Study Phase</th>
+      <th>Intervention group (TRE or HABIT)</th>
+      <th>Start_Day</th>
+      <th>End_day</th>
+      <th>Eating_Window_Start</th>
+      <th>Eating_Window_End</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>yrt1999</td>
+      <td>2</td>
+      <td>S-REM</td>
+      <td>TRE</td>
+      <td>2021-05-12</td>
+      <td>2021-05-14</td>
+      <td>00:00:00</td>
+      <td>23:59:00</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>yrt1999</td>
+      <td>2</td>
+      <td>T3-INT</td>
+      <td>TRE</td>
+      <td>2021-05-15</td>
+      <td>2021-05-18</td>
+      <td>08:00:00</td>
+      <td>18:00:00</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>yrt2000</td>
+      <td>3</td>
+      <td>T3-INT</td>
+      <td>TRE</td>
+      <td>2021-05-12</td>
+      <td>2021-05-14</td>
+      <td>08:00:00</td>
+      <td>16:00:00</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>yrt2000</td>
+      <td>3</td>
+      <td>T3-INT</td>
+      <td>TRE</td>
+      <td>2021-05-15</td>
+      <td>2021-05-18</td>
+      <td>08:00:00</td>
+      <td>16:00:00</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>yrt2001</td>
+      <td>4</td>
+      <td>T12-A</td>
+      <td>TRE</td>
+      <td>NaT</td>
+      <td>NaT</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
 
 </div>
     {% endraw %}
@@ -883,8 +1053,8 @@ Name: float_time, dtype: float64</pre>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">good_lwa_day_counts</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;PID&#39;</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39;yrt1999&#39;</span><span class="p">]</span>
-                   <span class="p">,</span> <span class="n">window_start</span><span class="o">=</span><span class="n">ref_tbl</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;Eating_Window_Start&#39;</span><span class="p">]</span>
-                   <span class="p">,</span> <span class="n">window_end</span> <span class="o">=</span> <span class="n">ref_tbl</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;Eating_Window_End&#39;</span><span class="p">]</span>
+                   <span class="p">,</span> <span class="n">window_start</span><span class="o">=</span><span class="n">ref_tbl</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">4</span><span class="p">][</span><span class="s1">&#39;Eating_Window_Start&#39;</span><span class="p">]</span>
+                   <span class="p">,</span> <span class="n">window_end</span> <span class="o">=</span> <span class="n">ref_tbl</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">4</span><span class="p">][</span><span class="s1">&#39;Eating_Window_End&#39;</span><span class="p">]</span>
                    <span class="p">,</span> <span class="n">min_log_num</span><span class="o">=</span><span class="mi">2</span>
                    <span class="p">,</span> <span class="n">min_seperation</span><span class="o">=</span><span class="mi">5</span>
                    <span class="p">,</span> <span class="n">buffer_time</span><span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timedelta</span><span class="p">(</span><span class="s1">&#39;15 minutes&#39;</span><span class="p">)</span>
@@ -905,7 +1075,8 @@ Name: float_time, dtype: float64</pre>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>[2, 1, 2, 1]</pre>
+<pre>([2, 3, 0, 2],
+ ([datetime.date(2021, 5, 15)], [], [datetime.date(2021, 5, 15)]))</pre>
 </div>
 
 </div>
@@ -927,7 +1098,7 @@ Name: float_time, dtype: float64</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="find_missing_logging_days" class="doc_header"><code>find_missing_logging_days</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/columbia.py#L312" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>find_missing_logging_days</code>(<strong><code>df</code></strong>, <strong><code>start_date</code></strong>=<em><code>'not_defined'</code></em>, <strong><code>end_date</code></strong>=<em><code>'not_defined'</code></em>)</p>
+<h4 id="find_missing_logging_days" class="doc_header"><code>find_missing_logging_days</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/columbia.py#L234" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>find_missing_logging_days</code>(<strong><code>df</code></strong>, <strong><code>start_date</code></strong>=<em><code>'not_defined'</code></em>, <strong><code>end_date</code></strong>=<em><code>'not_defined'</code></em>)</p>
 </blockquote>
 <p>Description:</p>
 
@@ -935,9 +1106,9 @@ Name: float_time, dtype: float64</pre>
 </code></pre>
 <p>Input:</p>
 
-<pre><code>- df : food_logging data.
-- start_date : start date of the period of calculation.
-- end_date : end date of the period of calculation.
+<pre><code>- df(panda df): food_logging data.
+- start_date(datetime.date object): start date of the period of calculation. If not defined, it will be automatically set to be the earliest date in df.
+- end_date(datetime.date object): end date of the period of calculation. If not defined, it will be automatically set to be the latest date in df.
 
 </code></pre>
 <p>Output:</p>
@@ -1013,7 +1184,7 @@ Name: float_time, dtype: float64</pre>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="make_table" class="doc_header"><code>make_table</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/columbia.py#L348" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>make_table</code>(<strong><code>food_data</code></strong>, <strong><code>ref_tbl</code></strong>, <strong><code>min_log_num</code></strong>=<em><code>2</code></em>, <strong><code>min_seperation</code></strong>=<em><code>5</code></em>, <strong><code>buffer_time</code></strong>=<em><code>'15 minutes'</code></em>, <strong><code>h</code></strong>=<em><code>4</code></em>)</p>
+<h4 id="make_table" class="doc_header"><code>make_table</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/columbia.py#L270" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>make_table</code>(<strong><code>food_data</code></strong>, <strong><code>ref_tbl</code></strong>, <strong><code>report_level</code></strong>=<em><code>2</code></em>, <strong><code>min_log_num</code></strong>=<em><code>2</code></em>, <strong><code>min_seperation</code></strong>=<em><code>5</code></em>, <strong><code>buffer_time</code></strong>=<em><code>'15 minutes'</code></em>, <strong><code>h</code></strong>=<em><code>4</code></em>)</p>
 </blockquote>
 <p>Description:</p>
 
@@ -1022,13 +1193,15 @@ Name: float_time, dtype: float64</pre>
 </code></pre>
 <p>Input:</p>
 
-<pre><code>- food_data : food_logging data.
-- ref_tbl : table that contains window information and study phase information for each participant.
-- h : hour manipulation so that the starting and ending time for each day is more realistic.
-- min_log_num: minimum number of loggings to qualify a day as a good logging day.
-- min_seperation: minimum period of separation between earliest and latest loggings to qualify a day as a good logging day
-- buffer_time: wiggle room for to be added/subtracted on the ends of windows.
-- h: hours to be pushed back.
+<pre><code>- food_data(panda df): food_logging data.
+- ref_tbl(panda df): table that contains window information and study phase information for each participant.
+- report_level(int): whether to print out the dates of no logging days, bad logging days, bad window days and non-adherent days for each participant. 0 - no report. 1 - report no logging days. 2 - report bad logging days, bad window days and non adherent days.
+- h(hours): hour manipulation so that the starting and ending time for each day is more realistic.
+- min_log_num(counts): minimum number of loggings to qualify a day as a good logging day.
+- min_seperation(hours): minimum period of separation between earliest and latest loggings to qualify a day as a good logging day
+- buffer_time(time in string that can be passed into pd.Timedelta()): wiggle room for to be added/subtracted on the ends of windows.
+- h(hours): hours to be pushed back.
+-
 
 </code></pre>
 <p>Output:</p>
@@ -1066,8 +1239,9 @@ Name: float_time, dtype: float64</pre>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">make_table</span><span class="p">(</span><span class="n">read_logging_data</span><span class="p">(</span><span class="s1">&#39;data/col_test_data&#39;</span><span class="p">)</span>\
-                      <span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="s1">&#39;data/col_test_data/toy_data_17May2021.xlsx&#39;</span><span class="p">))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">make_table</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;data/col_test_data/toy_data_2000.csv&#39;</span><span class="p">)</span>\
+                      <span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="s1">&#39;data/col_test_data/toy_data_17May2021.xlsx&#39;</span><span class="p">),</span> <span class="n">report_level</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">df</span>
 </pre></div>
 
     </div>
@@ -1083,8 +1257,6 @@ Name: float_time, dtype: float64</pre>
 <pre>Participant yrt1999 didn&#39;t log any food items in the following day(s):
 2021-05-18
 Participant yrt2000 didn&#39;t log any food items in the following day(s):
-2021-05-12
-2021-05-13
 2021-05-14
 2021-05-15
 2021-05-16
@@ -1154,13 +1326,13 @@ Participant yrt2000 didn&#39;t log any food items in the following day(s):
       <td>7.0</td>
       <td>...</td>
       <td>3.0</td>
-      <td>1.00</td>
+      <td>1.000000</td>
       <td>2.0</td>
       <td>0.666667</td>
       <td>3.0</td>
-      <td>1.00</td>
+      <td>1.000000</td>
       <td>0.0</td>
-      <td>0.0</td>
+      <td>0.000000</td>
       <td>2.0</td>
       <td>0.666667</td>
     </tr>
@@ -1178,13 +1350,13 @@ Participant yrt2000 didn&#39;t log any food items in the following day(s):
       <td>8.0</td>
       <td>...</td>
       <td>3.0</td>
-      <td>0.75</td>
+      <td>0.750000</td>
       <td>2.0</td>
       <td>0.500000</td>
       <td>1.0</td>
-      <td>0.25</td>
+      <td>0.250000</td>
       <td>2.0</td>
-      <td>0.5</td>
+      <td>0.500000</td>
       <td>1.0</td>
       <td>0.250000</td>
     </tr>
@@ -1199,16 +1371,16 @@ Participant yrt2000 didn&#39;t log any food items in the following day(s):
       <td>08:00:00</td>
       <td>16:00:00</td>
       <td>3 days</td>
-      <td>0.0</td>
+      <td>4.0</td>
       <td>...</td>
-      <td>0.0</td>
-      <td>0.00</td>
+      <td>2.0</td>
+      <td>0.666667</td>
       <td>0.0</td>
       <td>0.000000</td>
-      <td>0.0</td>
-      <td>0.00</td>
-      <td>0.0</td>
-      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.333333</td>
+      <td>1.0</td>
+      <td>0.333333</td>
       <td>0.0</td>
       <td>0.000000</td>
     </tr>
@@ -1226,13 +1398,13 @@ Participant yrt2000 didn&#39;t log any food items in the following day(s):
       <td>0.0</td>
       <td>...</td>
       <td>0.0</td>
-      <td>0.00</td>
+      <td>0.000000</td>
       <td>0.0</td>
       <td>0.000000</td>
       <td>0.0</td>
-      <td>0.00</td>
+      <td>0.000000</td>
       <td>0.0</td>
-      <td>0.0</td>
+      <td>0.000000</td>
       <td>0.0</td>
       <td>0.000000</td>
     </tr>
@@ -1281,6 +1453,65 @@ Participant yrt2000 didn&#39;t log any food items in the following day(s):
 
 <div class="inner_cell">
     <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>mCC_ID                                           yrt2000
+Participant_Study_ID                                   3
+Study Phase                                       T3-INT
+Intervention group (TRE or HABIT)                    TRE
+Start_Day                            2021-05-12 00:00:00
+End_day                              2021-05-14 00:00:00
+Eating_Window_Start                             08:00:00
+Eating_Window_End                               16:00:00
+phase_duration                           3 days 00:00:00
+caloric_entries                                      4.0
+mean_daily_eating_window                             4.0
+std_daily_eating_window                              0.0
+earliest_entry                                       4.5
+2.5%                                                 4.8
+97.5%                                               12.2
+duration mid 95%                                     7.4
+logging_day_counts                                   2.0
+%_logging_day_counts                            0.666667
+good_logging_days                                    0.0
+%_good_logging_days                                  0.0
+good_window_days                                     1.0
+%_good_window_days                              0.333333
+outside_window_days                                  1.0
+%_outside_window_days                           0.333333
+adherent_days                                        0.0
+%_adherent_days                                      0.0
+Name: 2, dtype: object</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 </pre></div>
 
@@ -1305,22 +1536,22 @@ End_day                              2021-05-18 00:00:00
 Eating_Window_Start                             08:00:00
 Eating_Window_End                               18:00:00
 phase_duration                           4 days 00:00:00
-caloric_entries                                        8
+caloric_entries                                      8.0
 mean_daily_eating_window                        8.666667
 std_daily_eating_window                         8.504901
 earliest_entry                                       7.5
 2.5%                                                 7.7
 97.5%                                               23.9
 duration mid 95%                                    16.2
-logging_day_counts                                     3
+logging_day_counts                                   3.0
 %_logging_day_counts                                0.75
-good_logging_days                                      2
+good_logging_days                                    2.0
 %_good_logging_days                                  0.5
-good_window_days                                       1
+good_window_days                                     1.0
 %_good_window_days                                  0.25
-outside_window_days                                    2
+outside_window_days                                  2.0
 %_outside_window_days                                0.5
-adherent_days                                          1
+adherent_days                                        1.0
 %_adherent_days                                     0.25
 Name: 1, dtype: object</pre>
 </div>

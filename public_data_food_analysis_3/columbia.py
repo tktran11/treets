@@ -2,7 +2,7 @@
 
 __all__ = ['read_logging_data', 'get_phase_duration', 'caloric_entries', 'mean_daily_eating_duration',
            'std_daily_eating_duration', 'earliest_entry', 'find_percentiles', 'logging_day_counts',
-           'good_lwa_day_counts', 'find_missing_logging_days', 'make_table']
+           'find_missing_logging_days', 'make_table']
 
 # Cell
 import glob
@@ -19,7 +19,7 @@ def read_logging_data(folder_path):
     _food_data in the middle.
 
     Input:\n
-        - folder_path : path to the folder that contain the data.
+        - folder_path(string) : path to the folder that contain the data.
 
     Output:\n
         - a dataframe contains all the csv files in the folder given.
@@ -40,7 +40,7 @@ def get_phase_duration(df):
         This is a function that calculates the studys days for each phase, include the start and end date.
 
     Input:\n
-        - df : information dataframe that contains columns: Start_Day, End_day
+        - df(pandas df) : information dataframe that contains columns: Start_Day, End_day
 
     Output:\n
         - a dataframe contains the phase_duration column.
@@ -58,9 +58,9 @@ def caloric_entries(df, start_date='not_defined', end_date='not_defined'):
         This is a function that counts the number of food or beverage loggings.
 
     Input:\n
-        - df : food_logging data.
-        - start_date : start date of the period of counting. If not defined, it will be automatically set to be the earliest date in df.
-        - end_date : end date of the period of counting. If not defined, it will be automatically set to be the latest date in df.
+        - df(pandas df) : food_logging data.
+        - start_date(datetime.date object) : start date of the period of counting. If not defined, it will be automatically set to be the earliest date in df.
+        - end_date(datetime.date object) : end date of the period of counting. If not defined, it will be automatically set to be the latest date in df.
 
     Output:\n
         - a float representing the number of caloric entries.
@@ -84,10 +84,10 @@ def mean_daily_eating_duration(df, col, start_date='not_defined', end_date='not_
         This is a function that calculates the mean daily eating window, which is defined as the duration of first and last caloric intake.
 
     Input:\n
-        - df : food_logging data.
-        - col : contains the float time data for each logging.
-        - start_date : start date of the period of calculation. If not defined, it will be automatically set to be the earliest date in df.
-        - end_date : end date of the period of calculation. If not defined, it will be automatically set to be the latest date in df.
+        - df(pandas df) : food_logging data.
+        - col(column existed in df, string) : contains the float time data for each logging.
+        - start_date(datetime.date object) : start date of the period of calculation. If not defined, it will be automatically set to be the earliest date in df.
+        - end_date(datetime.date object) : end date of the period of calculation. If not defined, it will be automatically set to be the latest date in df.
 
     Output:\n
         - a float representing the mean daily eating window.
@@ -115,10 +115,10 @@ def std_daily_eating_duration(df, col, start_date='not_defined', end_date='not_d
         This function calculates the standard deviation of daily eating window, which is defined as the duration between the first and last caloric intake.
 
     Input:\n
-        - df : food_logging data.
-        - col : contains the float time data for each logging.
-        - start_date : start date of the period of calculation. If not defined, it will be automatically set to be the earliest date in df.
-        - end_date : end date of the period of calculation. If not defined, it will be automatically set to be the latest date in df.
+        - df(pandas df) : food_logging data.
+        - col(column existed in df, string) : contains the float time data for each logging.
+        - start_date(datetime.date object) : start date of the period of calculation. If not defined, it will be automatically set to be the earliest date in df.
+        - end_date(datetime.date object) : end date of the period of calculation. If not defined, it will be automatically set to be the latest date in df.
 
     Output:\n
         - a float representing the standard deviation of daily eating window.
@@ -146,10 +146,10 @@ def earliest_entry(df,col, start_date='not_defined', end_date='not_defined'):
     Description:\n
         This function calculates the earliest first calorie on any day in the study period.
     Input:\n
-        - df : food_logging data.
-        - col : contains information of logging time in float.
-        - start_date : start date of the period of calculation. If not defined, it will be automatically set to be the earliest date in df.
-        - end_date : end date of the period of calculation. If not defined, it will be automatically set to be the latest date in df.
+        - df(pandas df) : food_logging data.
+        - col(column existed in df, string) : contains information of logging time in float.
+        - start_date(datetime.date object) : start date of the period of calculation. If not defined, it will be automatically set to be the earliest date in df.
+        - end_date(datetime.date object) : end date of the period of calculation. If not defined, it will be automatically set to be the latest date in df.
 
     Output:\n
         - the earliest caloric time in float on any day in the study period.
@@ -177,10 +177,10 @@ def find_percentiles(df, col, percentiles, start_date='not_defined', end_date='n
     Description:\n
         This function calculates the percentiles of the given column with specified percentiles.
     Input:\n
-        - df : food_logging data.
-        - col : contains information of logging time in float.
-        - start_date : start date of the period of calculation. If not defined, it will be automatically set to be the earliest date in df.
-        - end_date : end date of the period of calculation. If not defined, it will be automatically set to be the latest date in df.
+        - df(pandas df) : food_logging data.
+        - col(column existed in df, string) : contains information of logging time in float.
+        - start_date(datatime.date object) : start date of the period of calculation. If not defined, it will be automatically set to be the earliest date in df.
+        - end_date(datetime.date object) : end date of the period of calculation. If not defined, it will be automatically set to be the latest date in df.
 
     Output:\n
         - a pd series data contains information of percentiles and also basic descriptive information such as count, mean, std, etc.
@@ -231,90 +231,14 @@ def logging_day_counts(df, start_date='not_defined', end_date='not_defined'):
     return df.date.nunique()
 
 # Cell
-def good_lwa_day_counts(df, window_start, window_end, min_log_num=2, min_seperation=5, buffer_time= '15 minutes',h=4, start_date='not_defined', end_date='not_defined'):
-    """
-    Description:\n
-        This function calculates the number of good logging days, good window days, outside window days and adherent days.
-    Input:\n
-        - df: food_logging data.
-        - window_start: start time of the restriction window
-        - window_end: end time of the restriction window
-        - min_log_num: minimum number of loggings to qualify a day as a good logging day
-        - min_seperation: minimum period of separation between earliest and latest loggings to qualify a day as a good logging day
-        - buffer_time: wiggle room for to be added/subtracted on the ends of windows.
-        - h: hours to be pushed back
-        - start_date : start date of the period of calculation. If not defined, it will be automatically set to be the earliest date in df.
-        - end_date : end date of the period of calculation. If not defined, it will be automatically set to be the latest date in df.
-
-    Output:\n
-        - a list that represents the number of good logging days, good window days, outside window days and adherent days.
-
-    Requirement:\n
-        - 'date' column existed in the df.
-        - float time is calculated.
-    """
-    # if start_date or end_date is missing, return nan
-    if pd.isnull(start_date) or pd.isnull(end_date):
-        return [np.nan,np.nan,np.nan,np.nan]
-    # if there is no input on start_date or end_date, use earliest date and latest date
-    if start_date=='not_defined':
-        start_date = df['date'].min()
-    if end_date=='not_defined':
-        end_date = df['date'].max()
-
-    # helper function to determine a good logging
-    def good_logging(float_time_series):
-        if len(float_time_series.values) >= min_log_num and (max(float_time_series.values) - min(float_time_series.values)) >= min_seperation:
-            return True
-        else:
-            return False
-
-    df = df[(df['date']>=start_date) & (df['date']<=end_date)]
-    df = df[df['food_type'].isin(['f','b'])]
-    df['original_logtime'] = df['original_logtime'].dt.tz_localize(None)
-
-    buffer_time = pd.Timedelta(buffer_time).total_seconds()/3600.
-
-    in_window_count = []
-    daily_count = []
-    good_logging_count = []
-    for aday in df['date'].sort_values(ascending = True).unique():
-        window_start_daily = window_start.hour+window_start.minute/60- buffer_time
-        window_end_daily = window_end.hour+window_end.minute/60 + buffer_time
-        tmp = df[df['date']==aday]
-        if (window_start == datetime.time(0,0)) and (window_end == datetime.time(23,59)):
-            in_window_count.append(tmp[(tmp['float_time']>=window_start_daily+h) & (tmp['float_time']<=window_end_daily+h)].shape[0])
-        else:
-            in_window_count.append(tmp[(tmp['float_time']>=window_start_daily) & (tmp['float_time']<=window_end_daily)].shape[0])
-        daily_count.append(df[df['date']==aday].shape[0])
-        good_logging_count.append(good_logging(df[df['date']==aday].float_time))
-
-    in_window_count = np.array(in_window_count)
-    daily_count = np.array(daily_count)
-    good_logging_count = np.array(good_logging_count)
-
-    good_window_days = (in_window_count==daily_count).sum()
-    outside_window_days = in_window_count.size - good_window_days
-    good_logging_days = good_logging_count.sum()
-    if good_logging_count.size == 0:
-        adherent_days = 0
-    else:
-        adherent_days = (good_logging_count & (in_window_count==daily_count)).sum()
-
-    rows = [good_logging_days, good_window_days, outside_window_days, adherent_days]
-
-    return rows
-
-
-# Cell
 def find_missing_logging_days(df, start_date='not_defined', end_date='not_defined'):
     """
     Description:\n
         This function finds the days during which there's no logging within the period from start_date to end_date.
     Input:\n
-        - df : food_logging data.
-        - start_date : start date of the period of calculation. If not defined, it will be automatically set to be the earliest date in df.
-        - end_date : end date of the period of calculation. If not defined, it will be automatically set to be the latest date in df.
+        - df(panda df): food_logging data.
+        - start_date(datetime.date object): start date of the period of calculation. If not defined, it will be automatically set to be the earliest date in df.
+        - end_date(datetime.date object): end date of the period of calculation. If not defined, it will be automatically set to be the latest date in df.
 
     Output:\n
         - a list that contains all of the dates that don't contain loggings.
@@ -343,19 +267,21 @@ def find_missing_logging_days(df, start_date='not_defined', end_date='not_define
 
 
 # Cell
-def make_table(food_data, ref_tbl, min_log_num=2, min_seperation=5, buffer_time= '15 minutes', h=4):
+def make_table(food_data, ref_tbl, report_level=2, min_log_num=2, min_seperation=5, buffer_time= '15 minutes', h=4):
     """
     Description:\n
         This is a comprehensive function that performs all of the functionalities needed.
 
     Input:\n
-        - food_data : food_logging data.
-        - ref_tbl : table that contains window information and study phase information for each participant.
-        - h : hour manipulation so that the starting and ending time for each day is more realistic.
-        - min_log_num: minimum number of loggings to qualify a day as a good logging day.
-        - min_seperation: minimum period of separation between earliest and latest loggings to qualify a day as a good logging day
-        - buffer_time: wiggle room for to be added/subtracted on the ends of windows.
-        - h: hours to be pushed back.
+        - food_data(panda df): food_logging data.
+        - ref_tbl(panda df): table that contains window information and study phase information for each participant.
+        - report_level(int): whether to print out the dates of no logging days, bad logging days, bad window days and non-adherent days for each participant. 0 - no report. 1 - report no logging days. 2 - report bad logging days, bad window days and non adherent days.
+        - h(hours): hour manipulation so that the starting and ending time for each day is more realistic.
+        - min_log_num(counts): minimum number of loggings to qualify a day as a good logging day.
+        - min_seperation(hours): minimum period of separation between earliest and latest loggings to qualify a day as a good logging day
+        - buffer_time(time in string that can be passed into pd.Timedelta()): wiggle room for to be added/subtracted on the ends of windows.
+        - h(hours): hours to be pushed back.
+        -
 
     Output:\n
         - df : dataframe that has all the variables needed and has the same row number as the ref_tbl.
@@ -382,6 +308,7 @@ def make_table(food_data, ref_tbl, min_log_num=2, min_seperation=5, buffer_time=
     # and 'good_logging_days', 'good_window_days', 'outside_window_days' and 'adherent_days' and find missing dates
     matrix = []
     missing_dates = {}
+    bad_dates_dic = {}
     for index, row in ref_tbl.iterrows():
         id_ = row['mCC_ID']
         rows = []
@@ -390,7 +317,8 @@ def make_table(food_data, ref_tbl, min_log_num=2, min_seperation=5, buffer_time=
         rows.append(std_daily_eating_duration(df[df['PID']==id_],'float_time', row['Start_Day'],row['End_day']))
         rows.append(earliest_entry(df[df['PID']==id_],'float_time', row['Start_Day'],row['End_day']))
         rows.append(logging_day_counts(df[df['PID']==id_], row['Start_Day'],row['End_day']))
-        for x in good_lwa_day_counts(df[df['PID']==id_]
+
+        row_day_num, bad_dates = good_lwa_day_counts(df[df['PID']==id_]
                                            , window_start=row['Eating_Window_Start']
                                            , window_end = row['Eating_Window_End']
                                            , min_log_num=min_log_num
@@ -398,8 +326,22 @@ def make_table(food_data, ref_tbl, min_log_num=2, min_seperation=5, buffer_time=
                                            , buffer_time= buffer_time
                                            , start_date=row['Start_Day']
                                            , end_date=row['End_day']
-                                            , h=h):
-                                     rows.append(x)
+                                            , h=h)
+        for x in row_day_num:
+            rows.append(x)
+        bad_logging = bad_dates[0]
+        bad_window = bad_dates[1]
+        non_adherent = bad_dates[2]
+
+        if '{}_bad_logging'.format(id_) not in bad_dates_dic:
+            bad_dates_dic['{}_bad_logging'.format(id_)]=bad_logging
+            bad_dates_dic['{}_bad_window'.format(id_)]=bad_window
+            bad_dates_dic['{}_non_adherent'.format(id_)]=non_adherent
+        else:
+            bad_dates_dic['{}_bad_logging'.format(id_)]+=bad_logging
+            bad_dates_dic['{}_bad_window'.format(id_)]+=bad_window
+            bad_dates_dic['{}_non_adherent'.format(id_)]+=non_adherent
+
         matrix.append(rows)
         date_lst = find_missing_logging_days(df[df['PID']==id_], row['Start_Day'],row['End_day'])
         # only consider when the result is not nan
@@ -451,6 +393,9 @@ def make_table(food_data, ref_tbl, min_log_num=2, min_seperation=5, buffer_time=
         'outside_window_days','%_outside_window_days', 'adherent_days',
        '%_adherent_days']]
 
+    if report_level == 0:
+        return returned
+
     # print out missing dates with participant's id
     for x in missing_dates:
         if len(missing_dates[x])>0:
@@ -458,7 +403,16 @@ def make_table(food_data, ref_tbl, min_log_num=2, min_seperation=5, buffer_time=
             for date in missing_dates[x]:
                 print(date)
 
+    if report_level == 1:
+        return returned
 
+    # print out bad logging, bad window and non-adherent dates with participant's id
+    for x in bad_dates_dic:
+        if len(bad_dates_dic[x])>0:
+            strings = x.split('_')
+            print("Participant {} have {} day(s) in the following day(s):".format(strings[0], strings[1]+' '+strings[2]))
+            for date in bad_dates_dic[x]:
+                print(date)
 
     return returned
 
