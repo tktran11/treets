@@ -2059,7 +2059,7 @@ Process includes:
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">convert_loggings</span><span class="p">(</span><span class="s1">&#39;data/output/public.pickle&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span> 
 </pre></div>
 
     </div>
@@ -2584,6 +2584,14 @@ Process includes:
 
 <div class="output_area">
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>read the csv file successfully.
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
 
 <div class="output_html rendered_html output_subarea output_execute_result">
 <div>
@@ -2631,8 +2639,8 @@ Process includes:
       <td>13</td>
       <td>149</td>
       <td>96</td>
-      <td>19.0</td>
-      <td>34.0</td>
+      <td>19</td>
+      <td>34</td>
       <td>7.821795</td>
       <td>6.710717</td>
       <td>23.485897</td>
@@ -2652,8 +2660,8 @@ Process includes:
       <td>64</td>
       <td>488</td>
       <td>484</td>
-      <td>3.0</td>
-      <td>1.0</td>
+      <td>3</td>
+      <td>1</td>
       <td>7.525781</td>
       <td>5.434563</td>
       <td>25.858594</td>
@@ -2673,8 +2681,8 @@ Process includes:
       <td>111</td>
       <td>739</td>
       <td>466</td>
-      <td>NaN</td>
-      <td>273.0</td>
+      <td>0</td>
+      <td>273</td>
       <td>5.656757</td>
       <td>3.514652</td>
       <td>26.222673</td>
@@ -2694,8 +2702,8 @@ Process includes:
       <td>92</td>
       <td>989</td>
       <td>687</td>
-      <td>NaN</td>
-      <td>302.0</td>
+      <td>0</td>
+      <td>302</td>
       <td>11.241486</td>
       <td>3.549328</td>
       <td>23.348007</td>
@@ -2715,8 +2723,8 @@ Process includes:
       <td>233</td>
       <td>605</td>
       <td>582</td>
-      <td>NaN</td>
-      <td>23.0</td>
+      <td>0</td>
+      <td>23</td>
       <td>14.690558</td>
       <td>5.362661</td>
       <td>23.093705</td>
@@ -2736,8 +2744,8 @@ Process includes:
       <td>22</td>
       <td>137</td>
       <td>69</td>
-      <td>NaN</td>
-      <td>68.0</td>
+      <td>0</td>
+      <td>68</td>
       <td>9.170455</td>
       <td>2.001950</td>
       <td>20.778030</td>
@@ -2757,8 +2765,8 @@ Process includes:
       <td>39</td>
       <td>129</td>
       <td>129</td>
-      <td>NaN</td>
-      <td>NaN</td>
+      <td>0</td>
+      <td>0</td>
       <td>7.252137</td>
       <td>3.306471</td>
       <td>23.850427</td>
@@ -2778,8 +2786,8 @@ Process includes:
       <td>41</td>
       <td>347</td>
       <td>262</td>
-      <td>78.0</td>
-      <td>7.0</td>
+      <td>78</td>
+      <td>7</td>
       <td>7.763008</td>
       <td>5.381072</td>
       <td>21.281707</td>
@@ -2799,8 +2807,8 @@ Process includes:
       <td>87</td>
       <td>1110</td>
       <td>506</td>
-      <td>117.0</td>
-      <td>487.0</td>
+      <td>117</td>
+      <td>487</td>
       <td>5.259770</td>
       <td>0.762313</td>
       <td>18.062452</td>
@@ -2820,8 +2828,8 @@ Process includes:
       <td>137</td>
       <td>2161</td>
       <td>1322</td>
-      <td>NaN</td>
-      <td>839.0</td>
+      <td>0</td>
+      <td>839</td>
       <td>8.256569</td>
       <td>1.903419</td>
       <td>23.172263</td>
@@ -2859,7 +2867,7 @@ Process includes:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="breakfast_analysis_summary" class="doc_header"><code>breakfast_analysis_summary</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L572" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>breakfast_analysis_summary</code>(<strong><code>in_path</code></strong>)</p>
+<h4 id="breakfast_analysis_summary" class="doc_header"><code>breakfast_analysis_summary</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L575" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>breakfast_analysis_summary</code>(<strong><code>in_path</code></strong>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function takes the loggings in good logging days and calculate the 5%,10%,25%,50%,75%,90%,95% quantile of breakfast time for each user.</p>
@@ -3017,7 +3025,7 @@ Process includes:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="breakfast_analysis_variability" class="doc_header"><code>breakfast_analysis_variability</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L611" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>breakfast_analysis_variability</code>(<strong><code>in_path</code></strong>, <strong><code>plot</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="breakfast_analysis_variability" class="doc_header"><code>breakfast_analysis_variability</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L614" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>breakfast_analysis_variability</code>(<strong><code>in_path</code></strong>, <strong><code>plot</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function calculates the variability by subtracting 5%,10%,25%,50%,75%,90%,95% quantile of breakfast time from the 50% breakfast time. It also make a histogram that represents the 90%-10% interval for all subjects.</p>
@@ -3187,7 +3195,7 @@ Process includes:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="breakfast_avg_histplot" class="doc_header"><code>breakfast_avg_histplot</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L663" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>breakfast_avg_histplot</code>(<strong><code>in_path</code></strong>)</p>
+<h4 id="breakfast_avg_histplot" class="doc_header"><code>breakfast_avg_histplot</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L666" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>breakfast_avg_histplot</code>(<strong><code>in_path</code></strong>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function take the first caloric event (no water or med) and calculate average event's time for “each participant”.</p>
@@ -3285,7 +3293,7 @@ Process includes:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="breakfast_sample_distplot" class="doc_header"><code>breakfast_sample_distplot</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L690" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>breakfast_sample_distplot</code>(<strong><code>in_path</code></strong>, <strong><code>n</code></strong>)</p>
+<h4 id="breakfast_sample_distplot" class="doc_header"><code>breakfast_sample_distplot</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L693" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>breakfast_sample_distplot</code>(<strong><code>in_path</code></strong>, <strong><code>n</code></strong>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function plots the distplot for the breakfast time from n participants that will be randomly selected.</p>
@@ -3388,7 +3396,7 @@ alqt8668165687
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="dinner_analysis_summary" class="doc_header"><code>dinner_analysis_summary</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L720" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dinner_analysis_summary</code>(<strong><code>in_path</code></strong>, <strong><code>export</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="dinner_analysis_summary" class="doc_header"><code>dinner_analysis_summary</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L723" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dinner_analysis_summary</code>(<strong><code>in_path</code></strong>, <strong><code>export</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function takes the loggings in good logging days and calculate the 5%,10%,25%,50%,75%,90%,95% quantile of dinner time for each user.</p>
@@ -3546,7 +3554,7 @@ alqt8668165687
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="dinner_analysis_variability" class="doc_header"><code>dinner_analysis_variability</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L759" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dinner_analysis_variability</code>(<strong><code>in_path</code></strong>, <strong><code>plot</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="dinner_analysis_variability" class="doc_header"><code>dinner_analysis_variability</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L762" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dinner_analysis_variability</code>(<strong><code>in_path</code></strong>, <strong><code>plot</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function calculates the variability by subtracting 5%,10%,25%,50%,75%,90%,95% quantile of dinner time from the 50% dinner time. It also make a histogram that represents the 90%-10% interval for all subjects.</p>
@@ -3716,7 +3724,7 @@ alqt8668165687
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="dinner_avg_histplot" class="doc_header"><code>dinner_avg_histplot</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L809" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dinner_avg_histplot</code>(<strong><code>in_path</code></strong>)</p>
+<h4 id="dinner_avg_histplot" class="doc_header"><code>dinner_avg_histplot</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L812" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dinner_avg_histplot</code>(<strong><code>in_path</code></strong>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function take the last caloric event (no water or med) and calculate average event's time for “each participant”.</p>
@@ -3814,7 +3822,7 @@ alqt8668165687
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="dinner_sample_distplot" class="doc_header"><code>dinner_sample_distplot</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L836" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dinner_sample_distplot</code>(<strong><code>in_path</code></strong>, <strong><code>n</code></strong>)</p>
+<h4 id="dinner_sample_distplot" class="doc_header"><code>dinner_sample_distplot</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L839" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dinner_sample_distplot</code>(<strong><code>in_path</code></strong>, <strong><code>n</code></strong>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function plots the distplot for the dinner time from n participants that will be randomly selected.</p>
@@ -3917,7 +3925,7 @@ alqt8668165687
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="swarmplot" class="doc_header"><code>swarmplot</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L866" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>swarmplot</code>(<strong><code>in_path</code></strong>, <strong><code>max_loggings</code></strong>)</p>
+<h4 id="swarmplot" class="doc_header"><code>swarmplot</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L869" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>swarmplot</code>(<strong><code>in_path</code></strong>, <strong><code>max_loggings</code></strong>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function plots the swarmplot the participants from the in_path file.</p>
@@ -4016,7 +4024,7 @@ alqt8668165687
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FoodParser" class="doc_header"><code>class</code> <code>FoodParser</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L923" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FoodParser</code>()</p>
+<h2 id="FoodParser" class="doc_header"><code>class</code> <code>FoodParser</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L926" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FoodParser</code>()</p>
 </blockquote>
 <p>A class that reads in food loggings from the app. Used as helper function for the function convert_loggings().</p>
 

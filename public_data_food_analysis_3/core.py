@@ -560,9 +560,12 @@ def summarize_data(in_path, float_time_col, identifier, min_log_num = 2, min_sep
 
     returned = pd.concat([num_days, num_total_items, num_f_n_b, num_medications, num_water, breakfast_avg, breakfast_std, dinner_avg, dinner_std, eating_win_avg, eating_win_std, good_logging_count, breakfast_ser, dinner_ser], axis=1).reset_index()
     returned.columns = [identifier,'num_days', 'num_total_items', 'num_f_n_b', 'num_medications', 'num_water', 'breakfast_avg', 'breakfast_std', 'dinner_avg', 'dinner_std', 'eating_win_avg', 'eating_win_std', 'good_logging_count', 'breakfast variation (90%-10%)', 'dinner variation (90%-10%)']
+    returned = returned.merge(eating_intervals, on = identifier, how='left').fillna(0)
 
+    returned['num_medications'] = returned['num_medications'].astype('int')
+    returned['num_water'] = returned['num_water'].astype('int')
 
-    return returned.merge(eating_intervals, on = identifier, how='left')
+    return returned
 
 
 
