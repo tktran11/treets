@@ -2,10 +2,10 @@
 
 __all__ = ['universal_key', 'find_date', 'find_float_time', 'week_from_start', 'load_public_data',
            'filtering_usable_data', 'prepare_baseline_and_intervention_usable_data', 'in_good_logging_day',
-           'most_active_user', 'convert_loggings', 'get_certain_types', 'breakfast_analysis_summary',
-           'breakfast_analysis_variability', 'breakfast_avg_histplot', 'breakfast_sample_distplot',
-           'dinner_analysis_summary', 'dinner_analysis_variability', 'dinner_avg_histplot', 'dinner_sample_distplot',
-           'swarmplot', 'FoodParser']
+           'most_active_user', 'convert_loggings', 'get_certain_types', 'eating_intervals_percentile', 'summarize_data',
+           'breakfast_analysis_summary', 'breakfast_analysis_variability', 'breakfast_avg_histplot',
+           'breakfast_sample_distplot', 'dinner_analysis_summary', 'dinner_analysis_variability', 'dinner_avg_histplot',
+           'dinner_sample_distplot', 'swarmplot', 'FoodParser']
 
 # Cell
 import warnings
@@ -463,6 +463,112 @@ def get_certain_types(in_path, food_type):
 
 
 # Cell
+def eating_intervals_percentile(in_path, time_col, identifier):
+    """
+    Description:\n
+       This function calculates the .025, .05, .10, .125, .25, .5, .75, .875, .9, .95, .975 quantile of eating time and mid 95%, mid 90%, mid 80%, mid 75% and mid 50% duration for each user.\n
+
+    Input:\n
+        - in_path : input path, file in pickle, csv or panda dataframe format.\n
+        - time_col(str) : the column that represents the eating time
+        - identitfier(str) : participants' unique identifier such as id, name, etc
+
+    Return:\n
+        - A summary table with count, mean, std, min, quantiles and mid durations for all subjects from the in_path file.\n
+
+
+    """
+
+    df = universal_key(in_path)
+
+    ptile = df.groupby(identifier)[time_col].describe(percentiles=[.025, .05, .10, .125, .25, .5, .75, .875, .9, .95, .975])
+    ll = ['2.5%','5%','10%','12.5%','25%']
+    ul = ['97.5%','95%', '90%','87.5%', '75%']
+    mp = ['duration mid 95%', 'duration mid 90%', 'duration mid 80%', 'duration mid 75%','duration mid 50%']
+    for low, upp, midp in zip(ll,ul,mp):
+        ptile[midp] = ptile[upp] - ptile[low]
+
+    return ptile
+
+# Cell
+def summarize_data(in_path, float_time_col, identifier, min_log_num = 2, min_seperation = 4):
+    """
+    Description:\n
+       This function calculates num_days, num_total_items, num_f_n_b, num_medications, num_water, duration_mid_95, start_95, end_95, breakfast_avg, breakfast_std, dinner_avg, dinner_std, eating_win_avg, eating_win_std, adherent_count, breakfast variation (90%-10%), dinner variation (90%-10%).\n
+
+    Input:\n
+        - in_path : input path, file in pickle, csv or panda dataframe format.\n
+        - time_col(str) : the column that represents the eating time
+        - identitfier(str) : participants' unique identifier such as id, name, etc
+
+    Return:\n
+        - A summary table with count, mean, std, min, quantiles and mid durations for all subjects from the in_path file.\n
+
+    Requirements:\n
+        in_path file must have the following columns:\n
+            - food_type\n
+            - date\n
+
+    """
+    #num_days
+    num_days = df.groupby(identifier).date.nunique()
+
+    #num_total_items
+    num_total_items = df.groupby(identifier).count().iloc[:,0]
+
+    #num_f_n_b
+    num_f_n_b = get_certain_types(df, ['f','b']).groupby(identifier).count().iloc[:,0]
+
+    #num_medications
+    num_medications = get_certain_types(df, ['m']).groupby(identifier).count().iloc[:,0]
+
+    #num_water
+    num_water = get_certain_types(df, ['w']).groupby(identifier).count().iloc[:,0]
+
+    #duration_mid_95, start_95, end_95
+    eating_intervals = eating_intervals_percentile(df, float_time_col, identifier)[['2.5%','95%','duration mid 95%']]
+
+    #breakfast_avg
+    breakfast_avg = df.groupby([identifier, 'date'])[float_time_col].min().groupby(identifier).mean()
+
+    #breakfast_std
+    breakfast_std = df.groupby([identifier, 'date'])[float_time_col].min().groupby(identifier).std()
+
+    #dinner_avg
+    dinner_avg = df.groupby([identifier, 'date'])[float_time_col].max().groupby(identifier).mean()
+
+    #dinner_std
+    dinner_std = df.groupby([identifier, 'date'])[float_time_col].max().groupby(identifier).std()
+
+    #eating_win_avg
+    eating_win_avg = dinner_avg - breakfast_avg
+
+    #eating_win_std
+    eating_win_std = dinner_std - breakfast_std
+
+    #good_logging_count
+    df['in_good_logging_day'] = in_good_logging_day(df, min_log_num=min_log_num, min_seperation=min_seperation)
+    good_logging_count = df.groupby(identifier)['in_good_logging_day'].sum()
+
+    #breakfast variation (90%-10%)
+    breakfast_variability = breakfast_analysis_variability(df, plot=False).set_index('id')
+    breakfast_ser = breakfast_variability['90%'] - breakfast_variability['10%']
+
+    #dinner variation (90%-10%)
+    dinner_variability = dinner_analysis_variability(df, plot=False).set_index('id')
+    dinner_ser = dinner_variability['90%'] - dinner_variability['10%']
+
+    returned = pd.concat([num_days, num_total_items, num_f_n_b, num_medications, num_water, breakfast_avg, breakfast_std, dinner_avg, dinner_std, eating_win_avg, eating_win_std, good_logging_count, breakfast_ser, dinner_ser], axis=1).reset_index()
+    returned.columns = [identifier,'num_days', 'num_total_items', 'num_f_n_b', 'num_medications', 'num_water', 'breakfast_avg', 'breakfast_std', 'dinner_avg', 'dinner_std', 'eating_win_avg', 'eating_win_std', 'good_logging_count', 'breakfast variation (90%-10%)', 'dinner variation (90%-10%)']
+
+
+    return returned.merge(eating_intervals, on = identifier, how='left')
+
+
+
+
+
+# Cell
 def breakfast_analysis_summary(in_path):
     """
     Description:\n
@@ -502,7 +608,7 @@ def breakfast_analysis_summary(in_path):
     return breakfast_summary_df
 
 # Cell
-def breakfast_analysis_variability(in_path):
+def breakfast_analysis_variability(in_path, plot=True):
     """
     Description:\n
        This function calculates the variability by subtracting 5%,10%,25%,50%,75%,90%,95% quantile of breakfast time from the 50% breakfast time. It also make a histogram that represents the 90%-10% interval for all subjects.\n
@@ -545,9 +651,11 @@ def breakfast_analysis_variability(in_path):
         breakfast_variability_df[col] = breakfast_variability_df[col] - breakfast_variability_df['50%']
     breakfast_variability_df['50%'] = breakfast_variability_df['50%'] - breakfast_variability_df['50%']
 
-    fig, ax = plt.subplots(1, 1, figsize = (10, 10), dpi=80)
-    sns_plot = sns.distplot( breakfast_variability_df['90%'] - breakfast_variability_df['10%'] )
-    ax.set(xlabel='Variation Distribution for Breakfast (90% - 10%)', ylabel='Kernel Density Estimation')
+    if plot == True:
+
+        fig, ax = plt.subplots(1, 1, figsize = (10, 10), dpi=80)
+        sns_plot = sns.distplot( breakfast_variability_df['90%'] - breakfast_variability_df['10%'] )
+        ax.set(xlabel='Variation Distribution for Breakfast (90% - 10%)', ylabel='Kernel Density Estimation')
 
     return breakfast_variability_df
 
@@ -609,7 +717,7 @@ def breakfast_sample_distplot(in_path, n):
         sns.distplot(breakfast_by_person['local_time'].loc[i])
 
 # Cell
-def dinner_analysis_summary(in_path, out_path=None, export = False):
+def dinner_analysis_summary(in_path, export = False):
     """
     Description:\n
        This function takes the loggings in good logging days and calculate the 5%,10%,25%,50%,75%,90%,95% quantile of dinner time for each user.\n
@@ -648,7 +756,7 @@ def dinner_analysis_summary(in_path, out_path=None, export = False):
     return dinner_summary_df
 
 # Cell
-def dinner_analysis_variability(in_path, out_path=None, export = False):
+def dinner_analysis_variability(in_path, plot=True):
     """
     Description:\n
        This function calculates the variability by subtracting 5%,10%,25%,50%,75%,90%,95% quantile of dinner time from the 50% dinner time. It also make a histogram that represents the 90%-10% interval for all subjects.\n
@@ -690,9 +798,10 @@ def dinner_analysis_variability(in_path, out_path=None, export = False):
         dinner_variability_df[col] = dinner_variability_df[col] - dinner_variability_df['50%']
     dinner_variability_df['50%'] = dinner_variability_df['50%'] - dinner_variability_df['50%']
 
-    fig, ax = plt.subplots(1, 1, figsize = (10, 10), dpi=80)
-    sns_plot = sns.distplot( dinner_variability_df['90%'] - dinner_variability_df['10%'] )
-    ax.set(xlabel='Variation Distribution for Dinner (90% - 10%)', ylabel='Kernel Density Estimation')
+    if plot == True:
+        fig, ax = plt.subplots(1, 1, figsize = (10, 10), dpi=80)
+        sns_plot = sns.distplot( dinner_variability_df['90%'] - dinner_variability_df['10%'] )
+        ax.set(xlabel='Variation Distribution for Dinner (90% - 10%)', ylabel='Kernel Density Estimation')
 
     return dinner_variability_df
 
