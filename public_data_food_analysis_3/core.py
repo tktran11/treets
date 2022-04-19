@@ -39,7 +39,7 @@ def universal_key(in_path):
         This is a helper function that converts pickle and csv file into a pd dataframe.\n
 
     Input:\n
-        - in_path : input path, csv or pickle file\n
+        - in_path(str, pandas df): input path, csv or pickle file\n
 
     Output:\n
         - df : dataframe format of the in_path file.\n
@@ -67,9 +67,9 @@ def find_date(in_path, col, h=0):
         Extract date information from a column and shift each date in the column by h hours. (Day starts h hours early if h is negative and h hours late if h is positive)\n
 
     Input:\n
-        - in_path : input path, file in pickle, csv or pandas dataframe format\n
-        - col, pd.datetime object : column that contains the information of date and time that's 24 hours system.
-        - h, int : hours to shift the date. For example, when h = 4, everyday starts and ends 4 hours later than normal.
+        - in_path(str, pandas df): input path, file in pickle, csv or pandas dataframe format\n
+        - col(str) : column that contains the information of date and time, which is 24 hours system.
+        - h(int) : hours to shift the date. For example, when h = 4, everyday starts and ends 4 hours later than normal.
 
     Return:\n
         - a numpy array represents the date extracted from col.\n
@@ -100,9 +100,9 @@ def find_float_time(in_path, col, h=0):
         Extract time information from a column and shift each time by h hours. (Day starts h hours early if h is negative and h hours late if h is positive)\n
 
     Input:\n
-        - in_path : input path, file in pickle, csv or pandas dataframe format\n
-        - col, pd.datetime object : column that contains the information of date and time that's 24 hours system.
-        - h, int : hours to shift the date. For example, when h = 4, everyday starts at 4 and ends at 28. When h = -4, everyday starts at -4 and ends at 20.
+        - in_path (str, pandas df): input path, file in pickle, csv or pandas dataframe format\n
+        - col(str) : column that contains the information of date and time that's 24 hours system.
+        - h(int) : hours to shift the date. For example, when h = 4, everyday starts at 4 and ends at 28. When h = -4, everyday starts at -4 and ends at 20.
 
     Return:\n
         - a numpy array represents the date extracted from col.\n
@@ -130,8 +130,8 @@ def week_from_start(in_path, identifier):
         Description:\n
             Calculate the number of weeks for each logging since the first day of the logging for each participant(identifier).
         Input:\n
-            - in_path : input path, file in pickle, csv or pandas dataframe format\n
-            - identifier : unique_id or ID, or name that identifies people.
+            - in_path (str, pandas df): input path, file in pickle, csv or pandas dataframe format\n
+            - identifier (str): unique_id or ID, or name that identifies people.
 
         Return:\n
             - a numpy array represents the date extracted from col.\n
@@ -151,7 +151,7 @@ def week_from_start(in_path, identifier):
         return df.apply(count_week_public, axis = 1)
 
 # Cell
-def load_public_data(in_path):
+def load_public_data(in_path, h=4):
     """
     Description:\n
         Load original public data and output processed data in pickle format.\n
@@ -166,7 +166,8 @@ def load_public_data(in_path):
         7. Generating 'year' column based on the input data.\n
 
     Input:\n
-        - in_path : input path, csv file\n
+        - in_path (str, pandas df): input path, csv file\n
+        - h(int) : hours to shift the date. For example, when h = 4, everyday starts and ends 4 hours later than normal.
 
     Output:\n
         - public_all: the processed dataframe\n
@@ -200,12 +201,12 @@ def load_public_data(in_path):
     public_all = public_all.dropna().reset_index(drop = True)
 
 
-    public_all['date'] = find_date(public_all, 'original_logtime_notz', 4)
+    public_all['date'] = find_date(public_all, 'original_logtime_notz', h)
 
 
     # Handle the time - Time in floating point format
 
-    public_all['local_time'] = find_float_time(public_all, 'original_logtime_notz', 4)
+    public_all['local_time'] = find_float_time(public_all, 'original_logtime_notz', h)
 
     # Handle the time - Time in Datetime object format
     public_all['time'] = pd.DatetimeIndex(public_all.original_logtime_notz).time
@@ -268,7 +269,7 @@ def prepare_baseline_and_intervention_usable_data(in_path):
         Filter and create baseline_expanded and intervention groups based on in_path pickle file.\n
 
     Input:\n
-        - in_path : input path, file in pickle, csv or pandas dataframe format\n
+        - in_path (str, pandas df): input path, file in pickle, csv or pandas dataframe format\n
 
     Return:\n
         - baseline expanded and intervention dataframes in a list format where index 0 is the baseline dataframe and 1 is the intervention dataframe.\n
@@ -309,11 +310,11 @@ def in_good_logging_day(in_path, identifier='unique_code', time_col='local_time'
         A logging's in a good logging day if the there are more than min_log_num loggings in one day w/ more than min_seperation hoursx apart from the earliest logging and the latest logging and False otherwise.\n
 
     Input:\n
-        - in_path : input path, file in pickle, csv or pandas dataframe format.\n
-        - identifier : id-like column that's used to identify a subject.\n
-        - time_col : column that contains time in float format.\n
-        - min_log_num : filteration criteria on the minimum number of loggings each day.\n
-        - min_seperation: filteration criteria on the minimum separations between the earliest and latest loggings each day.\n
+        - in_path (str, pandas df): input path, file in pickle, csv or pandas dataframe format.\n
+        - identifier (str): id-like column that's used to identify a subject.\n
+        - time_col (str): column that contains time in float format.\n
+        - min_log_num (count,int): filteration criteria on the minimum number of loggings each day.\n
+        - min_seperation(hours,int): filteration criteria on the minimum separations between the earliest and latest loggings each day.\n
 
     Return:\n
         - A boolean numpy array indicating whether the corresponding row is in a good logging day. Details on the criteria is in the description.\n
@@ -345,8 +346,8 @@ def most_active_user(in_path, food_type = ["f", "b", "m", "w"]):
         This function returns a dataframe reports the number of good logging days for each user in the in_path file. The default order is descending.\n
 
     Input:\n
-        - in_path : input path, file in pickle, csv or pandas dataframe format.\n
-        - food_type : food types to filter in a list format. Default: ["f", "b", "m", "w"]. Available food types:\n
+        - in_path (str, pandas df): input path, file in pickle, csv or pandas dataframe format.\n
+        - food_type (str): food types to filter in a list format. Default: ["f", "b", "m", "w"]. Available food types:\n
             1. 'w' : water \n
             2. 'b' : beverage \n
             3. 'f' : food \n
@@ -385,7 +386,7 @@ def convert_loggings(in_path):
        This function convert all the loggings in the in_path file into a list of individual items based on the desc_text column.\n
 
     Input:\n
-        - in_path : input path, file in pickle, csv or panda dataframe format.\n
+        - in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.\n
 
     Return:\n
         - A dataframe contains the cleaned version of the desc_text.\n
@@ -425,8 +426,8 @@ def get_certain_types(in_path, food_type):
        This function filters with the expected food types and return a cleaner version of in_path file.\n
 
     Input:\n
-        - in_path : input path, file in pickle, csv or panda dataframe format.\n
-        - food_type : expected types of the loggings for filtering, in format of list. Available types:  \n
+        - in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.\n
+        - food_type (str): expected types of the loggings for filtering, in format of list. Available types:  \n
             1. 'w' : water \n
             2. 'b' : beverage \n
             3. 'f' : food \n
@@ -469,7 +470,7 @@ def eating_intervals_percentile(in_path, time_col, identifier):
        This function calculates the .025, .05, .10, .125, .25, .5, .75, .875, .9, .95, .975 quantile of eating time and mid 95%, mid 90%, mid 80%, mid 75% and mid 50% duration for each user.\n
 
     Input:\n
-        - in_path : input path, file in pickle, csv or panda dataframe format.\n
+        - in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.\n
         - time_col(str) : the column that represents the eating time
         - identitfier(str) : participants' unique identifier such as id, name, etc
 
@@ -497,9 +498,11 @@ def summarize_data(in_path, float_time_col, identifier, min_log_num = 2, min_sep
        This function calculates num_days, num_total_items, num_f_n_b, num_medications, num_water, duration_mid_95, start_95, end_95, breakfast_avg, breakfast_std, dinner_avg, dinner_std, eating_win_avg, eating_win_std, adherent_count, breakfast variation (90%-10%), dinner variation (90%-10%).\n
 
     Input:\n
-        - in_path : input path, file in pickle, csv or panda dataframe format.\n
-        - time_col(str) : the column that represents the eating time
+        - in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.\n
+        - float_time_col(str) : the column that represents the eating time
         - identitfier(str) : participants' unique identifier such as id, name, etc
+        - min_log_num (count,int): filteration criteria on the minimum number of loggings each day.\n
+        - min_seperation(hours,int): filteration criteria on the minimum separations between the earliest and latest loggings each day.\n
 
     Return:\n
         - A summary table with count, mean, std, min, quantiles and mid durations for all subjects from the in_path file.\n
@@ -510,6 +513,8 @@ def summarize_data(in_path, float_time_col, identifier, min_log_num = 2, min_sep
             - date\n
 
     """
+    df = universal_key(in_path)
+
     #num_days
     num_days = df.groupby(identifier).date.nunique()
 
@@ -578,7 +583,7 @@ def breakfast_analysis_summary(in_path):
        This function takes the loggings in good logging days and calculate the 5%,10%,25%,50%,75%,90%,95% quantile of breakfast time for each user.\n
 
     Input:\n
-        - in_path : input path, file in pickle, csv or panda dataframe format.\n
+        - in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.\n
 
     Return:\n
         - A summary table with 5%,10%,25%,50%,75%,90%,95% quantile of breakfast time for all subjects from the in_path file.\n
@@ -617,7 +622,7 @@ def breakfast_analysis_variability(in_path, plot=True):
        This function calculates the variability by subtracting 5%,10%,25%,50%,75%,90%,95% quantile of breakfast time from the 50% breakfast time. It also make a histogram that represents the 90%-10% interval for all subjects.\n
 
     Input:\n
-        - in_path : input path, file in pickle, csv or panda dataframe format.\n
+        - in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.\n
 
     Return:\n
         - A dataframe that contains 5%,10%,25%,50%,75%,90%,95% quantile of breakfast time minus 50% time for each subjects from the in_path file.\n
@@ -669,7 +674,7 @@ def breakfast_avg_histplot(in_path):
        This function take the first caloric event (no water or med) and calculate average event's time for “each participant”.\n
 
     Input:\n
-        - in_path : input path, file in pickle, csv or panda dataframe format.\n
+        - in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.\n
 
     Return:\n
         - None
@@ -696,8 +701,8 @@ def breakfast_sample_distplot(in_path, n):
        This function plots the distplot for the breakfast time from n participants that will be randomly selected.\n
 
     Input:\n
-        - in_path : input path, file in pickle, csv or panda dataframe format.\n
-        - n : the number of distplot in the output figure
+        - in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.\n
+        - n (int): the number of distplot in the output figure
 
     Return:\n
         - None
@@ -726,7 +731,7 @@ def dinner_analysis_summary(in_path, export = False):
        This function takes the loggings in good logging days and calculate the 5%,10%,25%,50%,75%,90%,95% quantile of dinner time for each user.\n
 
     Input:\n
-        - in_path : input path, file in pickle, csv or panda dataframe format.\n
+        - in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.\n
 
     Return:\n
         - A summary table with 5%,10%,25%,50%,75%,90%,95% quantile of dinner time for all subjects from the in_path file.\n
@@ -765,7 +770,7 @@ def dinner_analysis_variability(in_path, plot=True):
        This function calculates the variability by subtracting 5%,10%,25%,50%,75%,90%,95% quantile of dinner time from the 50% dinner time. It also make a histogram that represents the 90%-10% interval for all subjects.\n
 
     Input:\n
-        - in_path : input path, file in pickle, csv or panda dataframe format.\n
+        - in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.\n
 
     Return:\n
         - A dataframe that contains 5%,10%,25%,50%,75%,90%,95% quantile of dinner time minus 50% time for each subjects from the in_path file.\n
@@ -815,7 +820,7 @@ def dinner_avg_histplot(in_path):
        This function take the last caloric event (no water or med) and calculate average event's time for “each participant”.\n
 
     Input:\n
-        - in_path : input path, file in pickle, csv or panda dataframe format.\n
+        - in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.\n
 
     Return:\n
         - None
@@ -842,8 +847,8 @@ def dinner_sample_distplot(in_path, n):
        This function plots the distplot for the dinner time from n participants that will be randomly selected.\n
 
     Input:\n
-        - in_path : input path, file in pickle, csv or panda dataframe format.\n
-        - n : the number of participants that will be randomly selected in the output figure
+        - in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.\n
+        - n (int): the number of participants that will be randomly selected in the output figure
 
     Return:\n
         - None
@@ -872,8 +877,8 @@ def swarmplot(in_path, max_loggings):
        This function plots the swarmplot the participants from the in_path file.\n
 
     Input:\n
-        - in_path : input path, file in pickle, csv or panda dataframe format.\n
-        - max_loggings : the max number of loggings to be plotted for each participants, loggings will be randomly selected.
+        - in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.\n
+        - max_loggings (int): the max number of loggings to be plotted for each participants, loggings will be randomly selected.
 
     Return:\n
         - None

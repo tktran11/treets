@@ -6,12 +6,135 @@
 
 `pip install public_data_food_analysis_3`
 
-## For data analysis on the Columbia study
+## Example for data analysis on the Columbia study
 
 ```python
 import public_data_food_analysis_3.columbia as pdfac
 import pandas as pd
 ```
+
+### Take a brief look on the food logging dataset and the reference information sheet
+
+```python
+pdfac.read_logging_data('data/col_test_data').head(2)
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Unnamed: 0</th>
+      <th>original_logtime</th>
+      <th>desc_text</th>
+      <th>food_type</th>
+      <th>PID</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0</td>
+      <td>2021-05-12 02:30:00 +0000</td>
+      <td>milk</td>
+      <td>b</td>
+      <td>yrt1999</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1</td>
+      <td>2021-05-12 02:45:00 +0000</td>
+      <td>some medication</td>
+      <td>m</td>
+      <td>yrt1999</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+```python
+pd.read_excel('data/col_test_data/toy_data_17May2021.xlsx').head(2)
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>mCC_ID</th>
+      <th>Participant_Study_ID</th>
+      <th>Study Phase</th>
+      <th>Intervention group (TRE or HABIT)</th>
+      <th>Start_Day</th>
+      <th>End_day</th>
+      <th>Eating_Window_Start</th>
+      <th>Eating_Window_End</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>yrt1999</td>
+      <td>2</td>
+      <td>S-REM</td>
+      <td>TRE</td>
+      <td>2021-05-12</td>
+      <td>2021-05-14</td>
+      <td>00:00:00</td>
+      <td>23:59:00</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>yrt1999</td>
+      <td>2</td>
+      <td>T3-INT</td>
+      <td>TRE</td>
+      <td>2021-05-15</td>
+      <td>2021-05-18</td>
+      <td>08:00:00</td>
+      <td>18:00:00</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+### make the table that contains extra analytic information that we want
 
 ```python
 df = pdfac.make_table(pdfac.read_logging_data('data/col_test_data')\
@@ -224,6 +347,320 @@ df.iloc[1]
     %_outside_window_days                                0.5
     adherent_days                                          1
     %_adherent_days                                     0.25
+    Name: 1, dtype: object
+
+
+
+## Example for data analysis on the Columbia study
+
+```python
+import public_data_food_analysis_3.core as pdfaco
+import pandas as pd
+```
+
+### take a look at the original dataset
+
+```python
+df = pdfaco.universal_key('data/test_food_details.csv')
+df.head(2)
+```
+
+    read the csv file successfully.
+
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Unnamed: 0</th>
+      <th>ID</th>
+      <th>unique_code</th>
+      <th>research_info_id</th>
+      <th>desc_text</th>
+      <th>food_type</th>
+      <th>original_logtime</th>
+      <th>foodimage_file_name</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1340147</td>
+      <td>7572733</td>
+      <td>alqt14018795225</td>
+      <td>150</td>
+      <td>Water</td>
+      <td>w</td>
+      <td>2017-12-08 17:30:00+00:00</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1340148</td>
+      <td>411111</td>
+      <td>alqt14018795225</td>
+      <td>150</td>
+      <td>Coffee White</td>
+      <td>b</td>
+      <td>2017-12-09 00:01:00+00:00</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+### preprocess the data to have extra basic features
+
+```python
+df = pdfaco.load_public_data(df)
+df.head(2)
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Unnamed: 0</th>
+      <th>ID</th>
+      <th>unique_code</th>
+      <th>research_info_id</th>
+      <th>desc_text</th>
+      <th>food_type</th>
+      <th>original_logtime</th>
+      <th>original_logtime_notz</th>
+      <th>date</th>
+      <th>local_time</th>
+      <th>time</th>
+      <th>week_from_start</th>
+      <th>year</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1340147</td>
+      <td>7572733</td>
+      <td>alqt14018795225</td>
+      <td>150</td>
+      <td>Water</td>
+      <td>w</td>
+      <td>2017-12-08 17:30:00+00:00</td>
+      <td>2017-12-08 17:30:00+00:00</td>
+      <td>2017-12-08</td>
+      <td>17.500000</td>
+      <td>17:30:00</td>
+      <td>1</td>
+      <td>2017</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1340148</td>
+      <td>411111</td>
+      <td>alqt14018795225</td>
+      <td>150</td>
+      <td>Coffee White</td>
+      <td>b</td>
+      <td>2017-12-09 00:01:00+00:00</td>
+      <td>2017-12-09 00:01:00+00:00</td>
+      <td>2017-12-08</td>
+      <td>24.016667</td>
+      <td>00:01:00</td>
+      <td>1</td>
+      <td>2017</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+### do a brief annalysis
+
+```python
+df = pdfaco.summarize_data(df, 'local_time', 'unique_code')
+df.head(2)
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>unique_code</th>
+      <th>num_days</th>
+      <th>num_total_items</th>
+      <th>num_f_n_b</th>
+      <th>num_medications</th>
+      <th>num_water</th>
+      <th>breakfast_avg</th>
+      <th>breakfast_std</th>
+      <th>dinner_avg</th>
+      <th>dinner_std</th>
+      <th>eating_win_avg</th>
+      <th>eating_win_std</th>
+      <th>good_logging_count</th>
+      <th>breakfast variation (90%-10%)</th>
+      <th>dinner variation (90%-10%)</th>
+      <th>2.5%</th>
+      <th>95%</th>
+      <th>duration mid 95%</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>alqt1148284857</td>
+      <td>13</td>
+      <td>149</td>
+      <td>96</td>
+      <td>19</td>
+      <td>34</td>
+      <td>7.821795</td>
+      <td>6.710717</td>
+      <td>23.485897</td>
+      <td>4.869082</td>
+      <td>15.664103</td>
+      <td>-1.841635</td>
+      <td>146</td>
+      <td>2.966667</td>
+      <td>9.666667</td>
+      <td>4.535000</td>
+      <td>26.813333</td>
+      <td>22.636667</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>alqt14018795225</td>
+      <td>64</td>
+      <td>488</td>
+      <td>484</td>
+      <td>3</td>
+      <td>1</td>
+      <td>7.525781</td>
+      <td>5.434563</td>
+      <td>25.858594</td>
+      <td>3.374839</td>
+      <td>18.332813</td>
+      <td>-2.059723</td>
+      <td>484</td>
+      <td>13.450000</td>
+      <td>3.100000</td>
+      <td>4.183333</td>
+      <td>27.438333</td>
+      <td>23.416667</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+```python
+df.iloc[0]
+```
+
+
+
+
+    unique_code                      alqt1148284857
+    num_days                                     13
+    num_total_items                             149
+    num_f_n_b                                    96
+    num_medications                              19
+    num_water                                    34
+    breakfast_avg                          7.821795
+    breakfast_std                          6.710717
+    dinner_avg                            23.485897
+    dinner_std                             4.869082
+    eating_win_avg                        15.664103
+    eating_win_std                        -1.841635
+    good_logging_count                          146
+    breakfast variation (90%-10%)          2.966667
+    dinner variation (90%-10%)             9.666667
+    2.5%                                      4.535
+    95%                                   26.813333
+    duration mid 95%                      22.636667
+    Name: 0, dtype: object
+
+
+
+```python
+df.iloc[1]
+```
+
+
+
+
+    unique_code                      alqt14018795225
+    num_days                                      64
+    num_total_items                              488
+    num_f_n_b                                    484
+    num_medications                                3
+    num_water                                      1
+    breakfast_avg                           7.525781
+    breakfast_std                           5.434563
+    dinner_avg                             25.858594
+    dinner_std                              3.374839
+    eating_win_avg                         18.332813
+    eating_win_std                         -2.059723
+    good_logging_count                           484
+    breakfast variation (90%-10%)              13.45
+    dinner variation (90%-10%)                   3.1
+    2.5%                                    4.183333
+    95%                                    27.438333
+    duration mid 95%                       23.416667
     Name: 1, dtype: object
 
 

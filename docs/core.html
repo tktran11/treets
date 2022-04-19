@@ -57,7 +57,7 @@ nb_path: "00_core.ipynb"
 </code></pre>
 <p>Input:</p>
 
-<pre><code>- in_path : input path, csv or pickle file
+<pre><code>- in_path(str, pandas df): input path, csv or pickle file
 
 
 </code></pre>
@@ -196,10 +196,10 @@ nb_path: "00_core.ipynb"
 </code></pre>
 <p>Input:</p>
 
-<pre><code>- in_path : input path, file in pickle, csv or pandas dataframe format
+<pre><code>- in_path(str, pandas df): input path, file in pickle, csv or pandas dataframe format
 
-- col, pd.datetime object : column that contains the information of date and time that's 24 hours system.
-- h, int : hours to shift the date. For example, when h = 4, everyday starts and ends 4 hours later than normal.
+- col(str) : column that contains the information of date and time, which is 24 hours system.
+- h(int) : hours to shift the date. For example, when h = 4, everyday starts and ends 4 hours later than normal.
 
 </code></pre>
 <p>Return:</p>
@@ -491,10 +491,10 @@ nb_path: "00_core.ipynb"
 </code></pre>
 <p>Input:</p>
 
-<pre><code>- in_path : input path, file in pickle, csv or pandas dataframe format
+<pre><code>- in_path (str, pandas df): input path, file in pickle, csv or pandas dataframe format
 
-- col, pd.datetime object : column that contains the information of date and time that's 24 hours system.
-- h, int : hours to shift the date. For example, when h = 4, everyday starts at 4 and ends at 28. When h = -4, everyday starts at -4 and ends at 20.
+- col(str) : column that contains the information of date and time that's 24 hours system.
+- h(int) : hours to shift the date. For example, when h = 4, everyday starts at 4 and ends at 28. When h = -4, everyday starts at -4 and ends at 20.
 
 </code></pre>
 <p>Return:</p>
@@ -818,9 +818,9 @@ nb_path: "00_core.ipynb"
 </code></pre>
 <p>Input:</p>
 
-<pre><code>- in_path : input path, file in pickle, csv or pandas dataframe format
+<pre><code>- in_path (str, pandas df): input path, file in pickle, csv or pandas dataframe format
 
-- identifier : unique_id or ID, or name that identifies people.
+- identifier (str): unique_id or ID, or name that identifies people.
 
 </code></pre>
 <p>Return:</p>
@@ -967,7 +967,7 @@ nb_path: "00_core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="load_public_data" class="doc_header"><code>load_public_data</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L154" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_public_data</code>(<strong><code>in_path</code></strong>)</p>
+<h4 id="load_public_data" class="doc_header"><code>load_public_data</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L154" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>load_public_data</code>(<strong><code>in_path</code></strong>, <strong><code>h</code></strong>=<em><code>4</code></em>)</p>
 </blockquote>
 <p>Description:</p>
 
@@ -994,8 +994,9 @@ Process includes:
 </code></pre>
 <p>Input:</p>
 
-<pre><code>- in_path : input path, csv file
+<pre><code>- in_path (str, pandas df): input path, csv file
 
+- h(int) : hours to shift the date. For example, when h = 4, everyday starts and ends 4 hours later than normal.
 
 </code></pre>
 <p>Output:</p>
@@ -1152,7 +1153,7 @@ Process includes:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="filtering_usable_data" class="doc_header"><code>filtering_usable_data</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L221" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>filtering_usable_data</code>(<strong><code>df</code></strong>, <strong><code>num_items</code></strong>, <strong><code>num_days</code></strong>)</p>
+<h4 id="filtering_usable_data" class="doc_header"><code>filtering_usable_data</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L222" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>filtering_usable_data</code>(<strong><code>df</code></strong>, <strong><code>num_items</code></strong>, <strong><code>num_days</code></strong>)</p>
 </blockquote>
 <p>Description:</p>
 
@@ -1308,7 +1309,7 @@ Process includes:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="prepare_baseline_and_intervention_usable_data" class="doc_header"><code>prepare_baseline_and_intervention_usable_data</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L265" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>prepare_baseline_and_intervention_usable_data</code>(<strong><code>in_path</code></strong>)</p>
+<h4 id="prepare_baseline_and_intervention_usable_data" class="doc_header"><code>prepare_baseline_and_intervention_usable_data</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L266" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>prepare_baseline_and_intervention_usable_data</code>(<strong><code>in_path</code></strong>)</p>
 </blockquote>
 <p>Description:</p>
 
@@ -1318,7 +1319,7 @@ Process includes:
 </code></pre>
 <p>Input:</p>
 
-<pre><code>- in_path : input path, file in pickle, csv or pandas dataframe format
+<pre><code>- in_path (str, pandas df): input path, file in pickle, csv or pandas dataframe format
 
 
 </code></pre>
@@ -1612,7 +1613,7 @@ Process includes:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="in_good_logging_day" class="doc_header"><code>in_good_logging_day</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L306" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>in_good_logging_day</code>(<strong><code>in_path</code></strong>, <strong><code>identifier</code></strong>=<em><code>'unique_code'</code></em>, <strong><code>time_col</code></strong>=<em><code>'local_time'</code></em>, <strong><code>min_log_num</code></strong>=<em><code>2</code></em>, <strong><code>min_seperation</code></strong>=<em><code>4</code></em>)</p>
+<h4 id="in_good_logging_day" class="doc_header"><code>in_good_logging_day</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L307" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>in_good_logging_day</code>(<strong><code>in_path</code></strong>, <strong><code>identifier</code></strong>=<em><code>'unique_code'</code></em>, <strong><code>time_col</code></strong>=<em><code>'local_time'</code></em>, <strong><code>min_log_num</code></strong>=<em><code>2</code></em>, <strong><code>min_seperation</code></strong>=<em><code>4</code></em>)</p>
 </blockquote>
 <p>Description:</p>
 
@@ -1622,15 +1623,15 @@ Process includes:
 </code></pre>
 <p>Input:</p>
 
-<pre><code>- in_path : input path, file in pickle, csv or pandas dataframe format.
+<pre><code>- in_path (str, pandas df): input path, file in pickle, csv or pandas dataframe format.
 
-- identifier : id-like column that's used to identify a subject.
+- identifier (str): id-like column that's used to identify a subject.
 
-- time_col : column that contains time in float format.
+- time_col (str): column that contains time in float format.
 
-- min_log_num : filteration criteria on the minimum number of loggings each day.
+- min_log_num (count,int): filteration criteria on the minimum number of loggings each day.
 
-- min_seperation: filteration criteria on the minimum separations between the earliest and latest loggings each day.
+- min_seperation(hours,int): filteration criteria on the minimum separations between the earliest and latest loggings each day.
 
 
 </code></pre>
@@ -1791,7 +1792,7 @@ Process includes:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="most_active_user" class="doc_header"><code>most_active_user</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L342" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>most_active_user</code>(<strong><code>in_path</code></strong>, <strong><code>food_type</code></strong>=<em><code>['f', 'b', 'm', 'w']</code></em>)</p>
+<h4 id="most_active_user" class="doc_header"><code>most_active_user</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L343" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>most_active_user</code>(<strong><code>in_path</code></strong>, <strong><code>food_type</code></strong>=<em><code>['f', 'b', 'm', 'w']</code></em>)</p>
 </blockquote>
 <p>Description:</p>
 
@@ -1801,9 +1802,9 @@ Process includes:
 </code></pre>
 <p>Input:</p>
 
-<pre><code>- in_path : input path, file in pickle, csv or pandas dataframe format.
+<pre><code>- in_path (str, pandas df): input path, file in pickle, csv or pandas dataframe format.
 
-- food_type : food types to filter in a list format. Default: ["f", "b", "m", "w"]. Available food types:
+- food_type (str): food types to filter in a list format. Default: ["f", "b", "m", "w"]. Available food types:
 
     1. 'w' : water 
 
@@ -2011,13 +2012,13 @@ Process includes:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="convert_loggings" class="doc_header"><code>convert_loggings</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L382" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>convert_loggings</code>(<strong><code>in_path</code></strong>)</p>
+<h4 id="convert_loggings" class="doc_header"><code>convert_loggings</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L383" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>convert_loggings</code>(<strong><code>in_path</code></strong>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function convert all the loggings in the in_path file into a list of individual items based on the desc_text column.</p>
 <p>Input:</p>
 
-<pre><code>- in_path : input path, file in pickle, csv or panda dataframe format.
+<pre><code>- in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.
 
 
 </code></pre>
@@ -2080,15 +2081,15 @@ Process includes:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_certain_types" class="doc_header"><code>get_certain_types</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L422" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_certain_types</code>(<strong><code>in_path</code></strong>, <strong><code>food_type</code></strong>)</p>
+<h4 id="get_certain_types" class="doc_header"><code>get_certain_types</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L423" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_certain_types</code>(<strong><code>in_path</code></strong>, <strong><code>food_type</code></strong>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function filters with the expected food types and return a cleaner version of in_path file.</p>
 <p>Input:</p>
 
-<pre><code>- in_path : input path, file in pickle, csv or panda dataframe format.
+<pre><code>- in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.
 
-- food_type : expected types of the loggings for filtering, in format of list. Available types:  
+- food_type (str): expected types of the loggings for filtering, in format of list. Available types:  
 
     1. 'w' : water 
 
@@ -2319,13 +2320,13 @@ Process includes:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="eating_intervals_percentile" class="doc_header"><code>eating_intervals_percentile</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L466" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>eating_intervals_percentile</code>(<strong><code>in_path</code></strong>, <strong><code>time_col</code></strong>, <strong><code>identifier</code></strong>)</p>
+<h4 id="eating_intervals_percentile" class="doc_header"><code>eating_intervals_percentile</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L467" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>eating_intervals_percentile</code>(<strong><code>in_path</code></strong>, <strong><code>time_col</code></strong>, <strong><code>identifier</code></strong>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function calculates the .025, .05, .10, .125, .25, .5, .75, .875, .9, .95, .975 quantile of eating time and mid 95%, mid 90%, mid 80%, mid 75% and mid 50% duration for each user.</p>
 <p>Input:</p>
 
-<pre><code>- in_path : input path, file in pickle, csv or panda dataframe format.
+<pre><code>- in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.
 
 - time_col(str) : the column that represents the eating time
 - identitfier(str) : participants' unique identifier such as id, name, etc
@@ -2521,16 +2522,20 @@ Process includes:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="summarize_data" class="doc_header"><code>summarize_data</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L494" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>summarize_data</code>(<strong><code>in_path</code></strong>, <strong><code>float_time_col</code></strong>, <strong><code>identifier</code></strong>, <strong><code>min_log_num</code></strong>=<em><code>2</code></em>, <strong><code>min_seperation</code></strong>=<em><code>4</code></em>)</p>
+<h4 id="summarize_data" class="doc_header"><code>summarize_data</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L495" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>summarize_data</code>(<strong><code>in_path</code></strong>, <strong><code>float_time_col</code></strong>, <strong><code>identifier</code></strong>, <strong><code>min_log_num</code></strong>=<em><code>2</code></em>, <strong><code>min_seperation</code></strong>=<em><code>4</code></em>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function calculates num_days, num_total_items, num_f_n_b, num_medications, num_water, duration_mid_95, start_95, end_95, breakfast_avg, breakfast_std, dinner_avg, dinner_std, eating_win_avg, eating_win_std, adherent_count, breakfast variation (90%-10%), dinner variation (90%-10%).</p>
 <p>Input:</p>
 
-<pre><code>- in_path : input path, file in pickle, csv or panda dataframe format.
+<pre><code>- in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.
 
-- time_col(str) : the column that represents the eating time
+- float_time_col(str) : the column that represents the eating time
 - identitfier(str) : participants' unique identifier such as id, name, etc
+- min_log_num (count,int): filteration criteria on the minimum number of loggings each day.
+
+- min_seperation(hours,int): filteration criteria on the minimum separations between the earliest and latest loggings each day.
+
 
 </code></pre>
 <p>Return:</p>
@@ -2867,13 +2872,13 @@ Process includes:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="breakfast_analysis_summary" class="doc_header"><code>breakfast_analysis_summary</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L575" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>breakfast_analysis_summary</code>(<strong><code>in_path</code></strong>)</p>
+<h4 id="breakfast_analysis_summary" class="doc_header"><code>breakfast_analysis_summary</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L580" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>breakfast_analysis_summary</code>(<strong><code>in_path</code></strong>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function takes the loggings in good logging days and calculate the 5%,10%,25%,50%,75%,90%,95% quantile of breakfast time for each user.</p>
 <p>Input:</p>
 
-<pre><code>- in_path : input path, file in pickle, csv or panda dataframe format.
+<pre><code>- in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.
 
 
 </code></pre>
@@ -3025,13 +3030,13 @@ Process includes:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="breakfast_analysis_variability" class="doc_header"><code>breakfast_analysis_variability</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L614" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>breakfast_analysis_variability</code>(<strong><code>in_path</code></strong>, <strong><code>plot</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="breakfast_analysis_variability" class="doc_header"><code>breakfast_analysis_variability</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L619" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>breakfast_analysis_variability</code>(<strong><code>in_path</code></strong>, <strong><code>plot</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function calculates the variability by subtracting 5%,10%,25%,50%,75%,90%,95% quantile of breakfast time from the 50% breakfast time. It also make a histogram that represents the 90%-10% interval for all subjects.</p>
 <p>Input:</p>
 
-<pre><code>- in_path : input path, file in pickle, csv or panda dataframe format.
+<pre><code>- in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.
 
 
 </code></pre>
@@ -3195,13 +3200,13 @@ Process includes:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="breakfast_avg_histplot" class="doc_header"><code>breakfast_avg_histplot</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L666" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>breakfast_avg_histplot</code>(<strong><code>in_path</code></strong>)</p>
+<h4 id="breakfast_avg_histplot" class="doc_header"><code>breakfast_avg_histplot</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L671" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>breakfast_avg_histplot</code>(<strong><code>in_path</code></strong>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function take the first caloric event (no water or med) and calculate average event's time for “each participant”.</p>
 <p>Input:</p>
 
-<pre><code>- in_path : input path, file in pickle, csv or panda dataframe format.
+<pre><code>- in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.
 
 
 </code></pre>
@@ -3293,15 +3298,15 @@ Process includes:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="breakfast_sample_distplot" class="doc_header"><code>breakfast_sample_distplot</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L693" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>breakfast_sample_distplot</code>(<strong><code>in_path</code></strong>, <strong><code>n</code></strong>)</p>
+<h4 id="breakfast_sample_distplot" class="doc_header"><code>breakfast_sample_distplot</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L698" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>breakfast_sample_distplot</code>(<strong><code>in_path</code></strong>, <strong><code>n</code></strong>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function plots the distplot for the breakfast time from n participants that will be randomly selected.</p>
 <p>Input:</p>
 
-<pre><code>- in_path : input path, file in pickle, csv or panda dataframe format.
+<pre><code>- in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.
 
-- n : the number of distplot in the output figure
+- n (int): the number of distplot in the output figure
 
 </code></pre>
 <p>Return:</p>
@@ -3396,13 +3401,13 @@ alqt8668165687
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="dinner_analysis_summary" class="doc_header"><code>dinner_analysis_summary</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L723" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dinner_analysis_summary</code>(<strong><code>in_path</code></strong>, <strong><code>export</code></strong>=<em><code>False</code></em>)</p>
+<h4 id="dinner_analysis_summary" class="doc_header"><code>dinner_analysis_summary</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L728" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dinner_analysis_summary</code>(<strong><code>in_path</code></strong>, <strong><code>export</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function takes the loggings in good logging days and calculate the 5%,10%,25%,50%,75%,90%,95% quantile of dinner time for each user.</p>
 <p>Input:</p>
 
-<pre><code>- in_path : input path, file in pickle, csv or panda dataframe format.
+<pre><code>- in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.
 
 
 </code></pre>
@@ -3554,13 +3559,13 @@ alqt8668165687
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="dinner_analysis_variability" class="doc_header"><code>dinner_analysis_variability</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L762" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dinner_analysis_variability</code>(<strong><code>in_path</code></strong>, <strong><code>plot</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="dinner_analysis_variability" class="doc_header"><code>dinner_analysis_variability</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L767" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dinner_analysis_variability</code>(<strong><code>in_path</code></strong>, <strong><code>plot</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function calculates the variability by subtracting 5%,10%,25%,50%,75%,90%,95% quantile of dinner time from the 50% dinner time. It also make a histogram that represents the 90%-10% interval for all subjects.</p>
 <p>Input:</p>
 
-<pre><code>- in_path : input path, file in pickle, csv or panda dataframe format.
+<pre><code>- in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.
 
 
 </code></pre>
@@ -3724,13 +3729,13 @@ alqt8668165687
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="dinner_avg_histplot" class="doc_header"><code>dinner_avg_histplot</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L812" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dinner_avg_histplot</code>(<strong><code>in_path</code></strong>)</p>
+<h4 id="dinner_avg_histplot" class="doc_header"><code>dinner_avg_histplot</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L817" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dinner_avg_histplot</code>(<strong><code>in_path</code></strong>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function take the last caloric event (no water or med) and calculate average event's time for “each participant”.</p>
 <p>Input:</p>
 
-<pre><code>- in_path : input path, file in pickle, csv or panda dataframe format.
+<pre><code>- in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.
 
 
 </code></pre>
@@ -3822,15 +3827,15 @@ alqt8668165687
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="dinner_sample_distplot" class="doc_header"><code>dinner_sample_distplot</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L839" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dinner_sample_distplot</code>(<strong><code>in_path</code></strong>, <strong><code>n</code></strong>)</p>
+<h4 id="dinner_sample_distplot" class="doc_header"><code>dinner_sample_distplot</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L844" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dinner_sample_distplot</code>(<strong><code>in_path</code></strong>, <strong><code>n</code></strong>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function plots the distplot for the dinner time from n participants that will be randomly selected.</p>
 <p>Input:</p>
 
-<pre><code>- in_path : input path, file in pickle, csv or panda dataframe format.
+<pre><code>- in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.
 
-- n : the number of participants that will be randomly selected in the output figure
+- n (int): the number of participants that will be randomly selected in the output figure
 
 </code></pre>
 <p>Return:</p>
@@ -3925,15 +3930,15 @@ alqt8668165687
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="swarmplot" class="doc_header"><code>swarmplot</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L869" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>swarmplot</code>(<strong><code>in_path</code></strong>, <strong><code>max_loggings</code></strong>)</p>
+<h4 id="swarmplot" class="doc_header"><code>swarmplot</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L874" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>swarmplot</code>(<strong><code>in_path</code></strong>, <strong><code>max_loggings</code></strong>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function plots the swarmplot the participants from the in_path file.</p>
 <p>Input:</p>
 
-<pre><code>- in_path : input path, file in pickle, csv or panda dataframe format.
+<pre><code>- in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.
 
-- max_loggings : the max number of loggings to be plotted for each participants, loggings will be randomly selected.
+- max_loggings (int): the max number of loggings to be plotted for each participants, loggings will be randomly selected.
 
 </code></pre>
 <p>Return:</p>
@@ -4024,7 +4029,7 @@ alqt8668165687
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FoodParser" class="doc_header"><code>class</code> <code>FoodParser</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L926" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FoodParser</code>()</p>
+<h2 id="FoodParser" class="doc_header"><code>class</code> <code>FoodParser</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L931" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FoodParser</code>()</p>
 </blockquote>
 <p>A class that reads in food loggings from the app. Used as helper function for the function convert_loggings().</p>
 
