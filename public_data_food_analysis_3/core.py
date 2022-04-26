@@ -72,7 +72,7 @@ def find_date(in_path, col, h=0):
         - h(int) : hours to shift the date. For example, when h = 4, everyday starts and ends 4 hours later than normal.
 
     Return:\n
-        - a numpy array represents the date extracted from col.\n
+        - a pandas series represents the date extracted from col.\n
 
     Requirements:\n
         Elements in col should be pd.datetime objects
@@ -105,7 +105,7 @@ def find_float_time(in_path, col, h=0):
         - h(int) : hours to shift the date. For example, when h = 4, everyday starts at 4 and ends at 28. When h = -4, everyday starts at -4 and ends at 20.
 
     Return:\n
-        - a numpy array represents the date extracted from col.\n
+        - a pandas series represents the date extracted from col.\n
 
     Requirements:\n
         Elements in col should be pd.datetime objects
@@ -113,7 +113,7 @@ def find_float_time(in_path, col, h=0):
     """
     df = universal_key(in_path)
     if df[col].dtype == 'O':
-        raise TypeError("'{}' column must be converted to datetime object".format(col))
+        raise TypeError("'{}' column must be converted to datetime object firsly".format(col))
     local_time = df[col].apply(lambda x: pd.Timedelta(x.time().isoformat()).total_seconds() /3600.)
     if h > 0:
         local_time = np.where(local_time < h, 24+ local_time, local_time)
@@ -383,7 +383,7 @@ def most_active_user(in_path, food_type = ["f", "b", "m", "w"]):
 def convert_loggings(in_path):
     """
     Description:\n
-       This function convert all the loggings in the in_path file into a list of individual items based on the desc_text column.\n
+       This function convert all the loggings in the in_path file into a list of individual items based on the desc_text column. This function is based on a built-in vocabulary dictionary and an n-gram searcher.\n
 
     Input:\n
         - in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.\n

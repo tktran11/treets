@@ -204,7 +204,7 @@ nb_path: "00_core.ipynb"
 </code></pre>
 <p>Return:</p>
 
-<pre><code>- a numpy array represents the date extracted from col.
+<pre><code>- a pandas series represents the date extracted from col.
 
 
 </code></pre>
@@ -499,7 +499,7 @@ nb_path: "00_core.ipynb"
 </code></pre>
 <p>Return:</p>
 
-<pre><code>- a numpy array represents the date extracted from col.
+<pre><code>- a pandas series represents the date extracted from col.
 
 
 </code></pre>
@@ -2015,7 +2015,7 @@ Process includes:
 <h4 id="convert_loggings" class="doc_header"><code>convert_loggings</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L383" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>convert_loggings</code>(<strong><code>in_path</code></strong>)</p>
 </blockquote>
 <p>Description:</p>
-<p>This function convert all the loggings in the in_path file into a list of individual items based on the desc_text column.</p>
+<p>This function convert all the loggings in the in_path file into a list of individual items based on the desc_text column. This function is based on a built-in vocabulary dictionary and an n-gram searcher.</p>
 <p>Input:</p>
 
 <pre><code>- in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.
