@@ -472,7 +472,7 @@ def eating_intervals_percentile(in_path, time_col, identifier):
        This function calculates the .025, .05, .10, .125, .25, .5, .75, .875, .9, .95, .975 quantile of eating time and mid 95%, mid 90%, mid 80%, mid 75% and mid 50% duration for each user.\n
 
     Input:\n
-        - in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.\n
+        - in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.
         - time_col(str) : the column that represents the eating time
         - identitfier(str) : participants' unique identifier such as id, name, etc
 
@@ -524,13 +524,13 @@ def summarize_data(in_path, float_time_col, identifier, min_log_num = 2, min_sep
     num_total_items = df.groupby(identifier).count().iloc[:,0]
 
     #num_f_n_b
-    num_f_n_b = get_certain_types(df, ['f','b']).groupby(identifier).count().iloc[:,0]
+    num_f_n_b = get_types(df, ['f','b']).groupby(identifier).count().iloc[:,0]
 
     #num_medications
-    num_medications = get_certain_types(df, ['m']).groupby(identifier).count().iloc[:,0]
+    num_medications = get_types(df, ['m']).groupby(identifier).count().iloc[:,0]
 
     #num_water
-    num_water = get_certain_types(df, ['w']).groupby(identifier).count().iloc[:,0]
+    num_water = get_types(df, ['w']).groupby(identifier).count().iloc[:,0]
 
     #duration_mid_95, start_95, end_95
     eating_intervals = eating_intervals_percentile(df, float_time_col, identifier)[['2.5%','95%','duration mid 95%']]
@@ -579,32 +579,33 @@ def summarize_data(in_path, float_time_col, identifier, min_log_num = 2, min_sep
 
 
 # Cell
-def breakfast_analysis_summary(in_path):
+def breakfast_analysis_summary(in_path, identifier, date_col, time_col,min_log_num=2, min_separation=4):
     """
     Description:\n
        This function takes the loggings in good logging days and calculate the 5%,10%,25%,50%,75%,90%,95% quantile of breakfast time for each user.\n
 
     Input:\n
-        - in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.\n
+        - in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.
+        - identitfier(str) : participants' unique identifier such as id, name, etc.
+        - date_col(str) : the column that represents the dates.
+        - time_col(str) : the column that represents the float time.
+        - min_log_num (count,int): filteration criteria on the minimum number of loggings each day.
+        - min_seperation(hours,int): filteration criteria on the minimum separations between the earliest and latest loggings each day.
+
 
     Return:\n
         - A summary table with 5%,10%,25%,50%,75%,90%,95% quantile of breakfast time for all subjects from the in_path file.\n
 
-    Requirements:\n
-        in_path file must have the following columns:\n
-            - unique_code\n
-            - date\n
-            - local_time\n
 
     """
 
     df = universal_key(in_path)
 
     # leave only the loggings in a good logging day
-    df['in_good_logging_day'] = in_good_logging_day(df)
+    df['in_good_logging_day'] = in_good_logging_day(df, identifier, time_col, min_log_num, min_separation)
     df = df[df['in_good_logging_day']==True]
 
-    breakfast_series = df.groupby(['unique_code', 'date'])['local_time'].min().groupby('unique_code').quantile([0.05, 0.10, 0.25, 0.5, 0.75, 0.90, 0.95])
+    breakfast_series = df.groupby([identifier, date_col])[time_col].min().groupby(identifier).quantile([0.05, 0.10, 0.25, 0.5, 0.75, 0.90, 0.95])
     breakfast_df = pd.DataFrame(breakfast_series)
     all_rows = []
     for index in breakfast_df.index:
@@ -618,13 +619,19 @@ def breakfast_analysis_summary(in_path):
     return breakfast_summary_df
 
 # Cell
-def breakfast_analysis_variability(in_path, plot=True):
+def breakfast_analysis_variability(in_path,identifier, date_col, time_col, min_log_num=2, min_separation=4, plot=True):
     """
     Description:\n
-       This function calculates the variability by subtracting 5%,10%,25%,50%,75%,90%,95% quantile of breakfast time from the 50% breakfast time. It also make a histogram that represents the 90%-10% interval for all subjects.\n
+       This function calculates the variability of loggings in good logging day by subtracting 5%,10%,25%,50%,75%,90%,95% quantile of breakfast time from the 50% breakfast time. It can also make a histogram that represents the 90%-10% interval for all subjects.\n
 
     Input:\n
-        - in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.\n
+        - in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.
+        - identitfier(str) : participants' unique identifier such as id, name, etc
+        - date_col(str) : the column that represents the dates
+        - time_col(str) : the column that represents the float time
+        - min_log_num (count,int): filteration criteria on the minimum number of loggings each day.
+        - min_seperation(hours,int): filteration criteria on the minimum separations between the earliest and latest loggings each day.
+        - plot(bool) : Whether generating a histogram for breakfast variability. Default = True.
 
     Return:\n
         - A dataframe that contains 5%,10%,25%,50%,75%,90%,95% quantile of breakfast time minus 50% time for each subjects from the in_path file.\n
@@ -640,7 +647,7 @@ def breakfast_analysis_variability(in_path, plot=True):
     df = universal_key(in_path)
 
     # leave only the loggings in a good logging day
-    df['in_good_logging_day'] = in_good_logging_day(df)
+    df['in_good_logging_day'] = in_good_logging_day(df, identifier, time_col, min_log_num, min_separation)
     df = df[df['in_good_logging_day']==True]
 
     breakfast_series = df.groupby(['unique_code', 'date'])['local_time'].min().groupby('unique_code').quantile([0.05, 0.10, 0.25, 0.5, 0.75, 0.90, 0.95])
@@ -670,34 +677,34 @@ def breakfast_analysis_variability(in_path, plot=True):
     return breakfast_variability_df
 
 # Cell
-def breakfast_avg_histplot(in_path):
+def breakfast_avg_histplot(in_path, identifier, date_col, time_col):
     """
     Description:\n
        This function take the first caloric event (no water or med) and calculate average event's time for “each participant”.\n
 
     Input:\n
-        - in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.\n
+        - in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.
+        - identitfier(str) : participants' unique identifier such as id, name, etc.
+        - date_col(str) : the column that represents the dates.
+        - time_col(str) : the column that represents the float time.
 
     Return:\n
         - None
 
     Requirements:\n
         in_path file must have the following columns:\n
-            - unique_code\n
-            - date\n
-            - local_time\n
             - food_type\n
     """
     df = universal_key(in_path)
     df = df.query('food_type in ["f", "b"]')
-    breakfast_time = df.groupby(['unique_code', 'date'])['local_time'].min()
-    avg_breakfast_time = breakfast_time.reset_index().groupby('unique_code').mean()
+    breakfast_time = df.groupby([identifier, date_col])[time_col].min()
+    avg_breakfast_time = breakfast_time.reset_index().groupby(identifier).mean()
     fig, ax = plt.subplots(1, 1, figsize = (10, 10), dpi=80)
-    sns.distplot(avg_breakfast_time['local_time'], kde = False)
+    sns.distplot(avg_breakfast_time[time_col], kde = False)
     ax.set(xlabel='First Meal Time - Averaged by Person', ylabel='Frequency Count')
 
 # Cell
-def breakfast_sample_distplot(in_path, n):
+def breakfast_sample_distplot(in_path, n, identifier, date_col, time_col):
     """
     Description:\n
        This function plots the distplot for the breakfast time from n participants that will be randomly selected.\n
@@ -705,53 +712,54 @@ def breakfast_sample_distplot(in_path, n):
     Input:\n
         - in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.\n
         - n (int): the number of distplot in the output figure
+        - identitfier(str) : participants' unique identifier such as id, name, etc.
+        - date_col(str) : the column that represents the dates.
+        - time_col(str) : the column that represents the float time.
 
     Return:\n
         - None
 
     Requirements:\n
         in_path file must have the following columns:\n
-            - unique_code\n
-            - date\n
-            - local_time\n
+            - food_type\n
     """
     df = universal_key(in_path)
     df = df[df['food_type'].isin(['f','b'])]
-    breakfast_by_person = pd.DataFrame(df.groupby(['unique_code', 'date'])\
-                                       ['local_time'].min())
+    breakfast_by_person = pd.DataFrame(df.groupby([identifier, date_col])\
+                                       [time_col].min())
     fig, ax = plt.subplots(1, 1, figsize = (10, 10), dpi=80)
 
     print('Plotting distplots for the following users:')
-    for i in np.random.choice(np.array(list(set(breakfast_by_person.index.droplevel('date')))), n):
+    for i in np.random.choice(np.array(list(set(breakfast_by_person.index.droplevel(date_col)))), n):
         print(i)
-        sns.distplot(breakfast_by_person['local_time'].loc[i])
+        sns.distplot(breakfast_by_person[time_col].loc[i])
 
 # Cell
-def dinner_analysis_summary(in_path, export = False):
+def dinner_analysis_summary(in_path, identifier, date_col, time_col, min_log_num=2, min_separation=4):
     """
     Description:\n
        This function takes the loggings in good logging days and calculate the 5%,10%,25%,50%,75%,90%,95% quantile of dinner time for each user.\n
 
     Input:\n
-        - in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.\n
+        - in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.
+        - identitfier(str) : participants' unique identifier such as id, name, etc.
+        - date_col(str) : the column that represents the dates.
+        - time_col(str) : the column that represents the float time.
+        - min_log_num (count,int): filteration criteria on the minimum number of loggings each day.
+        - min_seperation(hours,int): filteration criteria on the minimum separations between the earliest and latest loggings each day.
 
     Return:\n
         - A summary table with 5%,10%,25%,50%,75%,90%,95% quantile of dinner time for all subjects from the in_path file.\n
 
-    Requirements:\n
-        in_path file must have the following columns:\n
-            - unique_code\n
-            - date\n
-            - local_time\n
     """
 
     df = universal_key(in_path)
 
     # leave only the loggings that are in a good logging day
-    df['in_good_logging_day'] = in_good_logging_day(df)
+    df['in_good_logging_day'] = in_good_logging_day(df, identifier, time_col, min_log_num, min_separation)
     df = df[df['in_good_logging_day']==True]
 
-    dinner_series = df.groupby(['unique_code', 'date'])['local_time'].max().groupby('unique_code').quantile([0.05, 0.10, 0.25, 0.5, 0.75, 0.90, 0.95])
+    dinner_series = df.groupby([identifier, date_col])[time_col].max().groupby(identifier).quantile([0.05, 0.10, 0.25, 0.5, 0.75, 0.90, 0.95])
     dinner_df = pd.DataFrame(dinner_series)
     all_rows = []
     for index in dinner_df.index:
@@ -766,28 +774,28 @@ def dinner_analysis_summary(in_path, export = False):
     return dinner_summary_df
 
 # Cell
-def dinner_analysis_variability(in_path, plot=True):
+def dinner_analysis_variability(in_path, identifier, date_col, time_col, min_log_num=2, min_separation=4, plot=True):
     """
     Description:\n
-       This function calculates the variability by subtracting 5%,10%,25%,50%,75%,90%,95% quantile of dinner time from the 50% dinner time. It also make a histogram that represents the 90%-10% interval for all subjects.\n
+       This function calculates the variability of loggings in good logging day by subtracting 5%,10%,25%,50%,75%,90%,95% quantile of dinner time from the 50% dinner time. It also make a histogram that represents the 90%-10% interval for all subjects.\n
 
     Input:\n
-        - in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.\n
-
+        - in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.
+        - identitfier(str) : participants' unique identifier such as id, name, etc.
+        - date_col(str) : the column that represents the dates.
+        - time_col(str) : the column that represents the float time.
+        - min_log_num (count,int): filteration criteria on the minimum number of loggings each day.
+        - min_seperation(hours,int): filteration criteria on the minimum separations between the earliest and latest loggings each day.
+        - plot(bool) : Whether generating a histogram for breakfast variability. Default = True.
     Return:\n
         - A dataframe that contains 5%,10%,25%,50%,75%,90%,95% quantile of dinner time minus 50% time for each subjects from the in_path file.\n
 
-    Requirements:\n
-        in_path file must have the following columns:\n
-            - unique_code\n
-            - date\n
-            - local_time\n
     """
 
     df = universal_key(in_path)
 
     # leave only the loggings that are in a good logging day
-    df['in_good_logging_day'] = in_good_logging_day(df)
+    df['in_good_logging_day'] = in_good_logging_day(df, identifier, time_col, min_log_num, min_separation)
     df = df[df['in_good_logging_day']==True]
 
     dinner_series = df.groupby(['unique_code', 'date'])['local_time'].max().groupby('unique_code').quantile([0.05, 0.10, 0.25, 0.5, 0.75, 0.90, 0.95])
@@ -816,64 +824,64 @@ def dinner_analysis_variability(in_path, plot=True):
     return dinner_variability_df
 
 # Cell
-def dinner_avg_histplot(in_path):
+def dinner_avg_histplot(in_path, identifier, date_col, time_col):
     """
     Description:\n
        This function take the last caloric event (no water or med) and calculate average event's time for “each participant”.\n
 
     Input:\n
-        - in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.\n
+        - in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.
+        - identitfier(str) : participants' unique identifier such as id, name, etc.
+        - date_col(str) : the column that represents the dates.
+        - time_col(str) : the column that represents the float time.
 
     Return:\n
         - None
 
     Requirements:\n
-        in_path file must have the following columns:\n
-            - unique_code\n
-            - date\n
-            - local_time\n
             - food_type\n
     """
     df = universal_key(in_path)
     df = df.query('food_type in ["f", "b"]')
-    breakfast_time = df.groupby(['unique_code', 'date'])['local_time'].max()
-    avg_breakfast_time = breakfast_time.reset_index().groupby('unique_code').mean()
+    breakfast_time = df.groupby([identifier, date_col])[time_col].max()
+    avg_breakfast_time = breakfast_time.reset_index().groupby(identifier).mean()
     fig, ax = plt.subplots(1, 1, figsize = (10, 10), dpi=80)
-    sns.distplot(avg_breakfast_time['local_time'], kde = False)
+    sns.distplot(avg_breakfast_time[time_col], kde = False)
     ax.set(xlabel='Last Meal Time - Averaged by Person', ylabel='Frequency Count')
 
 # Cell
-def dinner_sample_distplot(in_path, n):
+def dinner_sample_distplot(in_path, n, identifier, date_col, time_col):
     """
     Description:\n
        This function plots the distplot for the dinner time from n participants that will be randomly selected.\n
 
     Input:\n
-        - in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.\n
+        - in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.
         - n (int): the number of participants that will be randomly selected in the output figure
+        - identitfier(str) : participants' unique identifier such as id, name, etc.
+        - date_col(str) : the column that represents the dates.
+        - time_col(str) : the column that represents the float time.
 
     Return:\n
         - None
 
     Requirements:\n
-        in_path file must have the following columns:\n
-            - unique_code\n
-            - date\n
-            - local_time\n
+        - food_type
+
     """
     df = universal_key(in_path)
     df = df[df['food_type'].isin(['f','b'])]
-    dinner_by_person = pd.DataFrame(df.groupby(['unique_code', 'date'])\
-                                       ['local_time'].max())
+    dinner_by_person = pd.DataFrame(df.groupby([identifier, date_col])\
+                                       [time_col].max())
     fig, ax = plt.subplots(1, 1, figsize = (10, 10), dpi=80)
 
     print('Plotting distplots for the following users:')
-    for i in np.random.choice(np.array(list(set(dinner_by_person.index.droplevel('date')))), n):
+    for i in np.random.choice(np.array(list(set(dinner_by_person.index.droplevel(date_col)))), n):
         print(i)
-        sns.distplot(dinner_by_person['local_time'].loc[i])
+        sns.distplot(dinner_by_person[time_col].loc[i])
 
 # Cell
-def swarmplot(in_path, max_loggings):
+def swarmplot(in_path, max_loggings, identifier, date_col, time_col):
     """
     Description:\n
        This function plots the swarmplot the participants from the in_path file.\n
@@ -881,16 +889,15 @@ def swarmplot(in_path, max_loggings):
     Input:\n
         - in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.\n
         - max_loggings (int): the max number of loggings to be plotted for each participants, loggings will be randomly selected.
-
+        - identitfier(str) : participants' unique identifier such as id, name, etc.
+        - date_col(str) : the column that represents the dates.
+        - time_col(str) : the column that represents the float time.
     Return:\n
         - None
 
     Requirements:\n
         in_path file must have the following columns:\n
-            - unique_code\n
             - food_type\n
-            - date\n
-            - local_time\n
     """
 
     df = universal_key(in_path)
@@ -898,7 +905,7 @@ def swarmplot(in_path, max_loggings):
     def subsamp_by_cond(alldat):
         alld = []
         for apart in alldat.unique_code.unique():
-            dat = alldat.query('unique_code == @apart')
+            dat = alldat[alldat[identifier]==apart]
             f_n_b = dat.query('food_type in ["f", "b"]')
             n = min([f_n_b.shape[0], max_loggings])
             sub = f_n_b.sample(n = n, axis=0)
@@ -916,8 +923,8 @@ def swarmplot(in_path, max_loggings):
     plt.title('Food events for TRE group')
 
     ax = sns.swarmplot(data = sample,
-                  y = 'unique_code',
-                  x = 'local_time',
+                  y = identifier,
+                  x = time_col,
                   dodge = True,
                   color = sns.xkcd_rgb['golden rod'],
                  )

@@ -351,7 +351,7 @@ df.iloc[1]
 
 
 
-## Example for data analysis on the Columbia study
+## Example for data analysis using public data food analysis module
 
 ```python
 import public_data_food_analysis_3.core as pdfaco
