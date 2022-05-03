@@ -2,7 +2,7 @@
 
 __all__ = ['universal_key', 'find_date', 'find_float_time', 'week_from_start', 'load_public_data',
            'filtering_usable_data', 'prepare_baseline_and_intervention_usable_data', 'in_good_logging_day',
-           'most_active_user', 'convert_loggings', 'get_certain_types', 'eating_intervals_percentile', 'summarize_data',
+           'most_active_user', 'convert_loggings', 'get_types', 'eating_intervals_percentile', 'summarize_data',
            'breakfast_analysis_summary', 'breakfast_analysis_variability', 'breakfast_avg_histplot',
            'breakfast_sample_distplot', 'dinner_analysis_summary', 'dinner_analysis_variability', 'dinner_avg_histplot',
            'dinner_sample_distplot', 'swarmplot', 'FoodParser']
@@ -117,33 +117,32 @@ def find_float_time(in_path, col, h=0):
     local_time = df[col].apply(lambda x: pd.Timedelta(x.time().isoformat()).total_seconds() /3600.)
     if h > 0:
         local_time = np.where(local_time < h, 24+ local_time, local_time)
-        return local_time
+        return pd.Series(local_time)
     if h < 0:
         local_time = np.where(local_time > (24+h), local_time-24., local_time)
-        return local_time
+        return pd.Series(local_time)
     return local_time
 
 
 # Cell
-def week_from_start(in_path, identifier):
+def week_from_start(in_path, col, identifier):
         """
         Description:\n
             Calculate the number of weeks for each logging since the first day of the logging for each participant(identifier).
         Input:\n
             - in_path (str, pandas df): input path, file in pickle, csv or pandas dataframe format\n
+            - col (str): column name that contains date informaiton from the in_path dataframe.
             - identifier (str): unique_id or ID, or name that identifies people.
 
         Return:\n
             - a numpy array represents the date extracted from col.\n
-
-        Requirements:\n
-            in_path file must have the following columns:\n
-                - date\n
         """
 
         df = universal_key(in_path)
+        if 'date' not in df.columns:
+            raise NameError("There must exist a 'date' column.")
         # Handle week from start
-        df_dic = dict(df.groupby(identifier).agg(np.min)['date'])
+        df_dic = dict(df.groupby(identifier).agg(np.min)[col])
 
         def count_week_public(s):
             return (s.date - df_dic[s[identifier]]).days // 7 + 1
@@ -151,7 +150,7 @@ def week_from_start(in_path, identifier):
         return df.apply(count_week_public, axis = 1)
 
 # Cell
-def load_public_data(in_path, h=4):
+def load_public_data(in_path, h):
     """
     Description:\n
         Load original public data and output processed data in pickle format.\n
@@ -212,19 +211,21 @@ def load_public_data(in_path, h=4):
     public_all['time'] = pd.DatetimeIndex(public_all.original_logtime_notz).time
 
     # Handle week from start
-    public_all['week_from_start'] = week_from_start(public_all,'unique_code')
+    public_all['week_from_start'] = week_from_start(public_all,'date','unique_code')
 
     public_all['year'] = public_all.date.apply(lambda d: d.year)
 
     return public_all
 
 # Cell
-def filtering_usable_data(df, num_items, num_days):
+def filtering_usable_data(df, identifier, date_col, num_items, num_days):
     '''
     Description:\n
         This function filters the cleaned app data so the users who satisfies the criteria are left. The criteria is that the person is left if the total loggings for that person are more than num_items and at the same time, the total days for loggings are more than num_days.\n
     Input:\n
         - df (pd.DataFrame): the dataframe to be filtered\n
+        - identifier (str): unique_id or ID, or name that identifies people.
+        - date_col (str): column name that contains date informaiton from the df dataframe.
         - num_items (int):   number of items to be used as cut-off\n
         - num_days (int):    number of days to be used as cut-off\n
     Output:\n
@@ -234,21 +235,19 @@ def filtering_usable_data(df, num_items, num_days):
         None\n
     Requirements:\n
         df should have the following columns:\n
-            - unique_code\n
             - desc_text\n
-            - date\n
     Used in:\n
         Analysis pipeline\n
     '''
     print(' => filtering_usable_data()')
-    print('  => using the following criteria:', num_items, 'items and', num_days, 'days logged in two weeks.')
+    print('  => using the following criteria:', num_items, 'items and', num_days, 'days.')
 
     # Item logged
-    log_item_count = df.groupby('unique_code').agg('count')[['desc_text']].rename(columns = {'desc_text': 'Total Logged'})
+    log_item_count = df.groupby(identifier).agg('count')[['desc_text']].rename(columns = {'desc_text': 'Total Logged'})
 
     # Day counts
-    log_days_count = df[['unique_code', 'date']]\
-        .drop_duplicates().groupby('unique_code').agg('count').rename(columns = {'date': 'Day Count'})
+    log_days_count = df[[identifier, date_col]]\
+        .drop_duplicates().groupby(identifier).agg('count').rename(columns = {date_col: 'Day Count'})
 
     item_count_passed = set(log_item_count[log_item_count['Total Logged'] >= num_items].index)
     day_count_passed = set(log_days_count[log_days_count['Day Count'] >= num_days].index)
@@ -257,30 +256,33 @@ def filtering_usable_data(df, num_items, num_days):
     print(len(item_count_passed & day_count_passed))
     passed_participant_set = item_count_passed & day_count_passed
     df_usable = df.loc[df.unique_code.apply(lambda c: c in passed_participant_set)]\
-        .dropna().copy().reset_index(drop = True)
+        .copy().reset_index(drop = True)
     # print('  => Now returning the pd.DataFrame object with the head like the following.')
     # display(df_usable.head(5))
     return df_usable, set(df_usable.unique_code.unique())
 
 # Cell
-def prepare_baseline_and_intervention_usable_data(in_path):
+def prepare_baseline_and_intervention_usable_data(in_path, identifier, date_col, baseline_num_items, baseline_num_days, intervention_num_items, intervention_num_days):
     """
     Description:\n
-        Filter and create baseline_expanded and intervention groups based on in_path pickle file.\n
+        Filter and create baseline_expanded and intervention groups based on in_path pickle file. Expanded baseline dataset contains the first two weeks data and 13, 14 weeks data that pass the given criteria. Intervention dataset contains 13, 14 weeks data that pass the given criteria.\n
 
     Input:\n
         - in_path (str, pandas df): input path, file in pickle, csv or pandas dataframe format\n
+        - identifier (str): unique_id or ID, or name that identifies people.
+        - date_col (str): column name that contains date informaiton from the df dataframe.
+        - baseline_num_items (int): number of items to be used as cut-off for baseline group. \n
+        - baseline_num_days (int): number of days to be used as cut-off for baseline group. \n
+        - intervention_num_items (int): number of items to be used as cut-off for intervention group.\n
+        - intervention_num_days (int): number of days to be used as cut-off for intervention group. \n
 
     Return:\n
-        - baseline expanded and intervention dataframes in a list format where index 0 is the baseline dataframe and 1 is the intervention dataframe.\n
+        - a list in which index 0 is the baseline expanded dataframe and 1 is the intervention dataframe.\n
 
     Requirements:\n
         in_path file must have the following columns:\n
             - week_from_start\n
-            - unique_code\n
             - desc_text\n
-            - date\n
-
     """
 
 
@@ -289,12 +291,12 @@ def prepare_baseline_and_intervention_usable_data(in_path):
     # create baseline data
     df_public_baseline = public_all.query('week_from_start <= 2')
     df_public_baseline_usable, public_baseline_usable_id_set = \
-    filtering_usable_data(df_public_baseline, num_items = 40, num_days = 12)
+    filtering_usable_data(df_public_baseline,identifier, date_col, num_items = baseline_num_items, num_days = baseline_num_days)
 
     # create intervention data
     df_public_intervention = public_all.query('week_from_start in [13, 14]')
     df_public_intervention_usable, public_intervention_usable_id_set = \
-    filtering_usable_data(df_public_intervention, num_items = 20, num_days = 8)
+    filtering_usable_data(df_public_intervention,identifier, date_col, num_items = intervention_num_items, num_days = intervention_num_days)
 
     # create df that contains both baseline and intervention id_set that contains data for the first two weeks
     expanded_baseline_usable_id_set = set(list(public_baseline_usable_id_set) + list(public_intervention_usable_id_set))
@@ -420,7 +422,7 @@ def convert_loggings(in_path):
     return public_all_parsed
 
 # Cell
-def get_certain_types(in_path, food_type):
+def get_types(in_path, food_type):
     """
     Description:\n
        This function filters with the expected food types and return a cleaner version of in_path file.\n

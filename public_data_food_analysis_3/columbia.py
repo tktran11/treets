@@ -15,8 +15,7 @@ import public_data_food_analysis_3.core as pdfa
 def read_logging_data(folder_path):
     """
     Description:\n
-        This function reads all csv files in the folder_path folder into one dataframe. The files should be csv format and the name of each file should start with yrt and contain
-    _food_data in the middle.
+        This function reads all csv files in the folder_path folder into one dataframe. The files should be in csv format and the name of each file should start with 'yrt' and contain '_food_data' in the middle. For example, yrt1999_food_data123.csv is a valid file name that would be read into the dataframe if it exists in the folder_path folder.
 
     Input:\n
         - folder_path(string) : path to the folder that contain the data.
@@ -37,7 +36,7 @@ def read_logging_data(folder_path):
 def get_phase_duration(df):
     """
     Description:\n
-        This is a function that calculates the studys days for each phase, include the start and end date.
+        This is a function that calculates how many days each phase in the study took. Result includes the start and end date for that phase.
 
     Input:\n
         - df(pandas df) : information dataframe that contains columns: Start_Day, End_day
@@ -55,7 +54,7 @@ def get_phase_duration(df):
 def caloric_entries(df, start_date='not_defined', end_date='not_defined'):
     """
     Description:\n
-        This is a function that counts the number of food or beverage loggings.
+        This is a function that counts the number of food and beverage loggings.
 
     Input:\n
         - df(pandas df) : food_logging data.
