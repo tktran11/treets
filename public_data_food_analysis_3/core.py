@@ -494,16 +494,17 @@ def eating_intervals_percentile(in_path, time_col, identifier):
     return ptile
 
 # Cell
-def summarize_data(in_path, float_time_col, identifier, min_log_num = 2, min_seperation = 4):
+def summarize_data(in_path, float_time_col, identifier, date_col, min_log_num = 2, min_seperation = 4):
     """
     Description:\n
        This function calculates num_days, num_total_items, num_f_n_b, num_medications, num_water, duration_mid_95, start_95, end_95, breakfast_avg, breakfast_std, dinner_avg, dinner_std, eating_win_avg, eating_win_std, adherent_count, breakfast variation (90%-10%), dinner variation (90%-10%).\n
 
     Input:\n
-        - in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.\n
-        - float_time_col(str) : the column that represents the eating time
-        - identitfier(str) : participants' unique identifier such as id, name, etc
-        - min_log_num (count,int): filteration criteria on the minimum number of loggings each day.\n
+        - in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.
+        - float_time_col(str) : the column that represents the eating time.
+        - identitfier(str) : participants' unique identifier such as id, name, etc.
+        - date_col(str) : the column that represents the dates.
+        - min_log_num (count,int): filteration criteria on the minimum number of loggings each day.
         - min_seperation(hours,int): filteration criteria on the minimum separations between the earliest and latest loggings each day.\n
 
     Return:\n
@@ -512,7 +513,6 @@ def summarize_data(in_path, float_time_col, identifier, min_log_num = 2, min_sep
     Requirements:\n
         in_path file must have the following columns:\n
             - food_type\n
-            - date\n
 
     """
     df = universal_key(in_path)
@@ -536,16 +536,16 @@ def summarize_data(in_path, float_time_col, identifier, min_log_num = 2, min_sep
     eating_intervals = eating_intervals_percentile(df, float_time_col, identifier)[['2.5%','95%','duration mid 95%']]
 
     #breakfast_avg
-    breakfast_avg = df.groupby([identifier, 'date'])[float_time_col].min().groupby(identifier).mean()
+    breakfast_avg = df.groupby([identifier, date_col])[float_time_col].min().groupby(identifier).mean()
 
     #breakfast_std
-    breakfast_std = df.groupby([identifier, 'date'])[float_time_col].min().groupby(identifier).std()
+    breakfast_std = df.groupby([identifier, date_col])[float_time_col].min().groupby(identifier).std()
 
     #dinner_avg
-    dinner_avg = df.groupby([identifier, 'date'])[float_time_col].max().groupby(identifier).mean()
+    dinner_avg = df.groupby([identifier, date_col])[float_time_col].max().groupby(identifier).mean()
 
     #dinner_std
-    dinner_std = df.groupby([identifier, 'date'])[float_time_col].max().groupby(identifier).std()
+    dinner_std = df.groupby([identifier, date_col])[float_time_col].max().groupby(identifier).std()
 
     #eating_win_avg
     eating_win_avg = dinner_avg - breakfast_avg
@@ -558,11 +558,11 @@ def summarize_data(in_path, float_time_col, identifier, min_log_num = 2, min_sep
     good_logging_count = df.groupby(identifier)['in_good_logging_day'].sum()
 
     #breakfast variation (90%-10%)
-    breakfast_variability = breakfast_analysis_variability(df, plot=False).set_index('id')
+    breakfast_variability = breakfast_analysis_variability(df,identifier,date_col,float_time_col, plot=False).set_index('id')
     breakfast_ser = breakfast_variability['90%'] - breakfast_variability['10%']
 
     #dinner variation (90%-10%)
-    dinner_variability = dinner_analysis_variability(df, plot=False).set_index('id')
+    dinner_variability = dinner_analysis_variability(df,identifier,date_col,float_time_col, plot=False).set_index('id')
     dinner_ser = dinner_variability['90%'] - dinner_variability['10%']
 
     returned = pd.concat([num_days, num_total_items, num_f_n_b, num_medications, num_water, breakfast_avg, breakfast_std, dinner_avg, dinner_std, eating_win_avg, eating_win_std, good_logging_count, breakfast_ser, dinner_ser], axis=1).reset_index()
@@ -626,9 +626,9 @@ def breakfast_analysis_variability(in_path,identifier, date_col, time_col, min_l
 
     Input:\n
         - in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.
-        - identitfier(str) : participants' unique identifier such as id, name, etc
-        - date_col(str) : the column that represents the dates
-        - time_col(str) : the column that represents the float time
+        - identitfier(str) : participants' unique identifier such as id, name, etc.
+        - date_col(str) : the column that represents the dates.
+        - time_col(str) : the column that represents the float time.
         - min_log_num (count,int): filteration criteria on the minimum number of loggings each day.
         - min_seperation(hours,int): filteration criteria on the minimum separations between the earliest and latest loggings each day.
         - plot(bool) : Whether generating a histogram for breakfast variability. Default = True.
