@@ -707,7 +707,7 @@ def breakfast_avg_histplot(in_path, identifier, date_col, time_col):
 def breakfast_sample_distplot(in_path, n, identifier, date_col, time_col):
     """
     Description:\n
-       This function plots the distplot for the breakfast time from n participants that will be randomly selected.\n
+       This function plots the distplot for the breakfast time from n participants that will be randomly selected with replacement.\n
 
     Input:\n
         - in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.\n
@@ -853,7 +853,7 @@ def dinner_avg_histplot(in_path, identifier, date_col, time_col):
 def dinner_sample_distplot(in_path, n, identifier, date_col, time_col):
     """
     Description:\n
-       This function plots the distplot for the dinner time from n participants that will be randomly selected.\n
+       This function plots the distplot for the dinner time from n participants that will be randomly selected with replacement.\n
 
     Input:\n
         - in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.
@@ -904,7 +904,7 @@ def swarmplot(in_path, max_loggings, identifier, date_col, time_col):
 
     def subsamp_by_cond(alldat):
         alld = []
-        for apart in alldat.unique_code.unique():
+        for apart in alldat[identifier].unique():
             dat = alldat[alldat[identifier]==apart]
             f_n_b = dat.query('food_type in ["f", "b"]')
             n = min([f_n_b.shape[0], max_loggings])
