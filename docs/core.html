@@ -814,13 +814,13 @@ nb_path: "00_core.ipynb"
 </blockquote>
 <p>Description:</p>
 
-<pre><code>Calculate the number of weeks for each logging since the first day of the logging for each participant(identifier).
+<pre><code>Calculate the number of weeks for each logging since the first day of the logging for each participant(identifier). The returned values for loggings from the first week are 1.
 </code></pre>
 <p>Input:</p>
 
 <pre><code>- in_path (str, pandas df): input path, file in pickle, csv or pandas dataframe format
 
-- col (str): column name that contains date informaiton from the in_path dataframe.
+- col (str): column name that contains date information from the in_path dataframe.
 - identifier (str): unique_id or ID, or name that identifies people.
 
 </code></pre>
@@ -1158,7 +1158,7 @@ Process includes:
 <pre><code>- df (pd.DataFrame): the dataframe to be filtered
 
 - identifier (str): unique_id or ID, or name that identifies people.
-- date_col (str): column name that contains date informaiton from the df dataframe.
+- date_col (str): column name that contains date information from the df dataframe.
 - num_items (int):   number of items to be used as cut-off
 
 - num_days (int):    number of days to be used as cut-off
@@ -1313,7 +1313,7 @@ Process includes:
 <pre><code>- in_path (str, pandas df): input path, file in pickle, csv or pandas dataframe format
 
 - identifier (str): unique_id or ID, or name that identifies people.
-- date_col (str): column name that contains date informaiton from the df dataframe.
+- date_col (str): column name that contains date information from the df dataframe.
 - baseline_num_items (int): number of items to be used as cut-off for baseline group. 
 
 - baseline_num_days (int): number of days to be used as cut-off for baseline group. 
@@ -1530,9 +1530,9 @@ Process includes:
 
 - time_col (str): column that contains time in float format.
 
-- min_log_num (count,int): filteration criteria on the minimum number of loggings each day.
+- min_log_num (count,int): filtration criteria on the minimum number of loggings each day.
 
-- min_seperation(hours,int): filteration criteria on the minimum separations between the earliest and latest loggings each day.
+- min_seperation(hours,int): filtration criteria on the minimum separations between the earliest and latest loggings each day.
 
 
 </code></pre>
@@ -1764,6 +1764,65 @@ Process includes:
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>read the pickle file successfully.
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>day_count</th>
+    </tr>
+    <tr>
+      <th>unique_code</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>alqt45631586569</th>
+      <td>147</td>
+    </tr>
+    <tr>
+      <th>alqt8668165687</th>
+      <td>137</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -1781,6 +1840,65 @@ Process includes:
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>read the pickle file successfully.
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>day_count</th>
+    </tr>
+    <tr>
+      <th>unique_code</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>alqt45631586569</th>
+      <td>145</td>
+    </tr>
+    <tr>
+      <th>alqt8668165687</th>
+      <td>135</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -1795,14 +1913,15 @@ Process includes:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="convert_loggings" class="doc_header"><code>convert_loggings</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L385" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>convert_loggings</code>(<strong><code>in_path</code></strong>)</p>
+<h4 id="convert_loggings" class="doc_header"><code>convert_loggings</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L385" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>convert_loggings</code>(<strong><code>in_path</code></strong>, <strong><code>target_text</code></strong>, <strong><code>identifier</code></strong>)</p>
 </blockquote>
 <p>Description:</p>
-<p>This function convert all the loggings in the in_path file into a list of individual items based on the desc_text column. This function is based on a built-in vocabulary dictionary and an n-gram searcher.</p>
+<p>This function convert all the loggings in the in_path file into a list of individual items based on the target_text column. This function is based on a built-in vocabulary dictionary and an n-gram searcher.</p>
 <p>Input:</p>
 
 <pre><code>- in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.
-
+- target_text(str): column that will be converted to individual items.
+- identifier(str): participants' unique identifier such as id, name, etc.
 
 </code></pre>
 <p>Return:</p>
@@ -1843,10 +1962,78 @@ Process includes:
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">convert_loggings</span><span class="p">(</span><span class="s1">&#39;data/output/public.pickle&#39;</span><span class="p">,</span> <span class="s1">&#39;desc_text&#39;</span><span class="p">,</span> <span class="s1">&#39;unique_code&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 
     </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>read the pickle file successfully.
+read the pickle file successfully.
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>unique_code</th>
+      <th>desc_text</th>
+      <th>cleaned</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>alqt14018795225</td>
+      <td>Water</td>
+      <td>[water]</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>alqt14018795225</td>
+      <td>Coffee White</td>
+      <td>[coffee, white]</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>alqt14018795225</td>
+      <td>Salad</td>
+      <td>[salad]</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -1864,7 +2051,7 @@ Process includes:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_types" class="doc_header"><code>get_types</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L425" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_types</code>(<strong><code>in_path</code></strong>, <strong><code>food_type</code></strong>)</p>
+<h4 id="get_types" class="doc_header"><code>get_types</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L426" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_types</code>(<strong><code>in_path</code></strong>, <strong><code>food_type</code></strong>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function filters with the expected food types and return a cleaner version of in_path file.</p>
@@ -1937,6 +2124,73 @@ Process includes:
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>read the pickle file successfully.
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>unique_code</th>
+      <th>desc_text</th>
+      <th>food_type</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>alqt14018795225</td>
+      <td>Water</td>
+      <td>w</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>alqt14018795225</td>
+      <td>Salad</td>
+      <td>f</td>
+    </tr>
+    <tr>
+      <th>488</th>
+      <td>alqt78896444285</td>
+      <td>Water</td>
+      <td>w</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -1947,11 +2201,78 @@ Process includes:
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">load_public_data</span><span class="p">(</span><span class="s1">&#39;data/test_food_details.csv&#39;</span><span class="p">)</span>
-<span class="n">get_certain_types</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;m&#39;</span><span class="p">])[[</span><span class="s1">&#39;unique_code&#39;</span><span class="p">,</span><span class="s1">&#39;desc_text&#39;</span><span class="p">,</span><span class="s1">&#39;food_type&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">load_public_data</span><span class="p">(</span><span class="s1">&#39;data/test_food_details.csv&#39;</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">get_types</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;m&#39;</span><span class="p">])[[</span><span class="s1">&#39;unique_code&#39;</span><span class="p">,</span><span class="s1">&#39;desc_text&#39;</span><span class="p">,</span><span class="s1">&#39;food_type&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 
     </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>read the csv file successfully.
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>unique_code</th>
+      <th>desc_text</th>
+      <th>food_type</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>323</th>
+      <td>alqt14018795225</td>
+      <td>Caffeine</td>
+      <td>m</td>
+    </tr>
+    <tr>
+      <th>361</th>
+      <td>alqt14018795225</td>
+      <td>Caffeine</td>
+      <td>m</td>
+    </tr>
+    <tr>
+      <th>420</th>
+      <td>alqt14018795225</td>
+      <td>Caffeine</td>
+      <td>m</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -1969,15 +2290,15 @@ Process includes:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="eating_intervals_percentile" class="doc_header"><code>eating_intervals_percentile</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L469" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>eating_intervals_percentile</code>(<strong><code>in_path</code></strong>, <strong><code>time_col</code></strong>, <strong><code>identifier</code></strong>)</p>
+<h4 id="eating_intervals_percentile" class="doc_header"><code>eating_intervals_percentile</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L470" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>eating_intervals_percentile</code>(<strong><code>in_path</code></strong>, <strong><code>time_col</code></strong>, <strong><code>identifier</code></strong>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function calculates the .025, .05, .10, .125, .25, .5, .75, .875, .9, .95, .975 quantile of eating time and mid 95%, mid 90%, mid 80%, mid 75% and mid 50% duration for each user.</p>
 <p>Input:</p>
 
 <pre><code>- in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.
-- time_col(str) : the column that represents the eating time
-- identitfier(str) : participants' unique identifier such as id, name, etc
+- time_col(str) : the column that represents the eating time.
+- identitfier(str) : participants' unique identifier such as id, name, etc.
 
 </code></pre>
 <p>Return:</p>
@@ -2170,7 +2491,7 @@ Process includes:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="summarize_data" class="doc_header"><code>summarize_data</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L497" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>summarize_data</code>(<strong><code>in_path</code></strong>, <strong><code>float_time_col</code></strong>, <strong><code>identifier</code></strong>, <strong><code>date_col</code></strong>, <strong><code>min_log_num</code></strong>=<em><code>2</code></em>, <strong><code>min_seperation</code></strong>=<em><code>4</code></em>)</p>
+<h4 id="summarize_data" class="doc_header"><code>summarize_data</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L498" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>summarize_data</code>(<strong><code>in_path</code></strong>, <strong><code>float_time_col</code></strong>, <strong><code>identifier</code></strong>, <strong><code>date_col</code></strong>, <strong><code>min_log_num</code></strong>=<em><code>2</code></em>, <strong><code>min_seperation</code></strong>=<em><code>4</code></em>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function calculates num_days, num_total_items, num_f_n_b, num_medications, num_water, duration_mid_95, start_95, end_95, breakfast_avg, breakfast_std, dinner_avg, dinner_std, eating_win_avg, eating_win_std, adherent_count, breakfast variation (90%-10%), dinner variation (90%-10%).</p>
@@ -2180,8 +2501,8 @@ Process includes:
 - float_time_col(str) : the column that represents the eating time.
 - identitfier(str) : participants' unique identifier such as id, name, etc.
 - date_col(str) : the column that represents the dates.
-- min_log_num (count,int): filteration criteria on the minimum number of loggings each day.
-- min_seperation(hours,int): filteration criteria on the minimum separations between the earliest and latest loggings each day.
+- min_log_num (count,int): filtration criteria on the minimum number of loggings each day.
+- min_seperation(hours,int): filtration criteria on the minimum separations between the earliest and latest loggings each day.
 
 
 </code></pre>
@@ -2517,7 +2838,7 @@ Process includes:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="breakfast_analysis_summary" class="doc_header"><code>breakfast_analysis_summary</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L582" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>breakfast_analysis_summary</code>(<strong><code>in_path</code></strong>, <strong><code>identifier</code></strong>, <strong><code>date_col</code></strong>, <strong><code>time_col</code></strong>, <strong><code>min_log_num</code></strong>=<em><code>2</code></em>, <strong><code>min_separation</code></strong>=<em><code>4</code></em>)</p>
+<h4 id="breakfast_analysis_summary" class="doc_header"><code>breakfast_analysis_summary</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L583" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>breakfast_analysis_summary</code>(<strong><code>in_path</code></strong>, <strong><code>identifier</code></strong>, <strong><code>date_col</code></strong>, <strong><code>time_col</code></strong>, <strong><code>min_log_num</code></strong>=<em><code>2</code></em>, <strong><code>min_separation</code></strong>=<em><code>4</code></em>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function takes the loggings in good logging days and calculate the 5%,10%,25%,50%,75%,90%,95% quantile of breakfast time for each user.</p>
@@ -2527,8 +2848,8 @@ Process includes:
 - identitfier(str) : participants' unique identifier such as id, name, etc.
 - date_col(str) : the column that represents the dates.
 - time_col(str) : the column that represents the float time.
-- min_log_num (count,int): filteration criteria on the minimum number of loggings each day.
-- min_seperation(hours,int): filteration criteria on the minimum separations between the earliest and latest loggings each day.
+- min_log_num (count,int): filtration criteria on the minimum number of loggings each day.
+- min_seperation(hours,int): filtration criteria on the minimum separations between the earliest and latest loggings each day.
 
 
 </code></pre>
@@ -2668,7 +2989,7 @@ Process includes:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="breakfast_analysis_variability" class="doc_header"><code>breakfast_analysis_variability</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L622" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>breakfast_analysis_variability</code>(<strong><code>in_path</code></strong>, <strong><code>identifier</code></strong>, <strong><code>date_col</code></strong>, <strong><code>time_col</code></strong>, <strong><code>min_log_num</code></strong>=<em><code>2</code></em>, <strong><code>min_separation</code></strong>=<em><code>4</code></em>, <strong><code>plot</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="breakfast_analysis_variability" class="doc_header"><code>breakfast_analysis_variability</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L623" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>breakfast_analysis_variability</code>(<strong><code>in_path</code></strong>, <strong><code>identifier</code></strong>, <strong><code>date_col</code></strong>, <strong><code>time_col</code></strong>, <strong><code>min_log_num</code></strong>=<em><code>2</code></em>, <strong><code>min_separation</code></strong>=<em><code>4</code></em>, <strong><code>plot</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function calculates the variability of loggings in good logging day by subtracting 5%,10%,25%,50%,75%,90%,95% quantile of breakfast time from the 50% breakfast time. It can also make a histogram that represents the 90%-10% interval for all subjects.</p>
@@ -2678,8 +2999,8 @@ Process includes:
 - identitfier(str) : participants' unique identifier such as id, name, etc.
 - date_col(str) : the column that represents the dates.
 - time_col(str) : the column that represents the float time.
-- min_log_num (count,int): filteration criteria on the minimum number of loggings each day.
-- min_seperation(hours,int): filteration criteria on the minimum separations between the earliest and latest loggings each day.
+- min_log_num (count,int): filtration criteria on the minimum number of loggings each day.
+- min_seperation(hours,int): filtration criteria on the minimum separations between the earliest and latest loggings each day.
 - plot(bool) : Whether generating a histogram for breakfast variability. Default = True.
 
 </code></pre>
@@ -2843,7 +3164,7 @@ Process includes:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="breakfast_avg_histplot" class="doc_header"><code>breakfast_avg_histplot</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L680" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>breakfast_avg_histplot</code>(<strong><code>in_path</code></strong>, <strong><code>identifier</code></strong>, <strong><code>date_col</code></strong>, <strong><code>time_col</code></strong>)</p>
+<h4 id="breakfast_avg_histplot" class="doc_header"><code>breakfast_avg_histplot</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L681" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>breakfast_avg_histplot</code>(<strong><code>in_path</code></strong>, <strong><code>identifier</code></strong>, <strong><code>date_col</code></strong>, <strong><code>time_col</code></strong>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function take the first caloric event (no water or med) and calculate average event's time for “each participant”.</p>
@@ -2937,7 +3258,7 @@ Process includes:
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="breakfast_sample_distplot" class="doc_header"><code>breakfast_sample_distplot</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L707" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>breakfast_sample_distplot</code>(<strong><code>in_path</code></strong>, <strong><code>n</code></strong>, <strong><code>identifier</code></strong>, <strong><code>date_col</code></strong>, <strong><code>time_col</code></strong>)</p>
+<h4 id="breakfast_sample_distplot" class="doc_header"><code>breakfast_sample_distplot</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L708" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>breakfast_sample_distplot</code>(<strong><code>in_path</code></strong>, <strong><code>n</code></strong>, <strong><code>identifier</code></strong>, <strong><code>date_col</code></strong>, <strong><code>time_col</code></strong>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function plots the distplot for the breakfast time from n participants that will be randomly selected with replacement.</p>
@@ -3039,7 +3360,7 @@ alqt45631586569
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="dinner_analysis_summary" class="doc_header"><code>dinner_analysis_summary</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L738" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dinner_analysis_summary</code>(<strong><code>in_path</code></strong>, <strong><code>identifier</code></strong>, <strong><code>date_col</code></strong>, <strong><code>time_col</code></strong>, <strong><code>min_log_num</code></strong>=<em><code>2</code></em>, <strong><code>min_separation</code></strong>=<em><code>4</code></em>)</p>
+<h4 id="dinner_analysis_summary" class="doc_header"><code>dinner_analysis_summary</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L739" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dinner_analysis_summary</code>(<strong><code>in_path</code></strong>, <strong><code>identifier</code></strong>, <strong><code>date_col</code></strong>, <strong><code>time_col</code></strong>, <strong><code>min_log_num</code></strong>=<em><code>2</code></em>, <strong><code>min_separation</code></strong>=<em><code>4</code></em>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function takes the loggings in good logging days and calculate the 5%,10%,25%,50%,75%,90%,95% quantile of dinner time for each user.</p>
@@ -3049,8 +3370,8 @@ alqt45631586569
 - identitfier(str) : participants' unique identifier such as id, name, etc.
 - date_col(str) : the column that represents the dates.
 - time_col(str) : the column that represents the float time.
-- min_log_num (count,int): filteration criteria on the minimum number of loggings each day.
-- min_seperation(hours,int): filteration criteria on the minimum separations between the earliest and latest loggings each day.
+- min_log_num (count,int): filtration criteria on the minimum number of loggings each day.
+- min_seperation(hours,int): filtration criteria on the minimum separations between the earliest and latest loggings each day.
 
 </code></pre>
 <p>Return:</p>
@@ -3189,7 +3510,7 @@ alqt45631586569
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="dinner_analysis_variability" class="doc_header"><code>dinner_analysis_variability</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L777" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dinner_analysis_variability</code>(<strong><code>in_path</code></strong>, <strong><code>identifier</code></strong>, <strong><code>date_col</code></strong>, <strong><code>time_col</code></strong>, <strong><code>min_log_num</code></strong>=<em><code>2</code></em>, <strong><code>min_separation</code></strong>=<em><code>4</code></em>, <strong><code>plot</code></strong>=<em><code>True</code></em>)</p>
+<h4 id="dinner_analysis_variability" class="doc_header"><code>dinner_analysis_variability</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L778" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dinner_analysis_variability</code>(<strong><code>in_path</code></strong>, <strong><code>identifier</code></strong>, <strong><code>date_col</code></strong>, <strong><code>time_col</code></strong>, <strong><code>min_log_num</code></strong>=<em><code>2</code></em>, <strong><code>min_separation</code></strong>=<em><code>4</code></em>, <strong><code>plot</code></strong>=<em><code>True</code></em>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function calculates the variability of loggings in good logging day by subtracting 5%,10%,25%,50%,75%,90%,95% quantile of dinner time from the 50% dinner time. It also make a histogram that represents the 90%-10% interval for all subjects.</p>
@@ -3199,8 +3520,8 @@ alqt45631586569
 - identitfier(str) : participants' unique identifier such as id, name, etc.
 - date_col(str) : the column that represents the dates.
 - time_col(str) : the column that represents the float time.
-- min_log_num (count,int): filteration criteria on the minimum number of loggings each day.
-- min_seperation(hours,int): filteration criteria on the minimum separations between the earliest and latest loggings each day.
+- min_log_num (count,int): filtration criteria on the minimum number of loggings each day.
+- min_seperation(hours,int): filtration criteria on the minimum separations between the earliest and latest loggings each day.
 - plot(bool) : Whether generating a histogram for breakfast variability. Default = True.
 </code></pre>
 <p>Return:</p>
@@ -3351,7 +3672,7 @@ alqt45631586569
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="dinner_avg_histplot" class="doc_header"><code>dinner_avg_histplot</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L827" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dinner_avg_histplot</code>(<strong><code>in_path</code></strong>, <strong><code>identifier</code></strong>, <strong><code>date_col</code></strong>, <strong><code>time_col</code></strong>)</p>
+<h4 id="dinner_avg_histplot" class="doc_header"><code>dinner_avg_histplot</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L828" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dinner_avg_histplot</code>(<strong><code>in_path</code></strong>, <strong><code>identifier</code></strong>, <strong><code>date_col</code></strong>, <strong><code>time_col</code></strong>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function take the last caloric event (no water or med) and calculate average event's time for “each participant”.</p>
@@ -3443,7 +3764,7 @@ alqt45631586569
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="dinner_sample_distplot" class="doc_header"><code>dinner_sample_distplot</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L853" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dinner_sample_distplot</code>(<strong><code>in_path</code></strong>, <strong><code>n</code></strong>, <strong><code>identifier</code></strong>, <strong><code>date_col</code></strong>, <strong><code>time_col</code></strong>)</p>
+<h4 id="dinner_sample_distplot" class="doc_header"><code>dinner_sample_distplot</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L854" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>dinner_sample_distplot</code>(<strong><code>in_path</code></strong>, <strong><code>n</code></strong>, <strong><code>identifier</code></strong>, <strong><code>date_col</code></strong>, <strong><code>time_col</code></strong>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function plots the distplot for the dinner time from n participants that will be randomly selected with replacement.</p>
@@ -3542,7 +3863,7 @@ alqt16675467779
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="swarmplot" class="doc_header"><code>swarmplot</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L884" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>swarmplot</code>(<strong><code>in_path</code></strong>, <strong><code>max_loggings</code></strong>, <strong><code>identifier</code></strong>, <strong><code>date_col</code></strong>, <strong><code>time_col</code></strong>)</p>
+<h4 id="swarmplot" class="doc_header"><code>swarmplot</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L885" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>swarmplot</code>(<strong><code>in_path</code></strong>, <strong><code>max_loggings</code></strong>, <strong><code>identifier</code></strong>, <strong><code>date_col</code></strong>, <strong><code>time_col</code></strong>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function plots the swarmplot the participants from the in_path file.</p>
@@ -3637,7 +3958,7 @@ alqt16675467779
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FoodParser" class="doc_header"><code>class</code> <code>FoodParser</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L940" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FoodParser</code>()</p>
+<h2 id="FoodParser" class="doc_header"><code>class</code> <code>FoodParser</code><a href="https://github.com/QiwenZz/public_data_food_analysis_3/tree/master/public_data_food_analysis_3/core.py#L941" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FoodParser</code>()</p>
 </blockquote>
 <p>A class that reads in food loggings from the app. Used as helper function for the function convert_loggings().</p>
 

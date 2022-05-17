@@ -128,10 +128,10 @@ def find_float_time(in_path, col, h=0):
 def week_from_start(in_path, col, identifier):
         """
         Description:\n
-            Calculate the number of weeks for each logging since the first day of the logging for each participant(identifier).
+            Calculate the number of weeks for each logging since the first day of the logging for each participant(identifier). The returned values for loggings from the first week are 1.
         Input:\n
             - in_path (str, pandas df): input path, file in pickle, csv or pandas dataframe format\n
-            - col (str): column name that contains date informaiton from the in_path dataframe.
+            - col (str): column name that contains date information from the in_path dataframe.
             - identifier (str): unique_id or ID, or name that identifies people.
 
         Return:\n
@@ -225,7 +225,7 @@ def filtering_usable_data(df, identifier, date_col, num_items, num_days):
     Input:\n
         - df (pd.DataFrame): the dataframe to be filtered\n
         - identifier (str): unique_id or ID, or name that identifies people.
-        - date_col (str): column name that contains date informaiton from the df dataframe.
+        - date_col (str): column name that contains date information from the df dataframe.
         - num_items (int):   number of items to be used as cut-off\n
         - num_days (int):    number of days to be used as cut-off\n
     Output:\n
@@ -270,7 +270,7 @@ def prepare_baseline_and_intervention_usable_data(in_path, identifier, date_col,
     Input:\n
         - in_path (str, pandas df): input path, file in pickle, csv or pandas dataframe format\n
         - identifier (str): unique_id or ID, or name that identifies people.
-        - date_col (str): column name that contains date informaiton from the df dataframe.
+        - date_col (str): column name that contains date information from the df dataframe.
         - baseline_num_items (int): number of items to be used as cut-off for baseline group. \n
         - baseline_num_days (int): number of days to be used as cut-off for baseline group. \n
         - intervention_num_items (int): number of items to be used as cut-off for intervention group.\n
@@ -315,8 +315,8 @@ def in_good_logging_day(in_path, identifier='unique_code', time_col='local_time'
         - in_path (str, pandas df): input path, file in pickle, csv or pandas dataframe format.\n
         - identifier (str): id-like column that's used to identify a subject.\n
         - time_col (str): column that contains time in float format.\n
-        - min_log_num (count,int): filteration criteria on the minimum number of loggings each day.\n
-        - min_seperation(hours,int): filteration criteria on the minimum separations between the earliest and latest loggings each day.\n
+        - min_log_num (count,int): filtration criteria on the minimum number of loggings each day.\n
+        - min_seperation(hours,int): filtration criteria on the minimum separations between the earliest and latest loggings each day.\n
 
     Return:\n
         - A boolean numpy array indicating whether the corresponding row is in a good logging day. Details on the criteria is in the description.\n
@@ -382,13 +382,15 @@ def most_active_user(in_path, food_type = ["f", "b", "m", "w"]):
     return public_top_users_day_counts
 
 # Cell
-def convert_loggings(in_path):
+def convert_loggings(in_path, target_text, identifier):
     """
     Description:\n
-       This function convert all the loggings in the in_path file into a list of individual items based on the desc_text column. This function is based on a built-in vocabulary dictionary and an n-gram searcher.\n
+       This function convert all the loggings in the in_path file into a list of individual items based on the target_text column. This function is based on a built-in vocabulary dictionary and an n-gram searcher.\n
 
     Input:\n
-        - in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.\n
+        - in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.
+        - target_text(str): column that will be converted to individual items.
+        - identifier(str): participants' unique identifier such as id, name, etc.
 
     Return:\n
         - A dataframe contains the cleaned version of the desc_text.\n
@@ -410,9 +412,8 @@ def convert_loggings(in_path):
     parsed = [fp.parse_food(i, return_sentence_tag = True) for i in public_all.desc_text.values]
 
     public_all_parsed = pd.DataFrame({
-    'ID': public_all.unique_code,
-    'food_type': public_all.food_type,
-    'desc_text': public_all.desc_text,
+    identifier: public_all[identifier],
+    target_text: public_all[target_text],
     'cleaned': parsed
     })
 
@@ -473,8 +474,8 @@ def eating_intervals_percentile(in_path, time_col, identifier):
 
     Input:\n
         - in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.
-        - time_col(str) : the column that represents the eating time
-        - identitfier(str) : participants' unique identifier such as id, name, etc
+        - time_col(str) : the column that represents the eating time.
+        - identitfier(str) : participants' unique identifier such as id, name, etc.
 
     Return:\n
         - A summary table with count, mean, std, min, quantiles and mid durations for all subjects from the in_path file.\n
@@ -504,8 +505,8 @@ def summarize_data(in_path, float_time_col, identifier, date_col, min_log_num = 
         - float_time_col(str) : the column that represents the eating time.
         - identitfier(str) : participants' unique identifier such as id, name, etc.
         - date_col(str) : the column that represents the dates.
-        - min_log_num (count,int): filteration criteria on the minimum number of loggings each day.
-        - min_seperation(hours,int): filteration criteria on the minimum separations between the earliest and latest loggings each day.\n
+        - min_log_num (count,int): filtration criteria on the minimum number of loggings each day.
+        - min_seperation(hours,int): filtration criteria on the minimum separations between the earliest and latest loggings each day.\n
 
     Return:\n
         - A summary table with count, mean, std, min, quantiles and mid durations for all subjects from the in_path file.\n
@@ -589,8 +590,8 @@ def breakfast_analysis_summary(in_path, identifier, date_col, time_col,min_log_n
         - identitfier(str) : participants' unique identifier such as id, name, etc.
         - date_col(str) : the column that represents the dates.
         - time_col(str) : the column that represents the float time.
-        - min_log_num (count,int): filteration criteria on the minimum number of loggings each day.
-        - min_seperation(hours,int): filteration criteria on the minimum separations between the earliest and latest loggings each day.
+        - min_log_num (count,int): filtration criteria on the minimum number of loggings each day.
+        - min_seperation(hours,int): filtration criteria on the minimum separations between the earliest and latest loggings each day.
 
 
     Return:\n
@@ -629,8 +630,8 @@ def breakfast_analysis_variability(in_path,identifier, date_col, time_col, min_l
         - identitfier(str) : participants' unique identifier such as id, name, etc.
         - date_col(str) : the column that represents the dates.
         - time_col(str) : the column that represents the float time.
-        - min_log_num (count,int): filteration criteria on the minimum number of loggings each day.
-        - min_seperation(hours,int): filteration criteria on the minimum separations between the earliest and latest loggings each day.
+        - min_log_num (count,int): filtration criteria on the minimum number of loggings each day.
+        - min_seperation(hours,int): filtration criteria on the minimum separations between the earliest and latest loggings each day.
         - plot(bool) : Whether generating a histogram for breakfast variability. Default = True.
 
     Return:\n
@@ -745,8 +746,8 @@ def dinner_analysis_summary(in_path, identifier, date_col, time_col, min_log_num
         - identitfier(str) : participants' unique identifier such as id, name, etc.
         - date_col(str) : the column that represents the dates.
         - time_col(str) : the column that represents the float time.
-        - min_log_num (count,int): filteration criteria on the minimum number of loggings each day.
-        - min_seperation(hours,int): filteration criteria on the minimum separations between the earliest and latest loggings each day.
+        - min_log_num (count,int): filtration criteria on the minimum number of loggings each day.
+        - min_seperation(hours,int): filtration criteria on the minimum separations between the earliest and latest loggings each day.
 
     Return:\n
         - A summary table with 5%,10%,25%,50%,75%,90%,95% quantile of dinner time for all subjects from the in_path file.\n
@@ -784,8 +785,8 @@ def dinner_analysis_variability(in_path, identifier, date_col, time_col, min_log
         - identitfier(str) : participants' unique identifier such as id, name, etc.
         - date_col(str) : the column that represents the dates.
         - time_col(str) : the column that represents the float time.
-        - min_log_num (count,int): filteration criteria on the minimum number of loggings each day.
-        - min_seperation(hours,int): filteration criteria on the minimum separations between the earliest and latest loggings each day.
+        - min_log_num (count,int): filtration criteria on the minimum number of loggings each day.
+        - min_seperation(hours,int): filtration criteria on the minimum separations between the earliest and latest loggings each day.
         - plot(bool) : Whether generating a histogram for breakfast variability. Default = True.
     Return:\n
         - A dataframe that contains 5%,10%,25%,50%,75%,90%,95% quantile of dinner time minus 50% time for each subjects from the in_path file.\n
@@ -991,11 +992,18 @@ class FoodParser():
 
     def initialization(self):
         # 1. read in manually annotated file and bind it to the object
+
+        # pypi version
         parser_keys_df = pd.read_csv(pkg_resources.resource_stream(__name__, "/data/parser_keys.csv"))
-        #parser_keys_df = pd.read_csv("data/parser_keys.csv")
         all_gram_set, food_type_dict, food2tags = self.process_parser_keys_df(parser_keys_df)
         correction_dic = pickle.load(pkg_resources.resource_stream(__name__, "/data/correction_dic.pickle"))
-        #correction_dic = universal_key("data/correction_dic.pickle")
+
+#         # testing version
+#         parser_keys_df = pd.read_csv("data/parser_keys.csv")
+#         all_gram_set, food_type_dict, food2tags = self.process_parser_keys_df(parser_keys_df)
+#         correction_dic = universal_key("data/correction_dic.pickle")
+
+
         self.all_gram_set = all_gram_set
         self.food_type_dict = food_type_dict
         self.correction_dic = correction_dic
