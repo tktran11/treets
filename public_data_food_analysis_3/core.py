@@ -221,7 +221,7 @@ def load_public_data(in_path, h):
 def filtering_usable_data(df, identifier, date_col, num_items, num_days):
     '''
     Description:\n
-        This function filters the cleaned app data so the users who satisfies the criteria are left. The criteria is that the person is left if the total loggings for that person are more than num_items and at the same time, the total days for loggings are more than num_days.\n
+        This function filters the cleaned app data so the users who satisfies the criteria are left. The criteria is that the person is left if the total loggings for that person are more than num_items and at the same time, the total days of loggings are more than num_days.\n
     Input:\n
         - df (pd.DataFrame): the dataframe to be filtered\n
         - identifier (str): unique_id or ID, or name that identifies people.
