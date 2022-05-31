@@ -153,7 +153,7 @@ def week_from_start(in_path, col, identifier):
 def load_public_data(in_path, h):
     """
     Description:\n
-        Load original public data and output processed data in pickle format.\n
+        Load original public data and output processed data in a dataframe.\n
 
         Process includes:\n
         1. Dropping 'foodimage_file_name' column.\n
@@ -169,7 +169,7 @@ def load_public_data(in_path, h):
         - h(int) : hours to shift the date. For example, when h = 4, everyday starts and ends 4 hours later than normal.
 
     Output:\n
-        - public_all: the processed dataframe\n
+        - the processed dataframe in pandas df format.\n
 
     Requirements:\n
         in_path file must have the following columns:\n
@@ -218,7 +218,7 @@ def load_public_data(in_path, h):
     return public_all
 
 # Cell
-def in_good_logging_day(in_path, identifier='unique_code', time_col='local_time', min_log_num = 2, min_seperation = 4):
+def in_good_logging_day(in_path, identifier, date_col, time_col, min_log_num = 2, min_seperation = 4):
     """
     Description:\n
         A logging's in a good logging day if the there are more than min_log_num loggings in one day w/ more than min_seperation hoursx apart from the earliest logging and the latest logging and False otherwise.\n
@@ -239,6 +239,10 @@ def in_good_logging_day(in_path, identifier='unique_code', time_col='local_time'
             - local_time\n
             - date\n
 
+    Optional functions to use to have proper inputs:
+        - find_date() for date_col
+        - find_float_time() for time_col
+
     """
     def adherent(s):
         if len(s.values) >= min_log_num and (max(s.values) - min(s.values)) >= min_seperation:
@@ -248,7 +252,7 @@ def in_good_logging_day(in_path, identifier='unique_code', time_col='local_time'
 
     df = universal_key(in_path)
 
-    adherent_dict = dict(df.groupby([identifier, 'date'])[time_col].agg(adherent))
+    adherent_dict = dict(df.groupby([identifier, date_col])[time_col].agg(adherent))
 
 
     return df.apply(lambda x: adherent_dict[(x[identifier], x.date)], axis = 1)
@@ -316,11 +320,6 @@ def get_types(in_path, food_type):
     Requirements:\n
         in_path file must have the following columns:\n
             - food_type\n
-            - desc_text\n
-            - unique_code\n
-            - desc_text\n
-            - date\n
-            - local_time\n
 
     """
 
@@ -345,21 +344,19 @@ def filtering_usable_data(df, identifier, date_col, num_items, num_days):
     Description:\n
         This function filters the cleaned app data so the users who satisfies the criteria are left. The criteria is that the person is left if the total loggings for that person are more than num_items and at the same time, the total days of loggings are more than num_days.\n
     Input:\n
-        - df (pd.DataFrame): the dataframe to be filtered\n
+        - df (pd.DataFrame): the dataframe to be filtered
         - identifier (str): unique_id or ID, or name that identifies people.
         - date_col (str): column name that contains date information from the df dataframe.
-        - num_items (int):   number of items to be used as cut-off\n
-        - num_days (int):    number of days to be used as cut-off\n
+        - num_items (int):   number of items to be used as cut-off
+        - num_days (int):    number of days to be used as cut-off
     Output:\n
-        - df_usable:         a panda DataFrame with filtered rows\n
-        - set_usable:        a set of unique_code to be included as "usable"\n
-    Side Effects:\n
-        None\n
+        - df_usable:  a panda DataFrame with filtered rows
+        - set_usable: a set of unique_code to be included as "usable"
     Requirements:\n
-        df should have the following columns:\n
-            - desc_text\n
-    Used in:\n
-        Analysis pipeline\n
+        df should have the following columns:
+            - desc_text
+    Optional functions to use to have proper inputs:
+        - find_date() for date_col
     '''
     print(' => filtering_usable_data()')
     print('  => using the following criteria:', num_items, 'items and', num_days, 'days.')
@@ -470,18 +467,19 @@ def most_active_user(in_path, food_type = ["f", "b", "m", "w"]):
 # Cell
 def eating_intervals_percentile(in_path, time_col, identifier):
     """
-    Description:\n
+    Description:
        This function calculates the .025, .05, .10, .125, .25, .5, .75, .875, .9, .95, .975 quantile of eating time and mid 95%, mid 90%, mid 80%, mid 75% and mid 50% duration for each user.\n
 
-    Input:\n
+    Input:
         - in_path (str, pandas df): input path, file in pickle, csv or panda dataframe format.
         - time_col(str) : the column that represents the eating time.
         - identitfier(str) : participants' unique identifier such as id, name, etc.
 
     Return:\n
-        - A summary table with count, mean, std, min, quantiles and mid durations for all subjects from the in_path file.\n
+        - A summary table with count, mean, std, min, quantiles and mid durations for all subjects from the in_path file.
 
-
+    Optional functions to use to have proper inputs:
+        - find_float_time() for time_col
     """
 
     df = universal_key(in_path)
@@ -496,7 +494,7 @@ def eating_intervals_percentile(in_path, time_col, identifier):
     return ptile
 
 # Cell
-def summarize_data(in_path, float_time_col, identifier, date_col, min_log_num = 2, min_seperation = 4):
+def summarize_data(in_path, identifier, time_col, date_col, min_log_num = 2, min_seperation = 4):
     """
     Description:\n
        This function calculates num_days, num_total_items, num_f_n_b, num_medications, num_water, duration_mid_95, start_95, end_95, breakfast_avg, breakfast_std, dinner_avg, dinner_std, eating_win_avg, eating_win_std, adherent_count, breakfast variation (90%-10%), dinner variation (90%-10%).\n
@@ -516,6 +514,9 @@ def summarize_data(in_path, float_time_col, identifier, date_col, min_log_num = 
         in_path file must have the following columns:\n
             - food_type\n
 
+    Optional functions to use to have proper inputs:
+        - find_date() for date_col
+        - find_float_time() for time_col
     """
     df = universal_key(in_path)
 
@@ -598,7 +599,9 @@ def breakfast_analysis_summary(in_path, identifier, date_col, time_col,min_log_n
     Return:\n
         - A summary table with 5%,10%,25%,50%,75%,90%,95% quantile of breakfast time for all subjects from the in_path file.\n
 
-
+    Optional functions to use to have proper inputs:
+        - find_date() for date_col
+        - find_float_time() for time_col
     """
 
     df = universal_key(in_path)
@@ -638,11 +641,9 @@ def breakfast_analysis_variability(in_path,identifier, date_col, time_col, min_l
     Return:\n
         - A dataframe that contains 5%,10%,25%,50%,75%,90%,95% quantile of breakfast time minus 50% time for each subjects from the in_path file.\n
 
-    Requirements:\n
-        in_path file must have the following columns:\n
-            - unique_code\n
-            - date\n
-            - local_time\n
+    Optional functions to use to have proper inputs:
+        - find_date() for date_col
+        - find_float_time() for time_col
     """
 
 
@@ -695,6 +696,9 @@ def dinner_analysis_summary(in_path, identifier, date_col, time_col, min_log_num
     Return:\n
         - A summary table with 5%,10%,25%,50%,75%,90%,95% quantile of dinner time for all subjects from the in_path file.\n
 
+    Optional functions to use to have proper inputs:
+        - find_date() for date_col
+        - find_float_time() for time_col
     """
 
     df = universal_key(in_path)
@@ -739,6 +743,9 @@ def dinner_analysis_variability(in_path, identifier, date_col, time_col, min_log
     Return:\n
         - A dataframe that contains 5%,10%,25%,50%,75%,90%,95% quantile of dinner time minus 50% time for each subjects from the in_path file.\n
 
+    Optional functions to use to have proper inputs:
+        - find_date() for date_col
+        - find_float_time() for time_col
     """
 
     df = universal_key(in_path)
@@ -790,6 +797,9 @@ def breakfast_avg_histplot(in_path, identifier, date_col, time_col):
     Requirements:\n
         in_path file must have the following columns:\n
             - food_type\n
+    Optional functions to use to have proper inputs:
+        - find_date() for date_col
+        - find_float_time() for time_col
     """
     df = universal_key(in_path)
     df = df.query('food_type in ["f", "b"]')
@@ -818,6 +828,10 @@ def breakfast_sample_distplot(in_path, n, identifier, date_col, time_col):
     Requirements:\n
         in_path file must have the following columns:\n
             - food_type\n
+
+    Optional functions to use to have proper inputs:
+        - find_date() for date_col
+        - find_float_time() for time_col
     """
     df = universal_key(in_path)
     df = df[df['food_type'].isin(['f','b'])]
@@ -847,6 +861,10 @@ def dinner_avg_histplot(in_path, identifier, date_col, time_col):
 
     Requirements:\n
             - food_type\n
+
+    Optional functions to use to have proper inputs:
+        - find_date() for date_col
+        - find_float_time() for time_col
     """
     df = universal_key(in_path)
     df = df.query('food_type in ["f", "b"]')
@@ -874,6 +892,10 @@ def dinner_sample_distplot(in_path, n, identifier, date_col, time_col):
 
     Requirements:\n
         - food_type
+
+    Optional functions to use to have proper inputs:
+        - find_date() for date_col
+        - find_float_time() for time_col
 
     """
     df = universal_key(in_path)
@@ -905,6 +927,9 @@ def swarmplot(in_path, max_loggings, identifier, date_col, time_col):
     Requirements:\n
         in_path file must have the following columns:\n
             - food_type\n
+    Optional functions to use to have proper inputs:
+        - find_date() for date_col
+        - find_float_time() for time_col
     """
 
     df = universal_key(in_path)
