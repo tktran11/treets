@@ -109,7 +109,7 @@ def mean_daily_eating_duration(df, time_col, start_date='not_defined', end_date=
     df = df[df['food_type'].isin(['f','b'])]
     breakfast_time = df.groupby('date').agg(min)
     dinner_time = df.groupby('date').agg(max)
-    return (dinner_time[col]-breakfast_time[col]).mean()
+    return (dinner_time[time_col]-breakfast_time[time_col]).mean()
 
 # Cell
 def std_daily_eating_duration(df, time_col, start_date='not_defined', end_date='not_defined'):
