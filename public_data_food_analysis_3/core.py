@@ -775,7 +775,7 @@ def breakfast_mean_with_error_bar(in_path, identifier, date_col, time_col, min_l
     plt.errorbar(range(temp.shape[0]), temp['mean'], yerr=temp['std'], fmt="o")
     plt.xticks([])
     plt.ylabel("Hours in a day")
-    plt.title('Dinner Time per Person in Ascending Order')
+    plt.title('Breakfast Time per Person in Ascending Order')
 
 # Cell
 def dinner_mean_with_error_bar(in_path, identifier, date_col, time_col, min_log_num=2, min_separation=4):
