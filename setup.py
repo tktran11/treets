@@ -44,7 +44,7 @@ for ext in ['png', 'svg']:
     long_description = re.sub(r'src=\"(.*)\.'+ext+'\"', 'src=\"https://raw.githubusercontent.com/{}/{}'.format(cfg['user'],cfg['lib_name'])+'/'+cfg['branch']+'/\\1.'+ext+'\"', long_description)
 
 setup(
-    name = 'public_data_food_analysis_3',  
+    name = 'time_restricted_eating_experiments',
     license = lic[0],
     classifiers = [
         'Development Status :: ' + statuses[int(cfg['status'])],
@@ -52,9 +52,9 @@ setup(
         'Natural Language :: ' + cfg['language'].title(),
     ] + ['Programming Language :: Python :: '+o for o in py_versions[py_versions.index(min_python):]] + (['License :: ' + lic[1] ] if lic[1] else []),
     url = cfg['git_url'],
-    packages = ['public_data_food_analysis_3'],
-    package_dir={'public_data_food_analysis_3': 'public_data_food_analysis_3'},
-    package_data={'public_data_food_analysis_3': ['data/correction_dic.pickle'\
+    packages = ['time_restricted_eating_experiments'],
+    package_dir={'time_restricted_eating_experiments': 'time_restricted_eating_experiments'},
+    package_data={'time_restricted_eating_experiments': ['data/correction_dic.pickle'\
                                                     , 'data/parser_keys.csv'\
                                                     ,'data/col_test_data/yrt1999_food_data.csv'\
                                                     ,'data/col_test_data/toy_data_17May2021.xlsx']},

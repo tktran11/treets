@@ -10,7 +10,7 @@ entries:
       title: Overview
       url: /
     - output: web,pdf
-      title: Public data food analysis
+      title: Time Restricted Eating ExperimenTS
       url: core.html
     - output: web,pdf
       title: Columbia data food analysis
