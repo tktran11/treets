@@ -4,19 +4,19 @@
 
 ## Install
 
-`pip install public_data_food_analysis_3`
+`pip install time_restricted_eating_experiments`
 
 ## Example for data analysis on the Columbia study
 
 ```python
-import public_data_food_analysis_3.columbia as pdfac
+import time_restricted_eating_experiments.columbia as treetsc
 import pandas as pd
 ```
 
 ### Take a brief look on the food logging dataset and the reference information sheet
 
 ```python
-pdfac.read_logging_data('data/col_test_data').head(2)
+treetsc.read_logging_data('data/col_test_data').head(2)
 ```
 
 
@@ -137,7 +137,7 @@ pd.read_excel('data/col_test_data/toy_data_17May2021.xlsx').head(2)
 ### make the table that contains extra analytic information that we want
 
 ```python
-df = pdfac.make_table(pdfac.read_logging_data('data/col_test_data')\
+df = treetsc.make_table(treetsc.read_logging_data('data/col_test_data')\
                       , pd.read_excel('data/col_test_data/toy_data_17May2021.xlsx'))
 ```
 
@@ -147,6 +147,20 @@ df = pdfac.make_table(pdfac.read_logging_data('data/col_test_data')\
     2021-05-12
     2021-05-13
     2021-05-14
+    2021-05-15
+    2021-05-16
+    2021-05-17
+    2021-05-18
+    Participant yrt1999 have bad logging day(s) in the following day(s):
+    2021-05-12
+    2021-05-15
+    Participant yrt1999 have bad window day(s) in the following day(s):
+    2021-05-15
+    2021-05-17
+    Participant yrt1999 have non adherent day(s) in the following day(s):
+    2021-05-12
+    2021-05-15
+    2021-05-17
 
 
 ```python
@@ -209,17 +223,17 @@ df
       <td>00:00:00</td>
       <td>23:59:00</td>
       <td>3 days</td>
-      <td>7</td>
+      <td>7.0</td>
       <td>...</td>
-      <td>3</td>
+      <td>3.0</td>
       <td>1.00</td>
       <td>2.0</td>
       <td>0.666667</td>
-      <td>3</td>
+      <td>3.0</td>
       <td>1.00</td>
-      <td>0</td>
       <td>0.0</td>
-      <td>2</td>
+      <td>0.0</td>
+      <td>2.0</td>
       <td>0.666667</td>
     </tr>
     <tr>
@@ -233,17 +247,17 @@ df
       <td>08:00:00</td>
       <td>18:00:00</td>
       <td>4 days</td>
-      <td>8</td>
+      <td>8.0</td>
       <td>...</td>
-      <td>3</td>
+      <td>3.0</td>
       <td>0.75</td>
       <td>2.0</td>
       <td>0.500000</td>
-      <td>1</td>
+      <td>1.0</td>
       <td>0.25</td>
-      <td>2</td>
+      <td>2.0</td>
       <td>0.5</td>
-      <td>1</td>
+      <td>1.0</td>
       <td>0.250000</td>
     </tr>
     <tr>
@@ -257,22 +271,70 @@ df
       <td>08:00:00</td>
       <td>16:00:00</td>
       <td>3 days</td>
-      <td>0</td>
+      <td>0.0</td>
       <td>...</td>
-      <td>0</td>
+      <td>0.0</td>
       <td>0.00</td>
       <td>0.0</td>
       <td>0.000000</td>
-      <td>0</td>
-      <td>0.00</td>
-      <td>0</td>
       <td>0.0</td>
-      <td>0</td>
+      <td>0.00</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
       <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>yrt2000</td>
+      <td>3</td>
+      <td>T3-INT</td>
+      <td>TRE</td>
+      <td>2021-05-15</td>
+      <td>2021-05-18</td>
+      <td>08:00:00</td>
+      <td>16:00:00</td>
+      <td>4 days</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.00</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.00</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>yrt2001</td>
+      <td>4</td>
+      <td>T12-A</td>
+      <td>TRE</td>
+      <td>NaT</td>
+      <td>NaT</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaT</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
     </tr>
   </tbody>
 </table>
-<p>3 rows × 26 columns</p>
+<p>5 rows × 26 columns</p>
 </div>
 
 
@@ -293,22 +355,22 @@ df.iloc[0]
     Eating_Window_Start                             00:00:00
     Eating_Window_End                               23:59:00
     phase_duration                           3 days 00:00:00
-    caloric_entries                                        7
+    caloric_entries                                      7.0
     mean_daily_eating_window                           13.75
     std_daily_eating_window                        11.986972
     earliest_entry                                       4.5
     2.5%                                              4.5375
     97.5%                                            27.5625
     duration mid 95%                                  23.025
-    logging_day_counts                                     3
+    logging_day_counts                                   3.0
     %_logging_day_counts                                 1.0
     good_logging_days                                    2.0
     %_good_logging_days                             0.666667
-    good_window_days                                       3
+    good_window_days                                     3.0
     %_good_window_days                                   1.0
-    outside_window_days                                    0
+    outside_window_days                                  0.0
     %_outside_window_days                                0.0
-    adherent_days                                          2
+    adherent_days                                        2.0
     %_adherent_days                                 0.666667
     Name: 0, dtype: object
 
@@ -330,43 +392,40 @@ df.iloc[1]
     Eating_Window_Start                             08:00:00
     Eating_Window_End                               18:00:00
     phase_duration                           4 days 00:00:00
-    caloric_entries                                        8
+    caloric_entries                                      8.0
     mean_daily_eating_window                        8.666667
     std_daily_eating_window                         8.504901
     earliest_entry                                       7.5
     2.5%                                                 7.7
     97.5%                                               23.9
     duration mid 95%                                    16.2
-    logging_day_counts                                     3
+    logging_day_counts                                   3.0
     %_logging_day_counts                                0.75
     good_logging_days                                    2.0
     %_good_logging_days                                  0.5
-    good_window_days                                       1
+    good_window_days                                     1.0
     %_good_window_days                                  0.25
-    outside_window_days                                    2
+    outside_window_days                                  2.0
     %_outside_window_days                                0.5
-    adherent_days                                          1
+    adherent_days                                        1.0
     %_adherent_days                                     0.25
     Name: 1, dtype: object
 
 
 
-## Example for data analysis using public data food analysis module
+## Example for data analysis using time restricted eating experiments core module
 
 ```python
-import public_data_food_analysis_3.core as pdfaco
+import time_restricted_eating_experiments.core as treets
 import pandas as pd
 ```
 
 ### take a look at the original dataset
 
 ```python
-df = pdfaco.universal_key('data/test_food_details.csv')
+df = treets.file_loader('data/test_food_details.csv')
 df.head(2)
 ```
-
-    read the csv file successfully.
-
 
 
 
@@ -431,7 +490,7 @@ df.head(2)
 ### preprocess the data to have extra basic features
 
 ```python
-df = pdfaco.load_public_data(df)
+df = treets.load_public_data(df,4)
 df.head(2)
 ```
 
@@ -513,7 +572,7 @@ df.head(2)
 ### do a brief annalysis
 
 ```python
-df = pdfaco.summarize_data(df, 'local_time', 'unique_code')
+df = treets.summarize_data(df, 'unique_code', 'local_time', 'date')
 df.head(2)
 ```
 
@@ -639,28 +698,3 @@ df.iloc[0]
 ```python
 df.iloc[1]
 ```
-
-
-
-
-    unique_code                      alqt14018795225
-    num_days                                      64
-    num_total_items                              488
-    num_f_n_b                                    484
-    num_medications                                3
-    num_water                                      1
-    breakfast_avg                           7.525781
-    breakfast_std                           5.434563
-    dinner_avg                             25.858594
-    dinner_std                              3.374839
-    eating_win_avg                         18.332813
-    eating_win_std                         -2.059723
-    good_logging_count                           484
-    breakfast variation (90%-10%)              13.45
-    dinner variation (90%-10%)                   3.1
-    2.5%                                    4.183333
-    95%                                    27.438333
-    duration mid 95%                       23.416667
-    Name: 1, dtype: object
-
-
