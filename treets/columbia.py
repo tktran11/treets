@@ -9,7 +9,7 @@ import glob
 import pandas as pd
 import numpy as np
 import datetime
-import time_restricted_eating_experiments.core as treets
+import treets.core as treets
 
 # Cell
 def read_logging_data(folder_path):

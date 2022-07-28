@@ -44,8 +44,8 @@ index = {"file_loader": "00_core.ipynb",
 modules = ["core.py",
            "columbia.py"]
 
-doc_url = "https://QiwenZz.github.io/time_restricted_eating_experiments/"
+doc_url = "https://QiwenZz.github.io/treets/"
 
-git_url = "https://github.com/QiwenZz/time_restricted_eating_experiments/tree/master/"
+git_url = "https://github.com/QiwenZz/treets/tree/master/"
 
 def custom_doc_links(name): return None

@@ -1,7 +1,7 @@
-repository: QiwenZz/public_data_food_analysis_3
+repository: QiwenZz/treets
 output: web
-topnav_title: public_data_food_analysis_3
-site_title: public_data_food_analysis_3
+topnav_title: treets
+site_title: treets
 company_name: UCSD
 description: This project analyzes data from a few input sources.
 # Set to false to disable KaTeX math
@@ -63,4 +63,4 @@ plugins:
     - jekyll-remote-theme
     
 remote_theme: fastai/nbdev-jekyll-theme
-baseurl: /time_restricted_eating_experiments/
+baseurl: /treets/

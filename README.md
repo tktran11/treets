@@ -1,5 +1,5 @@
-# Time Restricted Eating ExperimenTS
-
+# TREETS
+> treets stands for Time Restricted Eating ExperimenTS.
 
 
 ## Install
@@ -9,7 +9,7 @@
 ## Example for data analysis on the Columbia study
 
 ```python
-import time_restricted_eating_experiments.columbia as treetsc
+import treets.columbia as treetsc
 import pandas as pd
 ```
 
@@ -416,7 +416,7 @@ df.iloc[1]
 ## Example for data analysis using time restricted eating experiments core module
 
 ```python
-import time_restricted_eating_experiments.core as treets
+import treets.core as treets
 import pandas as pd
 ```
 
@@ -603,15 +603,15 @@ df.head(2)
       <th>num_f_n_b</th>
       <th>num_medications</th>
       <th>num_water</th>
-      <th>breakfast_avg</th>
-      <th>breakfast_std</th>
-      <th>dinner_avg</th>
-      <th>dinner_std</th>
+      <th>first_cal_avg</th>
+      <th>first_cal_std</th>
+      <th>last_cal_avg</th>
+      <th>last_cal_std</th>
       <th>eating_win_avg</th>
       <th>eating_win_std</th>
       <th>good_logging_count</th>
-      <th>breakfast variation (90%-10%)</th>
-      <th>dinner variation (90%-10%)</th>
+      <th>first_cal variation (90%-10%)</th>
+      <th>last_cal variation (90%-10%)</th>
       <th>2.5%</th>
       <th>95%</th>
       <th>duration mid 95%</th>
@@ -679,15 +679,15 @@ df.iloc[0]
     num_f_n_b                                    96
     num_medications                              19
     num_water                                    34
-    breakfast_avg                          7.821795
-    breakfast_std                          6.710717
-    dinner_avg                            23.485897
-    dinner_std                             4.869082
+    first_cal_avg                          7.821795
+    first_cal_std                          6.710717
+    last_cal_avg                          23.485897
+    last_cal_std                           4.869082
     eating_win_avg                        15.664103
     eating_win_std                        -1.841635
     good_logging_count                          146
-    breakfast variation (90%-10%)          2.966667
-    dinner variation (90%-10%)             9.666667
+    first_cal variation (90%-10%)          2.966667
+    last_cal variation (90%-10%)           9.666667
     2.5%                                      4.535
     95%                                   26.813333
     duration mid 95%                      22.636667
@@ -698,3 +698,28 @@ df.iloc[0]
 ```python
 df.iloc[1]
 ```
+
+
+
+
+    unique_code                      alqt14018795225
+    num_days                                      64
+    num_total_items                              488
+    num_f_n_b                                    484
+    num_medications                                3
+    num_water                                      1
+    first_cal_avg                           7.525781
+    first_cal_std                           5.434563
+    last_cal_avg                           25.858594
+    last_cal_std                            3.374839
+    eating_win_avg                         18.332813
+    eating_win_std                         -2.059723
+    good_logging_count                           484
+    first_cal variation (90%-10%)              13.45
+    last_cal variation (90%-10%)                 3.1
+    2.5%                                    4.183333
+    95%                                    27.438333
+    duration mid 95%                       23.416667
+    Name: 1, dtype: object
+
+
