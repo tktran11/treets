@@ -1,0 +1,46 @@
+package:
+  name: treets
+  version: 0.3.0
+source:
+  sha256: e92d8a9dc5ee7a0a8384f2fc950ce470375e8c1fc941498f6d817fb410a67135
+  url: https://files.pythonhosted.org/packages/de/5e/a04de93857115872645f9494306224b7f31aacd0756a22c3bf3dea350620/treets-0.3.0.tar.gz
+about:
+  dev_url: https://QiwenZz.github.io
+  doc_url: https://QiwenZz.github.io
+  home: https://QiwenZz.github.io
+  license: Apache Software
+  license_family: APACHE
+  summary: This library provides functions to analyzes food logging data.
+build:
+  noarch: python
+  number: '0'
+  script: '{{ PYTHON }} -m pip install . -vv'
+extra:
+  recipe-maintainers:
+  - QiwenZz
+requirements:
+  host:
+  - pip
+  - python
+  - packaging
+  - pandas
+  - numpy
+  - scipy
+  - seaborn
+  - matplotlib
+  - datetime
+  - nltk
+  run:
+  - pip
+  - python
+  - packaging
+  - pandas
+  - numpy
+  - scipy
+  - seaborn
+  - matplotlib
+  - datetime
+  - nltk
+test:
+  imports:
+  - treets

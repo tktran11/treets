@@ -1,10 +1,10 @@
 # TREETS
-> treets stands for Time Restricted Eating ExperimenTS.
+> Time Restricted Eating ExperimenTS.
 
 
 ## Install
 
-`pip install time_restricted_eating_experiments`
+`pip install pip install treets`
 
 ## Example for data analysis on the Columbia study
 
