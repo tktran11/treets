@@ -11,13 +11,13 @@ index = {"file_loader": "00_core.ipynb",
          "in_good_logging_day": "00_core.ipynb",
          "convert_loggings": "00_core.ipynb",
          "get_types": "00_core.ipynb",
-         "count_caloric_entries": "01_columbia.ipynb",
-         "mean_daily_eating_duration": "01_columbia.ipynb",
-         "std_daily_eating_duration": "01_columbia.ipynb",
-         "earliest_entry": "01_columbia.ipynb",
-         "logging_day_counts": "01_columbia.ipynb",
-         "find_missing_logging_days": "01_columbia.ipynb",
-         "good_lwa_day_counts": "01_columbia.ipynb",
+         "count_caloric_entries": "00_core.ipynb",
+         "mean_daily_eating_duration": "00_core.ipynb",
+         "std_daily_eating_duration": "00_core.ipynb",
+         "earliest_entry": "00_core.ipynb",
+         "logging_day_counts": "00_core.ipynb",
+         "find_missing_logging_days": "00_core.ipynb",
+         "good_lwa_day_counts": "00_core.ipynb",
          "filtering_usable_data": "00_core.ipynb",
          "prepare_baseline_and_intervention_usable_data": "00_core.ipynb",
          "users_sorted_by_activity": "00_core.ipynb",
@@ -35,14 +35,9 @@ index = {"file_loader": "00_core.ipynb",
          "last_cal_avg_histplot": "00_core.ipynb",
          "last_cal_sample_distplot": "00_core.ipynb",
          "swarmplot": "00_core.ipynb",
-         "FoodParser": "00_core.ipynb",
-         "read_logging_data": "01_columbia.ipynb",
-         "get_phase_duration": "01_columbia.ipynb",
-         "find_percentiles": "01_columbia.ipynb",
-         "make_table": "01_columbia.ipynb"}
+         "FoodParser": "00_core.ipynb"}
 
-modules = ["core.py",
-           "columbia.py"]
+modules = ["core.py"]
 
 doc_url = "https://QiwenZz.github.io/treets/"
 

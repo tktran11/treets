@@ -4,7 +4,7 @@
 
 ## Install
 
-`pip install pip install treets`
+`pip install treets`
 
 ## Example for data analysis on the Columbia study
 

@@ -179,7 +179,7 @@ def find_phase_duration(df):
     return df
 
 # Cell
-def load_public_data(data_scource, h):
+def load_public_data(data_scource, identifier, datetime_col, h):
     """
     Description:\n
         Load original public data and output processed data in a dataframe.\n
@@ -207,7 +207,12 @@ def load_public_data(data_scource, h):
             - date\n
             - unique_code\n
     """
-    public_all = file_loader(data_scource).drop(columns = ['foodimage_file_name'])
+    public_all = file_loader(data_scource)
+
+    try:
+        public_all = public_all.drop(columns = ['foodimage_file_name'])
+    except KeyError:
+        pass
 
     def handle_public_time(s):
         """
@@ -224,23 +229,23 @@ def load_public_data(data_scource, h):
             except:
                 return np.nan
 
-    public_all['original_logtime_notz'] = public_all['original_logtime'].apply(handle_public_time)
+    public_all[datetime_col] = public_all[datetime_col].apply(handle_public_time)
 
     public_all = public_all.dropna().reset_index(drop = True)
 
 
-    public_all['date'] = find_date(public_all, 'original_logtime_notz', h)
+    public_all['date'] = find_date(public_all, datetime_col, h)
 
 
     # Handle the time - Time in floating point format
 
-    public_all['local_time'] = find_float_time(public_all, 'original_logtime_notz', h)
+    public_all['local_time'] = find_float_time(public_all, datetime_col, h)
 
     # Handle the time - Time in Datetime object format
-    public_all['time'] = pd.DatetimeIndex(public_all.original_logtime_notz).time
+    public_all['time'] = pd.DatetimeIndex(public_all[datetime_col]).time
 
     # Handle week from start
-    public_all['week_from_start'] = week_from_start(public_all,'date','unique_code')
+    public_all['week_from_start'] = week_from_start(public_all,'date',identifier)
 
     public_all['year'] = public_all.date.apply(lambda d: d.year)
 
@@ -571,7 +576,7 @@ def good_lwa_day_counts(df, window_start, window_end, time_col, min_log_num=2, m
         - df(pandas df): food_logging data.
         - window_start(datetime.time object): start time of the restriction window.
         - window_end(datetime.time object): end time of the restriction window.
-        - time_col
+        - time_col(str) : the column that represents the eating time.
         - min_log_num(count, int): minimum number of loggings to qualify a day as a good logging day
         - min_seperation(hours, int): minimum period of separation between earliest and latest loggings to qualify a day as a good logging day
         - buffer_time(time in string that can be passed into pd.Timedelta()): wiggle room for to be added/subtracted on the ends of windows.
@@ -579,10 +584,12 @@ def good_lwa_day_counts(df, window_start, window_end, time_col, min_log_num=2, m
         - start_date(datetime.date object): start date of the period for calculation. If not defined, it will be automatically set to be the earliest date in df.
         - end_date(datetime.date object): end date of the period for calculation. If not defined, it will be automatically set to be the latest date in df.
     Output:\n
-        - a list that represents the number of good logging days, good window days, outside window days and adherent days.
+        - Two lists.
+            - First list contains 4 integers that represent the number of good logging days, good window days, outside window days and adherent_days
+            - Second list contains lists consisted of specific dates that are not good logging days, window days and adherent days within the range of start date and end date(both inclusive).
     Requirement:\n
         - 'date' column existed in the df.
-        - float time is calculated.
+        - float time is calculated as time_col.
     """
     # if start_date or end_date is missing, return nan
     if pd.isnull(start_date) or pd.isnull(end_date):
@@ -648,7 +655,7 @@ def good_lwa_day_counts(df, window_start, window_end, time_col, min_log_num=2, m
         adherent_day_counts = adherent_days.sum()
 
     rows = [good_logging_days, good_window_day_counts, outside_window_days, adherent_day_counts]
-    bad_dates = (good_logging_by_date, good_window_by_date, adherent_days_by_date)
+    bad_dates = [good_logging_by_date, good_window_by_date, adherent_days_by_date]
 
     return rows, bad_dates
 
@@ -809,6 +816,11 @@ def eating_intervals_percentile(data_scource, time_col, identifier, start_date='
 
     df = df[(df['date']>=start_date) & (df['date']<=end_date)]
 
+    if df.shape[0] == 0:
+        return pd.DataFrame(np.array([[np.nan]*21]), columns = ['count', 'mean', 'std', 'min', '2.5%', '5%', '10%', '12.5%', '25%',
+       '50%', '75%', '87.5%', '90%', '95%', '97.5%', 'max', 'duration mid 95%',
+       'duration mid 90%', 'duration mid 80%', 'duration mid 75%',
+       'duration mid 50%'])
 
     ptile = df.groupby(identifier)[time_col].describe(percentiles=[.025, .05, .10, .125, .25, .5, .75, .875, .9, .95, .975])
     ll = ['2.5%','5%','10%','12.5%','25%']
@@ -1104,7 +1116,13 @@ def summarize_data_with_experiment_phases(food_data, ref_tbl, report_level=2, mi
     column_975 = []
     for index, row in ref_tbl.iterrows():
         id_ = row['mCC_ID']
+
+
+
         series = eating_intervals_percentile(df[df['PID']==id_], 'float_time', 'PID', row['Start_Day'], row['End_day'])
+        if index== 2:
+            print(series)
+
         try:
             column_025.append(series.loc['2.5%'])
         except:
