@@ -2,13 +2,14 @@
 
 __all__ = ['file_loader', 'find_date', 'find_float_time', 'week_from_start', 'find_phase_duration', 'load_public_data',
            'in_good_logging_day', 'convert_loggings', 'get_types', 'count_caloric_entries',
-           'mean_daily_eating_duration', 'std_daily_eating_duration', 'earliest_entry', 'logging_day_counts',
-           'find_missing_logging_days', 'good_lwa_day_counts', 'filtering_usable_data',
-           'prepare_baseline_and_intervention_usable_data', 'users_sorted_by_activity', 'eating_intervals_percentile',
-           'first_cal_analysis_summary', 'last_cal_analysis_summary', 'summarize_data',
-           'summarize_data_with_experiment_phases', 'first_cal_mean_with_error_bar', 'last_cal_mean_with_error_bar',
-           'first_cal_analysis_variability_plot', 'last_cal_analysis_variability_plot', 'first_cal_avg_histplot',
-           'first_cal_sample_distplot', 'last_cal_avg_histplot', 'last_cal_sample_distplot', 'swarmplot', 'FoodParser']
+           'mean_daily_eating_duration', 'std_daily_eating_duration', 'earliest_entry', 'mean_first_cal',
+           'std_first_cal', 'mean_last_cal', 'std_last_cal', 'logging_day_counts', 'find_missing_logging_days',
+           'good_lwa_day_counts', 'filtering_usable_data', 'prepare_baseline_and_intervention_usable_data',
+           'users_sorted_by_activity', 'eating_intervals_percentile', 'first_cal_analysis_summary',
+           'last_cal_analysis_summary', 'summarize_data', 'summarize_data_with_experiment_phases',
+           'first_cal_mean_with_error_bar', 'last_cal_mean_with_error_bar', 'first_cal_analysis_variability_plot',
+           'last_cal_analysis_variability_plot', 'first_cal_avg_histplot', 'first_cal_sample_distplot',
+           'last_cal_avg_histplot', 'last_cal_sample_distplot', 'swarmplot', 'FoodParser']
 
 # Cell
 import warnings
@@ -194,7 +195,9 @@ def load_public_data(data_scource, identifier, datetime_col, h):
         7. Generating 'year' column based on the input data.\n
 
     Input:\n
-        - data_scource (str, pandas df): input path, csv file\n
+        - data_scource (str or pandas df): input path, csv file\n
+        - identifier(str): id-like column that's used to identify a subject.\n
+        - datetime_col(str): column that contains date and time in string format.\n
         - h(int) : hours to shift the date. For example, when h = 4, everyday starts and ends 4 hours later than normal.
 
     Output:\n
@@ -367,15 +370,13 @@ def get_types(data_scource, food_type):
     return filtered
 
 # Cell
-def count_caloric_entries(df, start_date='not_defined', end_date='not_defined'):
+def count_caloric_entries(df):
     """
     Description:\n
         This is a function that counts the number of food and beverage loggings.
 
     Input:\n
         - df(pandas df) : food_logging data.
-        - start_date(datetime.date object) : start date of the period of counting. If not defined, it will be automatically set to be the earliest date in df.
-        - end_date(datetime.date object) : end date of the period of counting. If not defined, it will be automatically set to be the latest date in df.
 
     Output:\n
         - a float representing the number of caloric entries.
@@ -385,27 +386,20 @@ def count_caloric_entries(df, start_date='not_defined', end_date='not_defined'):
     """
     if 'food_type' not in df.columns:
         raise Exception("'food_type' column must exist in the dataframe.")
-    if pd.isnull(start_date) or pd.isnull(end_date):
-        return np.nan
-    if start_date=='not_defined':
-        start_date = df['date'].min()
-    if end_date=='not_defined':
-        end_date = df['date'].max()
-    df = df[(df['date']>=start_date) & (df['date']<=end_date)]
+
+
     return df[df['food_type'].isin(['f','b'])].shape[0]
 
 # Cell
-def mean_daily_eating_duration(df, date_col, time_col, start_date='not_defined', end_date='not_defined'):
+def mean_daily_eating_duration(df, date_col, time_col):
     """
     Description:\n
         This is a function that calculates the mean daily eating window, which is defined as the duration of first and last caloric intake.
 
     Input:\n
         - df(pandas df) : food_logging data.
-        - date_col
+        - date_col(column existed in df, string) : column name that contains date information from the df dataframe.
         - time_col(column existed in df, string) : contains the float time data for each logging.
-        - start_date(datetime.date object) : start date of the period of calculation. If not defined, it will be automatically set to be the earliest date in df.
-        - end_date(datetime.date object) : end date of the period of calculation. If not defined, it will be automatically set to be the latest date in df.
 
     Output:\n
         - a float representing the mean daily eating window.
@@ -418,30 +412,22 @@ def mean_daily_eating_duration(df, date_col, time_col, start_date='not_defined',
         - find_date() for date_col
         - find_float_time() for time_col
     """
-    if pd.isnull(start_date) or pd.isnull(end_date):
-        return np.nan
-    if start_date=='not_defined':
-        start_date = df[date_col].min()
-    if end_date=='not_defined':
-        end_date = df[date_col].max()
-    df = df[(df[date_col]>=start_date) & (df[date_col]<=end_date)]
+
     df = df[df['food_type'].isin(['f','b'])]
     breakfast_time = df.groupby(date_col).agg(min)
     dinner_time = df.groupby(date_col).agg(max)
     return (dinner_time[time_col]-breakfast_time[time_col]).mean()
 
 # Cell
-def std_daily_eating_duration(df, date_col, time_col, start_date='not_defined', end_date='not_defined'):
+def std_daily_eating_duration(df, date_col, time_col):
     """
     Description:\n
         This function calculates the standard deviation of daily eating window, which is defined as the duration between the first and last caloric intake.
 
     Input:\n
         - df(pandas df) : food_logging data.
-        - date_col
+        - date_col(column existed in df, string) : column name that contains date information from the df dataframe.
         - time_col(column existed in df, string) : contains the float time data for each logging.
-        - start_date(datetime.date object) : start date of the period of calculation. If not defined, it will be automatically set to be the earliest date in df.
-        - end_date(datetime.date object) : end date of the period of calculation. If not defined, it will be automatically set to be the latest date in df.
 
     Output:\n
         - a float representing the standard deviation of daily eating window.
@@ -453,13 +439,7 @@ def std_daily_eating_duration(df, date_col, time_col, start_date='not_defined', 
         - find_date() for date_col
         - find_float_time() for time_col
     """
-    if pd.isnull(start_date) or pd.isnull(end_date):
-        return np.nan
-    if start_date=='not_defined':
-        start_date = df[date_col].min()
-    if end_date=='not_defined':
-        end_date = df[date_col].max()
-    df = df[(df[date_col]>=start_date) & (df[date_col]<=end_date)]
+
     df = df[df['food_type'].isin(['f','b'])]
     breakfast_time = df.groupby(date_col).agg(min)
     dinner_time = df.groupby(date_col).agg(max)
@@ -467,16 +447,14 @@ def std_daily_eating_duration(df, date_col, time_col, start_date='not_defined', 
     return (dinner_time[time_col]-breakfast_time[time_col]).std()
 
 # Cell
-def earliest_entry(df, date_col, time_col, start_date='not_defined', end_date='not_defined'):
+def earliest_entry(df, date_col, time_col):
     """
     Description:\n
         This function calculates the earliest first calorie on any day in the study period.
     Input:\n
         - df(pandas df) : food_logging data.
-        - date_col
+        - date_col(column existed in df, string) : column name that contains date information from the df dataframe.
         - time_col(column existed in df, string) : contains information of logging time in float.
-        - start_date(datetime.date object) : start date of the period of calculation. If not defined, it will be automatically set to be the earliest date in df.
-        - end_date(datetime.date object) : end date of the period of calculation. If not defined, it will be automatically set to be the latest date in df.
 
     Output:\n
         - the earliest caloric time in float on any day in the study period.
@@ -488,28 +466,114 @@ def earliest_entry(df, date_col, time_col, start_date='not_defined', end_date='n
         - find_date() for date_col
         - find_float_time() for time_col
     """
-    # if start_date or end_date is missing, return nan
-    if pd.isnull(start_date) or pd.isnull(end_date):
-        return np.nan
-    # if there is no input on start_date or end_date, use earliest date and latest date
-    if start_date=='not_defined':
-        start_date = df[date_col].min()
-    if end_date=='not_defined':
-        end_date = df[date_col].max()
 
-    df = df[(df[date_col]>=start_date) & (df[date_col]<=end_date)]
+    df = get_types(df, ['f', 'b'])
 
     return df[time_col].min()
 
 # Cell
-def logging_day_counts(df, start_date='not_defined', end_date='not_defined'):
+def mean_first_cal(df, date_col, time_col):
+    """
+    Description:\n
+        This function calculates the average time of first calory intake.
+    Input:\n
+        - df(pandas df) : food_logging data.
+        - date_col(column existed in df, string) : column name that contains date information from the df dataframe.
+        - time_col(column existed in df, string) : contains information of logging time in float.
+
+    Output:\n
+        - the mean first caloric intake time in float in the study period.
+
+    Requirement:\n
+        - 'date' column existed in the df.
+
+    Optional functions to use to have proper inputs:
+        - find_date() for date_col
+        - find_float_time() for time_col
+    """
+
+
+    return df.groupby([date_col])[time_col].min().mean()
+
+# Cell
+def std_first_cal(df, date_col, time_col):
+    """
+    Description:\n
+        This function calculates the average time of first calory intake.
+    Input:\n
+        - df(pandas df) : food_logging data.
+        - date_col(column existed in df, string) : column name that contains date information from the df dataframe.
+        - time_col(column existed in df, string) : contains information of logging time in float.
+
+    Output:\n
+        - the mean first caloric intake time in float in the study period.
+
+    Requirement:\n
+        - 'date' column existed in the df.
+
+    Optional functions to use to have proper inputs:
+        - find_date() for date_col
+        - find_float_time() for time_col
+    """
+
+
+    return df.groupby([date_col])[time_col].min().std()
+
+# Cell
+def mean_last_cal(df, date_col, time_col):
+    """
+    Description:\n
+        This function calculates the average time of last calory intake.
+    Input:\n
+        - df(pandas df) : food_logging data.
+        - date_col(column existed in df, string) : column name that contains date information from the df dataframe.
+        - time_col(column existed in df, string) : contains information of logging time in float.
+
+    Output:\n
+        - the mean last caloric intake time in float in the study period.
+
+    Requirement:\n
+        - 'date' column existed in the df.
+
+    Optional functions to use to have proper inputs:
+        - find_date() for date_col
+        - find_float_time() for time_col
+    """
+
+
+    return df.groupby([date_col])[time_col].max().mean()
+
+# Cell
+def std_last_cal(df, date_col, time_col):
+    """
+    Description:\n
+        This function calculates the average time of last calory intake.
+    Input:\n
+        - df(pandas df) : food_logging data.
+        - date_col(column existed in df, string) : column name that contains date information from the df dataframe.
+        - time_col(column existed in df, string) : contains information of logging time in float.
+
+    Output:\n
+        - the mean last caloric intake time in float in the study period.
+
+    Requirement:\n
+        - 'date' column existed in the df.
+
+    Optional functions to use to have proper inputs:
+        - find_date() for date_col
+        - find_float_time() for time_col
+    """
+
+
+    return df.groupby([date_col])[time_col].max().std()
+
+# Cell
+def logging_day_counts(df):
     """
     Description:\n
         This function calculates the number of days that contains any loggings.
     Input:\n
-        - df : food_logging data.
-        - start_date : start date of the period of calculation. If not defined, it will be automatically set to be the earliest date in df.
-        - end_date : end date of the period of calculation. If not defined, it will be automatically set to be the latest date in df.
+        - df(pandas df) : food_logging data.
 
     Output:\n
         - an integer that represents the number of logging days.
@@ -517,16 +581,6 @@ def logging_day_counts(df, start_date='not_defined', end_date='not_defined'):
     Requirement:\n
         - 'date' column existed in the df.
     """
-    # if start_date or end_date is missing, return nan
-    if pd.isnull(start_date) or pd.isnull(end_date):
-        return np.nan
-    # if there is no input on start_date or end_date, use earliest date and latest date
-    if start_date=='not_defined':
-        start_date = df['date'].min()
-    if end_date=='not_defined':
-        end_date = df['date'].max()
-
-    df = df[(df['date']>=start_date) & (df['date']<=end_date)]
 
     return df.date.nunique()
 
@@ -590,6 +644,7 @@ def good_lwa_day_counts(df, window_start, window_end, time_col, min_log_num=2, m
     Requirement:\n
         - 'date' column existed in the df.
         - float time is calculated as time_col.
+
     """
     # if start_date or end_date is missing, return nan
     if pd.isnull(start_date) or pd.isnull(end_date):
@@ -787,7 +842,7 @@ def users_sorted_by_activity(data_scource, food_type = ["f", "b", "m", "w"]):
     return public_top_users_day_counts
 
 # Cell
-def eating_intervals_percentile(data_scource, time_col, identifier, start_date='not_defined', end_date='not_defined'):
+def eating_intervals_percentile(data_scource, time_col, identifier):
     """
     Description:
        This function calculates the .025, .05, .10, .125, .25, .5, .75, .875, .9, .95, .975 quantile of eating time and mid 95%, mid 90%, mid 80%, mid 75% and mid 50% duration for each user.\n
@@ -804,17 +859,6 @@ def eating_intervals_percentile(data_scource, time_col, identifier, start_date='
         - find_float_time() for time_col
     """
     df = file_loader(data_scource)
-
-    # if start_date or end_date is missing, return nan
-    if pd.isnull(start_date) or pd.isnull(end_date):
-        return np.nan
-    # if there is no input on start_date or end_date, use earliest date and latest date
-    if start_date=='not_defined':
-        start_date = df['date'].min()
-    if end_date=='not_defined':
-        end_date = df['date'].max()
-
-    df = df[(df['date']>=start_date) & (df['date']<=end_date)]
 
     if df.shape[0] == 0:
         return pd.DataFrame(np.array([[np.nan]*21]), columns = ['count', 'mean', 'std', 'min', '2.5%', '5%', '10%', '12.5%', '25%',
@@ -981,7 +1025,8 @@ def summarize_data(data_scource, identifier, float_time_col, date_col, min_log_n
     eating_win_avg = last_cal_avg - first_cal_avg
 
     #eating_win_std
-    eating_win_std = last_cal_std - first_cal_std
+    eating_win_std = (df.groupby([identifier, date_col])[float_time_col].max()-
+                          df.groupby([identifier, date_col])[float_time_col].min()).groupby(identifier).std()
 
     #good_logging_count
     df['in_good_logging_day'] = in_good_logging_day(df,identifier,date_col, float_time_col, min_log_num=min_log_num, min_seperation=min_seperation)
@@ -1017,7 +1062,7 @@ def summarize_data(data_scource, identifier, float_time_col, date_col, min_log_n
 
 
 # Cell
-def summarize_data_with_experiment_phases(food_data, ref_tbl, report_level=2, min_log_num=2, min_seperation=5, buffer_time= '15 minutes', h=4):
+def summarize_data_with_experiment_phases(food_data, ref_tbl, min_log_num=2, min_seperation=5, buffer_time= '15 minutes', h=4,report_level=2, txt = False):
     """
     Description:\n
         This is a comprehensive function that performs all of the functionalities needed.
@@ -1025,12 +1070,12 @@ def summarize_data_with_experiment_phases(food_data, ref_tbl, report_level=2, mi
     Input:\n
         - food_data(panda df): food_logging data.
         - ref_tbl(panda df): table that contains window information and study phase information for each participant.
-        - report_level(int): whether to print out the dates of no logging days, bad logging days, bad window days and non-adherent days for each participant. 0 - no report. 1 - report no logging days. 2 - report no logging days, bad logging days, bad window days and non adherent days.
-        - h(hours): hour manipulation so that the starting and ending time for each day is more realistic.
         - min_log_num(counts): minimum number of loggings to qualify a day as a good logging day.
         - min_seperation(hours): minimum period of separation between earliest and latest loggings to qualify a day as a good logging day
         - buffer_time(time in string that can be passed into pd.Timedelta()): wiggle room for to be added/subtracted on the ends of windows.
         - h(hours): hours to be pushed back.
+        - report_level(int): whether to print out the dates of no logging days, bad logging days, bad window days and non-adherent days for each participant. 0 - no report. 1 - report no logging days. 2 - report no logging days, bad logging days, bad window days and non adherent days.
+        - txt(boolean): if True, a txt format report will be saved in the current directory named "treets_warning_dates.txt".
 
 
     Output:\n
@@ -1065,12 +1110,29 @@ def summarize_data_with_experiment_phases(food_data, ref_tbl, report_level=2, mi
     for index, row in ref_tbl.iterrows():
         id_ = row['mCC_ID']
         rows = []
-        rows.append(count_caloric_entries(df[df['PID']==id_], row['Start_Day'],row['End_day']))
-        rows.append(mean_daily_eating_duration(df[df['PID']==id_],'date','float_time', row['Start_Day'],row['End_day']))
-        rows.append(std_daily_eating_duration(df[df['PID']==id_],'date','float_time', row['Start_Day'],row['End_day']))
-        rows.append(earliest_entry(df[df['PID']==id_], 'date','float_time', row['Start_Day'],row['End_day']))
-        rows.append(logging_day_counts(df[df['PID']==id_], row['Start_Day'],row['End_day']))
+        temp_df = df[df['PID']==id_]
+        temp_df = temp_df[(temp_df['date']>=row['Start_Day']) & (temp_df['date']<=row['End_day'])]
+        # num of caloric entries
+        rows.append(count_caloric_entries(temp_df))
+        # num of medication
+        rows.append(get_types(temp_df, ['m']).shape[0])
+        # num of water
+        rows.append(get_types(temp_df, ['w']).shape[0])
+        # first cal average
+        rows.append(mean_first_cal(temp_df,'date', 'float_time'))
+        #first cal std
+        rows.append(std_first_cal(temp_df, 'date', 'float_time'))
+        # last cal average
+        rows.append(mean_last_cal(temp_df,'date', 'float_time'))
+        # last cal std
+        rows.append(std_last_cal(temp_df, 'date', 'float_time'))
+        # mean eating window
+        rows.append(mean_daily_eating_duration(temp_df,'date','float_time'))
 
+        rows.append(std_daily_eating_duration(temp_df,'date','float_time'))
+        rows.append(earliest_entry(temp_df, 'date','float_time'))
+
+        rows.append(logging_day_counts(temp_df))
         row_day_num, bad_dates = good_lwa_day_counts(df[df['PID']==id_]
                                            , window_start=row['Eating_Window_Start']
                                            , window_end = row['Eating_Window_End']
@@ -1106,7 +1168,8 @@ def summarize_data_with_experiment_phases(food_data, ref_tbl, report_level=2, mi
                 missing_dates[id_] = date_lst
 
     # create a temp dataframe
-    tmp = pd.DataFrame(matrix, columns = ['caloric_entries', 'mean_daily_eating_window', 'std_daily_eating_window', 'earliest_entry', 'logging_day_counts'\
+    tmp = pd.DataFrame(matrix, columns = ['caloric_entries_num','medication_num', 'water_num','first_cal_avg','first_cal_std',
+                                          'last_cal_avg', 'last_cal_std', 'mean_daily_eating_window', 'std_daily_eating_window', 'earliest_entry', 'logging_day_counts'\
                                          ,'good_logging_days', 'good_window_days', 'outside_window_days', 'adherent_days'])
 
     # concat these two tables
@@ -1117,34 +1180,39 @@ def summarize_data_with_experiment_phases(food_data, ref_tbl, report_level=2, mi
     column_975 = []
     for index, row in ref_tbl.iterrows():
         id_ = row['mCC_ID']
-
-
-
-        series = eating_intervals_percentile(df[df['PID']==id_], 'float_time', 'PID', row['Start_Day'], row['End_day'])
-
+        temp_df = df[df['PID']==id_]
+        temp_df = temp_df[(temp_df['date']>=row['Start_Day']) & (temp_df['date']<=row['End_day'])]
+        series = eating_intervals_percentile(temp_df, 'float_time', 'PID')
         try:
-            column_025.append(series.loc['2.5%'])
+            column_025.append(series.iloc[0]['2.5%'])
         except:
             column_025.append(np.nan)
         try:
-            column_975.append(series.loc['97.5%'])
+            column_975.append(series.iloc[0]['97.5%'])
         except:
             column_975.append(np.nan)
     returned['2.5%'] = column_025
     returned['97.5%'] = column_975
     returned['duration mid 95%'] = returned['97.5%'] - returned['2.5%']
 
+    def convert_to_percentage(ser, col):
+        if pd.isnull(ser[col]):
+            return ser[col]
+        else:
+            return str(round(ser[col]/ser['phase_duration'].days * 100, 2)) + '%'
 
     # calculate percentage for
     for x in returned.columns:
         if x in ['logging_day_counts','good_logging_days', 'good_window_days', 'outside_window_days', 'adherent_days']:
-            returned['%_'+x] = returned[x]/returned['phase_duration'].dt.days
+            returned['%_'+x] = returned.apply(convert_to_percentage, col = x, axis = 1)
 
     # reorder the columns
     returned = returned[['mCC_ID', 'Participant_Study_ID', 'Study Phase',
        'Intervention group (TRE or HABIT)', 'Start_Day', 'End_day',
        'Eating_Window_Start','Eating_Window_End', 'phase_duration',
-       'caloric_entries', 'mean_daily_eating_window', 'std_daily_eating_window',
+       'caloric_entries_num','medication_num', 'water_num','first_cal_avg',
+        'first_cal_std','last_cal_avg', 'last_cal_std',
+        'mean_daily_eating_window', 'std_daily_eating_window',
        'earliest_entry', '2.5%', '97.5%', 'duration mid 95%',
        'logging_day_counts', '%_logging_day_counts', 'good_logging_days',
         '%_good_logging_days','good_window_days', '%_good_window_days',
@@ -1154,23 +1222,44 @@ def summarize_data_with_experiment_phases(food_data, ref_tbl, report_level=2, mi
     if report_level == 0:
         return returned
 
-    # print out missing dates with participant's id
-    for x in missing_dates:
-        if len(missing_dates[x])>0:
-            print("Participant {} didn't log any food items in the following day(s):".format(x))
-            for date in missing_dates[x]:
-                print(date)
+    if txt:
+        with open('treets_warning_dates.txt', 'w') as f:
+            # print out missing dates with participant's id
+            for x in missing_dates:
+                if len(missing_dates[x])>0:
+                    f.write("Participant {} didn't log any food items in the following day(s):\n".format(x))
+                    print("Participant {} didn't log any food items in the following day(s):".format(x))
+                    for date in missing_dates[x]:
+                        f.write(str(date)+'\n')
+                        print(date)
+    else:
+        for x in missing_dates:
+            if len(missing_dates[x])>0:
+                print("Participant {} didn't log any food items in the following day(s):".format(x))
+                for date in missing_dates[x]:
+                    print(date)
 
     if report_level == 1:
         return returned
 
-    # print out bad logging, bad window and non-adherent dates with participant's id
-    for x in bad_dates_dic:
-        if len(bad_dates_dic[x])>0:
-            strings = x.split('_')
-            print("Participant {} have {} day(s) in the following day(s):".format(strings[0], strings[1]+' '+strings[2]))
-            for date in bad_dates_dic[x]:
-                print(date)
+    if txt:
+        with open('treets_warning_dates.txt', 'a') as f:
+            # print out bad logging, bad window and non-adherent dates with participant's id
+            for x in bad_dates_dic:
+                if len(bad_dates_dic[x])>0:
+                    strings = x.split('_')
+                    f.write("Participant {} have {} day(s) in the following day(s):\n".format(strings[0], strings[1]+' '+strings[2]))
+                    print("Participant {} have {} day(s) in the following day(s):".format(strings[0], strings[1]+' '+strings[2]))
+                    for date in bad_dates_dic[x]:
+                        f.write(str(date)+'\n')
+                        print(date)
+    else:
+        for x in bad_dates_dic:
+            if len(bad_dates_dic[x])>0:
+                strings = x.split('_')
+                print("Participant {} have {} day(s) in the following day(s):".format(strings[0], strings[1]+' '+strings[2]))
+                for date in bad_dates_dic[x]:
+                    print(date)
 
     return returned
 
