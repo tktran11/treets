@@ -1039,6 +1039,8 @@ def summarize_data_with_experiment_phases(food_data, ref_tbl, report_level=2, mi
     Requirement:\n
         - food logging data is already read from all files in the directories into a dataframe, which will be passed in as the variable food_data.
         - Columns 'Start_Day', 'End_day', 'mCC_ID', 'Eating_Window_Start', 'Eating_Window_End' existed in the ref_tbl.
+
+    Sidenote:
         - For eating window without restriction(HABIT or TRE not in intervention period), Eating_Window_Start is 0:00, Eating_Window_End is 23:59.
 
     """
@@ -1063,7 +1065,6 @@ def summarize_data_with_experiment_phases(food_data, ref_tbl, report_level=2, mi
     for index, row in ref_tbl.iterrows():
         id_ = row['mCC_ID']
         rows = []
-#         print(df[df['PID']==id_])
         rows.append(count_caloric_entries(df[df['PID']==id_], row['Start_Day'],row['End_day']))
         rows.append(mean_daily_eating_duration(df[df['PID']==id_],'date','float_time', row['Start_Day'],row['End_day']))
         rows.append(std_daily_eating_duration(df[df['PID']==id_],'date','float_time', row['Start_Day'],row['End_day']))
@@ -1120,8 +1121,6 @@ def summarize_data_with_experiment_phases(food_data, ref_tbl, report_level=2, mi
 
 
         series = eating_intervals_percentile(df[df['PID']==id_], 'float_time', 'PID', row['Start_Day'], row['End_day'])
-        if index== 2:
-            print(series)
 
         try:
             column_025.append(series.loc['2.5%'])

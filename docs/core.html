@@ -3985,7 +3985,11 @@ dtype: object</pre>
 
 <pre><code>- food logging data is already read from all files in the directories into a dataframe, which will be passed in as the variable food_data.
 - Columns 'Start_Day', 'End_day', 'mCC_ID', 'Eating_Window_Start', 'Eating_Window_End' existed in the ref_tbl.
-- For eating window without restriction(HABIT or TRE not in intervention period), Eating_Window_Start is 0:00, Eating_Window_End is 23:59.</code></pre>
+
+</code></pre>
+<p>Sidenote:</p>
+
+<pre><code>- For eating window without restriction(HABIT or TRE not in intervention period), Eating_Window_Start is 0:00, Eating_Window_End is 23:59.</code></pre>
 
 </div>
 
@@ -4358,7 +4362,7 @@ yrt2000               5.6               5.0               2.0
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="first_cal_mean_with_error_bar" class="doc_header"><code>first_cal_mean_with_error_bar</code><a href="https://github.com/QiwenZz/treets/tree/master/treets/core.py#L1182" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>first_cal_mean_with_error_bar</code>(<strong><code>data_scource</code></strong>, <strong><code>identifier</code></strong>, <strong><code>date_col</code></strong>, <strong><code>time_col</code></strong>, <strong><code>min_log_num</code></strong>=<em><code>2</code></em>, <strong><code>min_separation</code></strong>=<em><code>4</code></em>)</p>
+<h4 id="first_cal_mean_with_error_bar" class="doc_header"><code>first_cal_mean_with_error_bar</code><a href="https://github.com/QiwenZz/treets/tree/master/treets/core.py#L1181" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>first_cal_mean_with_error_bar</code>(<strong><code>data_scource</code></strong>, <strong><code>identifier</code></strong>, <strong><code>date_col</code></strong>, <strong><code>time_col</code></strong>, <strong><code>min_log_num</code></strong>=<em><code>2</code></em>, <strong><code>min_separation</code></strong>=<em><code>4</code></em>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function takes the loggings in good logging days, calculates the means and standard deviations of first_cal time for each participant and represent the calculated data with a scatter plot where the x axis is participants and the y axis is hours in a day.</p>
@@ -4446,7 +4450,7 @@ yrt2000               5.6               5.0               2.0
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="last_cal_mean_with_error_bar" class="doc_header"><code>last_cal_mean_with_error_bar</code><a href="https://github.com/QiwenZz/treets/tree/master/treets/core.py#L1229" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>last_cal_mean_with_error_bar</code>(<strong><code>data_scource</code></strong>, <strong><code>identifier</code></strong>, <strong><code>date_col</code></strong>, <strong><code>time_col</code></strong>, <strong><code>min_log_num</code></strong>=<em><code>2</code></em>, <strong><code>min_separation</code></strong>=<em><code>4</code></em>)</p>
+<h4 id="last_cal_mean_with_error_bar" class="doc_header"><code>last_cal_mean_with_error_bar</code><a href="https://github.com/QiwenZz/treets/tree/master/treets/core.py#L1228" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>last_cal_mean_with_error_bar</code>(<strong><code>data_scource</code></strong>, <strong><code>identifier</code></strong>, <strong><code>date_col</code></strong>, <strong><code>time_col</code></strong>, <strong><code>min_log_num</code></strong>=<em><code>2</code></em>, <strong><code>min_separation</code></strong>=<em><code>4</code></em>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function takes the loggings in good logging days, calculates the means and standard deviations of last_cal time for each participant and represent the calculated data with a scatter plot where the x axis is participants and the y axis is hours in a day.</p>
@@ -4534,7 +4538,7 @@ yrt2000               5.6               5.0               2.0
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="first_cal_analysis_variability_plot" class="doc_header"><code>first_cal_analysis_variability_plot</code><a href="https://github.com/QiwenZz/treets/tree/master/treets/core.py#L1276" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>first_cal_analysis_variability_plot</code>(<strong><code>data_scource</code></strong>, <strong><code>identifier</code></strong>, <strong><code>date_col</code></strong>, <strong><code>time_col</code></strong>, <strong><code>min_log_num</code></strong>=<em><code>2</code></em>, <strong><code>min_separation</code></strong>=<em><code>4</code></em>)</p>
+<h4 id="first_cal_analysis_variability_plot" class="doc_header"><code>first_cal_analysis_variability_plot</code><a href="https://github.com/QiwenZz/treets/tree/master/treets/core.py#L1275" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>first_cal_analysis_variability_plot</code>(<strong><code>data_scource</code></strong>, <strong><code>identifier</code></strong>, <strong><code>date_col</code></strong>, <strong><code>time_col</code></strong>, <strong><code>min_log_num</code></strong>=<em><code>2</code></em>, <strong><code>min_separation</code></strong>=<em><code>4</code></em>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function calculates the variability of loggings in good logging day by subtracting 5%,10%,25%,50%,75%,90%,95% quantile of first_cal time from the 50% first_cal time. It can also make a histogram that represents the 90%-10% interval for all subjects.</p>
@@ -4623,7 +4627,7 @@ yrt2000               5.6               5.0               2.0
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="last_cal_analysis_variability_plot" class="doc_header"><code>last_cal_analysis_variability_plot</code><a href="https://github.com/QiwenZz/treets/tree/master/treets/core.py#L1329" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>last_cal_analysis_variability_plot</code>(<strong><code>data_scource</code></strong>, <strong><code>identifier</code></strong>, <strong><code>date_col</code></strong>, <strong><code>time_col</code></strong>, <strong><code>min_log_num</code></strong>=<em><code>2</code></em>, <strong><code>min_separation</code></strong>=<em><code>4</code></em>)</p>
+<h4 id="last_cal_analysis_variability_plot" class="doc_header"><code>last_cal_analysis_variability_plot</code><a href="https://github.com/QiwenZz/treets/tree/master/treets/core.py#L1328" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>last_cal_analysis_variability_plot</code>(<strong><code>data_scource</code></strong>, <strong><code>identifier</code></strong>, <strong><code>date_col</code></strong>, <strong><code>time_col</code></strong>, <strong><code>min_log_num</code></strong>=<em><code>2</code></em>, <strong><code>min_separation</code></strong>=<em><code>4</code></em>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function calculates the variability of loggings in good logging day by subtracting 5%,10%,25%,50%,75%,90%,95% quantile of last_cal time from the 50% last_cal time and makes a histogram that represents the 90%-10% interval for all subjects.</p>
@@ -4711,7 +4715,7 @@ yrt2000               5.6               5.0               2.0
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="first_cal_avg_histplot" class="doc_header"><code>first_cal_avg_histplot</code><a href="https://github.com/QiwenZz/treets/tree/master/treets/core.py#L1380" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>first_cal_avg_histplot</code>(<strong><code>data_scource</code></strong>, <strong><code>identifier</code></strong>, <strong><code>date_col</code></strong>, <strong><code>time_col</code></strong>)</p>
+<h4 id="first_cal_avg_histplot" class="doc_header"><code>first_cal_avg_histplot</code><a href="https://github.com/QiwenZz/treets/tree/master/treets/core.py#L1379" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>first_cal_avg_histplot</code>(<strong><code>data_scource</code></strong>, <strong><code>identifier</code></strong>, <strong><code>date_col</code></strong>, <strong><code>time_col</code></strong>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function take the first caloric event (no water or med) and calculate average event's time for “each participant”.</p>
@@ -4803,7 +4807,7 @@ yrt2000               5.6               5.0               2.0
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="first_cal_sample_distplot" class="doc_header"><code>first_cal_sample_distplot</code><a href="https://github.com/QiwenZz/treets/tree/master/treets/core.py#L1410" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>first_cal_sample_distplot</code>(<strong><code>data_scource</code></strong>, <strong><code>n</code></strong>, <strong><code>identifier</code></strong>, <strong><code>date_col</code></strong>, <strong><code>time_col</code></strong>)</p>
+<h4 id="first_cal_sample_distplot" class="doc_header"><code>first_cal_sample_distplot</code><a href="https://github.com/QiwenZz/treets/tree/master/treets/core.py#L1409" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>first_cal_sample_distplot</code>(<strong><code>data_scource</code></strong>, <strong><code>n</code></strong>, <strong><code>identifier</code></strong>, <strong><code>date_col</code></strong>, <strong><code>time_col</code></strong>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function plots the distplot for the first_cal time from n participants that will be randomly selected with replacement.</p>
@@ -4911,7 +4915,7 @@ alqt16675467779
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="last_cal_avg_histplot" class="doc_header"><code>last_cal_avg_histplot</code><a href="https://github.com/QiwenZz/treets/tree/master/treets/core.py#L1445" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>last_cal_avg_histplot</code>(<strong><code>data_scource</code></strong>, <strong><code>identifier</code></strong>, <strong><code>date_col</code></strong>, <strong><code>time_col</code></strong>)</p>
+<h4 id="last_cal_avg_histplot" class="doc_header"><code>last_cal_avg_histplot</code><a href="https://github.com/QiwenZz/treets/tree/master/treets/core.py#L1444" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>last_cal_avg_histplot</code>(<strong><code>data_scource</code></strong>, <strong><code>identifier</code></strong>, <strong><code>date_col</code></strong>, <strong><code>time_col</code></strong>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function take the last caloric event (no water or med) and calculate average event's time for “each participant”.</p>
@@ -5002,7 +5006,7 @@ alqt16675467779
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="last_cal_sample_distplot" class="doc_header"><code>last_cal_sample_distplot</code><a href="https://github.com/QiwenZz/treets/tree/master/treets/core.py#L1475" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>last_cal_sample_distplot</code>(<strong><code>data_scource</code></strong>, <strong><code>n</code></strong>, <strong><code>identifier</code></strong>, <strong><code>date_col</code></strong>, <strong><code>time_col</code></strong>)</p>
+<h4 id="last_cal_sample_distplot" class="doc_header"><code>last_cal_sample_distplot</code><a href="https://github.com/QiwenZz/treets/tree/master/treets/core.py#L1474" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>last_cal_sample_distplot</code>(<strong><code>data_scource</code></strong>, <strong><code>n</code></strong>, <strong><code>identifier</code></strong>, <strong><code>date_col</code></strong>, <strong><code>time_col</code></strong>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function plots the distplot for the last_cal time from n participants that will be randomly selected with replacement.</p>
@@ -5106,7 +5110,7 @@ alqt16675467779
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="swarmplot" class="doc_header"><code>swarmplot</code><a href="https://github.com/QiwenZz/treets/tree/master/treets/core.py#L1510" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>swarmplot</code>(<strong><code>data_scource</code></strong>, <strong><code>max_loggings</code></strong>, <strong><code>identifier</code></strong>, <strong><code>date_col</code></strong>, <strong><code>time_col</code></strong>)</p>
+<h4 id="swarmplot" class="doc_header"><code>swarmplot</code><a href="https://github.com/QiwenZz/treets/tree/master/treets/core.py#L1509" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>swarmplot</code>(<strong><code>data_scource</code></strong>, <strong><code>max_loggings</code></strong>, <strong><code>identifier</code></strong>, <strong><code>date_col</code></strong>, <strong><code>time_col</code></strong>)</p>
 </blockquote>
 <p>Description:</p>
 <p>This function plots the swarmplot the participants from the data_scource file.</p>
@@ -5199,7 +5203,7 @@ alqt16675467779
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="FoodParser" class="doc_header"><code>class</code> <code>FoodParser</code><a href="https://github.com/QiwenZz/treets/tree/master/treets/core.py#L1569" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FoodParser</code>()</p>
+<h2 id="FoodParser" class="doc_header"><code>class</code> <code>FoodParser</code><a href="https://github.com/QiwenZz/treets/tree/master/treets/core.py#L1568" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>FoodParser</code>()</p>
 </blockquote>
 <p>A class that reads in food loggings from the app. Used as helper function for the function convert_loggings().</p>
 

@@ -9,15 +9,18 @@
 ## Example for data analysis on the Columbia study
 
 ```python
-import treets.columbia as treetsc
+import treets.core as treets
 import pandas as pd
 ```
 
 ### Take a brief look on the food logging dataset and the reference information sheet
 
 ```python
-treetsc.read_logging_data('data/col_test_data').head(2)
+treets.file_loader('data/col_test_data','yrt*').head(2)
 ```
+
+    read the csv files in data/col_test_data folder successfully.
+
 
 
 
@@ -137,10 +140,11 @@ pd.read_excel('data/col_test_data/toy_data_17May2021.xlsx').head(2)
 ### make the table that contains extra analytic information that we want
 
 ```python
-df = treetsc.make_table(treetsc.read_logging_data('data/col_test_data')\
+df = treets.summarize_data_with_experiment_phases(treets.file_loader('data/col_test_data','yrt*')\
                       , pd.read_excel('data/col_test_data/toy_data_17May2021.xlsx'))
 ```
 
+    read the csv files in data/col_test_data folder successfully.
     Participant yrt1999 didn't log any food items in the following day(s):
     2021-05-18
     Participant yrt2000 didn't log any food items in the following day(s):
@@ -359,9 +363,9 @@ df.iloc[0]
     mean_daily_eating_window                           13.75
     std_daily_eating_window                        11.986972
     earliest_entry                                       4.5
-    2.5%                                              4.5375
-    97.5%                                            27.5625
-    duration mid 95%                                  23.025
+    2.5%                                                 NaN
+    97.5%                                                NaN
+    duration mid 95%                                     NaN
     logging_day_counts                                   3.0
     %_logging_day_counts                                 1.0
     good_logging_days                                    2.0
@@ -396,9 +400,9 @@ df.iloc[1]
     mean_daily_eating_window                        8.666667
     std_daily_eating_window                         8.504901
     earliest_entry                                       7.5
-    2.5%                                                 7.7
-    97.5%                                               23.9
-    duration mid 95%                                    16.2
+    2.5%                                                 NaN
+    97.5%                                                NaN
+    duration mid 95%                                     NaN
     logging_day_counts                                   3.0
     %_logging_day_counts                                0.75
     good_logging_days                                    2.0
@@ -414,11 +418,6 @@ df.iloc[1]
 
 
 ## Example for data analysis using time restricted eating experiments core module
-
-```python
-import treets.core as treets
-import pandas as pd
-```
 
 ### take a look at the original dataset
 
@@ -490,7 +489,7 @@ df.head(2)
 ### preprocess the data to have extra basic features
 
 ```python
-df = treets.load_public_data(df,4)
+df = treets.load_public_data(df,'unique_code', 'original_logtime',4)
 df.head(2)
 ```
 
@@ -522,7 +521,6 @@ df.head(2)
       <th>desc_text</th>
       <th>food_type</th>
       <th>original_logtime</th>
-      <th>original_logtime_notz</th>
       <th>date</th>
       <th>local_time</th>
       <th>time</th>
@@ -540,7 +538,6 @@ df.head(2)
       <td>Water</td>
       <td>w</td>
       <td>2017-12-08 17:30:00+00:00</td>
-      <td>2017-12-08 17:30:00+00:00</td>
       <td>2017-12-08</td>
       <td>17.500000</td>
       <td>17:30:00</td>
@@ -555,7 +552,6 @@ df.head(2)
       <td>150</td>
       <td>Coffee White</td>
       <td>b</td>
-      <td>2017-12-09 00:01:00+00:00</td>
       <td>2017-12-09 00:01:00+00:00</td>
       <td>2017-12-08</td>
       <td>24.016667</td>
