@@ -1,10 +1,12 @@
 # TREETS
 > Time Restricted Eating ExperimenTS.
+> Link to the documetation page(https://qiwenzz.github.io/treets/core.html)
 
 
 ## Install
 
 `pip install treets`
+
 
 ## Example for high level data analysis on the study with experimental phases
 
