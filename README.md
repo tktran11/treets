@@ -1,6 +1,7 @@
 # TREETS
 > Time Restricted Eating ExperimenTS.
-> Link to the documetation page(https://qiwenzz.github.io/treets/core.html)
+> 
+> Link to the documetation page: https://qiwenzz.github.io/treets/core.html
 
 
 ## Install
