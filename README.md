@@ -6,7 +6,7 @@
 
 `pip install treets`
 
-## Example for data analysis on the Columbia study
+## Example for high level data analysis on the study with experimental phases
 
 ```python
 import treets.core as treets
@@ -381,7 +381,7 @@ df.iloc[1]
 
 
 
-## Example for data analysis using time restricted eating experiments core module
+## Example for data analysis using time restricted eating experiments without experiment phases
 
 ### take a look at the original dataset
 
