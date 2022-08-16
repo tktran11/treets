@@ -1,9 +1,9 @@
 package:
   name: treets
-  version: 1.0.0
+  version: 1.0.1
 source:
-  sha256: b547f8c25a72e7ca49922ad3ce2641f9e699c00f4ef69e76fdb697d3f10863b9
-  url: https://files.pythonhosted.org/packages/f6/4d/b7f7b77e2b77555f92547523e767b480519b6d4425587fea44e4a0a3012d/treets-1.0.0.tar.gz
+  sha256: def73f5e8cf65aee13877d4ccc62eeadbb125c32b09aa5605be73df1d5490bf0
+  url: https://files.pythonhosted.org/packages/5c/0f/1f0b3166c4a0e39ed7e630f4b916569070d8fc867e5c142df195922991f1/treets-1.0.1.tar.gz
 about:
   dev_url: https://QiwenZz.github.io
   doc_url: https://QiwenZz.github.io

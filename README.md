@@ -1,15 +1,12 @@
 # TREETS
 > Time Restricted Eating ExperimenTS.
-> 
-> Link to the documetation page: https://qiwenzz.github.io/treets/core.html
 
 
 ## Install
 
 `pip install treets`
 
-
-## Example for high level data analysis on the study with experimental phases
+## Example for data analysis on the Columbia study
 
 ```python
 import treets.core as treets
@@ -29,7 +26,19 @@ treets.file_loader('data/col_test_data','yrt*').head(2)
 
 
 <div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -72,7 +81,19 @@ pd.read_excel('data/col_test_data/toy_data_17May2021.xlsx').head(2)
 
 
 <div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -154,7 +175,19 @@ df
 
 
 <div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -384,7 +417,7 @@ df.iloc[1]
 
 
 
-## Example for data analysis using time restricted eating experiments without experiment phases
+## Example for data analysis using time restricted eating experiments core module
 
 ### take a look at the original dataset
 
@@ -397,7 +430,19 @@ df.head(2)
 
 
 <div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
