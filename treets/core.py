@@ -39,40 +39,38 @@ import string
 import pkg_resources
 
 # Cell
-def file_loader(data_scource, pattern='*'):
+def file_loader(data_source):
     """
     Description:\n
         This is a helper function that 1. if data_scource is a single file path in pickle/csv format, it reads it into a pd dataframe. 2. if it is a folder path, it reads csv files that match the pattern parameter in the data_scource folder into one dataframe. \n
 
     Input:\n
-        - data_scource(str, pandas df): input path, csv or pickle file\n
-        - pattern(str): pattern to be matched when searching csv files that will be read into one dataframe. Only needed when loading multiple csv files in a folder.
+        - data_source(str, pandas df): input path, csv or pickle file or a pattern to be matched when searching csv/pickle files that will be read into one dataframe.\n
     Output:\n
         - a pandas dataframe.\n
     """
 
-    if isinstance(data_scource, str):
-        if data_scource.split('.')[-1] == 'pickle':
-            # load data
-            pickle_file = open(data_scource, 'rb')
-            df = pickle.load(pickle_file)
-
-        if data_scource.split('.')[-1] == 'csv':
-            df = pd.read_csv(data_scource)
-        elif len(data_scource.split('.')) == 1:
-            data_lst = glob.glob('{}/{}'.format(data_scource,pattern))
-            dfs = []
-            for x in data_lst:
+    if isinstance(data_source, str):
+        data_lst = glob.glob(data_source)
+        dfs = []
+        for x in data_lst:
+            if x[-4:] == '.csv':
                 dfs.append(pd.read_csv(x))
-            df = pd.concat(dfs).reset_index(drop=True)
-            print('read the csv files in {} folder successfully.'.format(data_scource))
+            elif x[-7:] == '.pickle':
+                pickle_file = open(x, 'rb')
+                pickle_file = pickle.load(pickle_file)
+                if not isinstance(pickle_file, pd.DataFrame):
+                    return pickle_file
+                dfs.append(pickle_file)
+        df = pd.concat(dfs).reset_index(drop=True)
     else:
-        df = data_scource
+        df = data_source
+
 
     return df
 
 # Cell
-def find_date(data_scource, col, h=0):
+def find_date(data_source, col, h=0):
     """
     Description:\n
         Extract date information from a column and shift each date in the column by h hours. (Day starts h hours early if h is negative and h hours late if h is positive)\n
@@ -89,7 +87,7 @@ def find_date(data_scource, col, h=0):
         Elements in col should be pd.datetime objects
 
     """
-    df = file_loader(data_scource)
+    df = file_loader(data_source)
 
     if df[col].dtype == 'O':
         raise TypeError("'{}' column must be converted to datetime object".format(col))
@@ -311,7 +309,6 @@ def convert_loggings(data_scource, target_text, identifier):
     """
 
     public_all = file_loader(data_scource)
-
     # initialize food parser instance
     fp = FoodParser()
     fp.initialization()
