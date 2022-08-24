@@ -52,7 +52,7 @@ treets.file_loader('data/col_test_data/yrt*').head(2)
       <th>0</th>
       <td>0</td>
       <td>2021-05-12 02:30:00 +0000</td>
-      <td>milk</td>
+      <td>Milk</td>
       <td>b</td>
       <td>yrt1999</td>
     </tr>
@@ -60,7 +60,7 @@ treets.file_loader('data/col_test_data/yrt*').head(2)
       <th>1</th>
       <td>1</td>
       <td>2021-05-12 02:45:00 +0000</td>
-      <td>some medication</td>
+      <td>Some Medication</td>
       <td>m</td>
       <td>yrt1999</td>
     </tr>
@@ -357,23 +357,29 @@ df.iloc[0]
     Eating_Window_Start                             00:00:00
     Eating_Window_End                               23:59:00
     phase_duration                           3 days 00:00:00
-    caloric_entries                                      7.0
+    caloric_entries_num                                    7
+    medication_num                                         0
+    water_num                                              0
+    first_cal_avg                                   5.916667
+    first_cal_std                                   2.240722
+    last_cal_avg                                   19.666667
+    last_cal_std                                   12.933323
     mean_daily_eating_window                           13.75
     std_daily_eating_window                        11.986972
     earliest_entry                                       4.5
-    2.5%                                                 NaN
-    97.5%                                                NaN
-    duration mid 95%                                     NaN
-    logging_day_counts                                   3.0
-    %_logging_day_counts                                 1.0
+    2.5%                                              4.5375
+    97.5%                                            27.5625
+    duration mid 95%                                  23.025
+    logging_day_counts                                     3
+    %_logging_day_counts                              100.0%
     good_logging_days                                    2.0
-    %_good_logging_days                             0.666667
+    %_good_logging_days                               66.67%
     good_window_days                                     3.0
-    %_good_window_days                                   1.0
+    %_good_window_days                                100.0%
     outside_window_days                                  0.0
-    %_outside_window_days                                0.0
+    %_outside_window_days                               0.0%
     adherent_days                                        2.0
-    %_adherent_days                                 0.666667
+    %_adherent_days                                   66.67%
     Name: 0, dtype: object
 
 
@@ -483,7 +489,7 @@ df.head(2)
       <th>food_type</th>
       <th>original_logtime</th>
       <th>date</th>
-      <th>local_time</th>
+      <th>float_time</th>
       <th>time</th>
       <th>week_from_start</th>
       <th>year</th>
@@ -529,7 +535,7 @@ df.head(2)
 ### Call summarize_data() function to make the table that contains analytic information that we want.¶
 
 ```python
-df = treets.summarize_data(df, 'unique_code', 'local_time', 'date')
+df = treets.summarize_data(df, 'unique_code', 'float_time', 'date')
 df.head(2)
 ```
 
@@ -588,7 +594,7 @@ df.head(2)
       <td>23.485897</td>
       <td>4.869082</td>
       <td>15.664103</td>
-      <td>-1.841635</td>
+      <td>8.231201</td>
       <td>146</td>
       <td>2.966667</td>
       <td>9.666667</td>
@@ -609,7 +615,7 @@ df.head(2)
       <td>25.858594</td>
       <td>3.374839</td>
       <td>18.332813</td>
-      <td>-2.059723</td>
+      <td>6.603913</td>
       <td>484</td>
       <td>13.450000</td>
       <td>3.100000</td>
@@ -643,7 +649,7 @@ df.iloc[0]
     last_cal_avg                          23.485897
     last_cal_std                           4.869082
     eating_win_avg                        15.664103
-    eating_win_std                        -1.841635
+    eating_win_std                         8.231201
     good_logging_count                          146
     first_cal variation (90%-10%)          2.966667
     last_cal variation (90%-10%)           9.666667
@@ -846,7 +852,7 @@ df.head(2)
 
 
 
-## make a scatter plot for people's breakfast time
+### make a scatter plot for people's breakfast time
 
 ```python
 # create required features for function first_cal_mean_with_error_bar()
@@ -862,7 +868,7 @@ treets.first_cal_mean_with_error_bar(df,'unique_code', 'date', 'local_time')
 ![png](docs/images/output_28_0.png)
 
 
-## Use swarmplot to visualize each person's eating time distribution.
+### Use swarmplot to visualize each person's eating time distribution.
 
 ```python
 treets.swarmplot(df, 50, 'unique_code', 'date', 'local_time')
