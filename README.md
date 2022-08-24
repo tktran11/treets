@@ -6,7 +6,7 @@
 
 `pip install treets`
 
-## Example for data analysis on the Columbia study
+## Example for a quick data analysis on phased studies.
 
 ```python
 import treets.core as treets
@@ -16,11 +16,8 @@ import pandas as pd
 ### Take a brief look on the food logging dataset and the reference information sheet
 
 ```python
-treets.file_loader('data/col_test_data','yrt*').head(2)
+treets.file_loader('data/col_test_data/yrt*').head(2)
 ```
-
-    read the csv files in data/col_test_data folder successfully.
-
 
 
 
@@ -137,14 +134,13 @@ pd.read_excel('data/col_test_data/toy_data_17May2021.xlsx').head(2)
 
 
 
-### make the table that contains extra analytic information that we want
+### Call summarize_data_with_experiment_phases() function to make the table that contains analytic information that we want.
 
 ```python
-df = treets.summarize_data_with_experiment_phases(treets.file_loader('data/col_test_data','yrt*')\
+df = treets.summarize_data_with_experiment_phases(treets.file_loader('data/col_test_data/yrt*')\
                       , pd.read_excel('data/col_test_data/toy_data_17May2021.xlsx'))
 ```
 
-    read the csv files in data/col_test_data folder successfully.
     Participant yrt1999 didn't log any food items in the following day(s):
     2021-05-18
     Participant yrt2000 didn't log any food items in the following day(s):
@@ -201,7 +197,7 @@ df
       <th>Eating_Window_Start</th>
       <th>Eating_Window_End</th>
       <th>phase_duration</th>
-      <th>caloric_entries</th>
+      <th>caloric_entries_num</th>
       <th>...</th>
       <th>logging_day_counts</th>
       <th>%_logging_day_counts</th>
@@ -227,18 +223,18 @@ df
       <td>00:00:00</td>
       <td>23:59:00</td>
       <td>3 days</td>
-      <td>7.0</td>
+      <td>7</td>
       <td>...</td>
-      <td>3.0</td>
-      <td>1.00</td>
+      <td>3</td>
+      <td>100.0%</td>
       <td>2.0</td>
-      <td>0.666667</td>
+      <td>66.67%</td>
       <td>3.0</td>
-      <td>1.00</td>
+      <td>100.0%</td>
       <td>0.0</td>
-      <td>0.0</td>
+      <td>0.0%</td>
       <td>2.0</td>
-      <td>0.666667</td>
+      <td>66.67%</td>
     </tr>
     <tr>
       <th>1</th>
@@ -251,18 +247,18 @@ df
       <td>08:00:00</td>
       <td>18:00:00</td>
       <td>4 days</td>
-      <td>8.0</td>
+      <td>8</td>
       <td>...</td>
-      <td>3.0</td>
-      <td>0.75</td>
+      <td>3</td>
+      <td>75.0%</td>
       <td>2.0</td>
-      <td>0.500000</td>
+      <td>50.0%</td>
       <td>1.0</td>
-      <td>0.25</td>
+      <td>25.0%</td>
       <td>2.0</td>
-      <td>0.5</td>
+      <td>50.0%</td>
       <td>1.0</td>
-      <td>0.250000</td>
+      <td>25.0%</td>
     </tr>
     <tr>
       <th>2</th>
@@ -275,18 +271,18 @@ df
       <td>08:00:00</td>
       <td>16:00:00</td>
       <td>3 days</td>
-      <td>0.0</td>
+      <td>0</td>
       <td>...</td>
+      <td>0</td>
+      <td>0.0%</td>
       <td>0.0</td>
-      <td>0.00</td>
+      <td>0.0%</td>
       <td>0.0</td>
-      <td>0.000000</td>
+      <td>0.0%</td>
       <td>0.0</td>
-      <td>0.00</td>
+      <td>0.0%</td>
       <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>0.000000</td>
+      <td>0.0%</td>
     </tr>
     <tr>
       <th>3</th>
@@ -299,18 +295,18 @@ df
       <td>08:00:00</td>
       <td>16:00:00</td>
       <td>4 days</td>
-      <td>0.0</td>
+      <td>0</td>
       <td>...</td>
+      <td>0</td>
+      <td>0.0%</td>
       <td>0.0</td>
-      <td>0.00</td>
+      <td>0.0%</td>
       <td>0.0</td>
-      <td>0.000000</td>
+      <td>0.0%</td>
       <td>0.0</td>
-      <td>0.00</td>
+      <td>0.0%</td>
       <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>0.000000</td>
+      <td>0.0%</td>
     </tr>
     <tr>
       <th>4</th>
@@ -323,10 +319,10 @@ df
       <td>NaN</td>
       <td>NaN</td>
       <td>NaT</td>
-      <td>NaN</td>
+      <td>0</td>
       <td>...</td>
-      <td>NaN</td>
-      <td>NaN</td>
+      <td>0</td>
+      <td>nan%</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
@@ -338,10 +334,12 @@ df
     </tr>
   </tbody>
 </table>
-<p>5 rows × 26 columns</p>
+<p>5 rows × 32 columns</p>
 </div>
 
 
+
+### Look at resulting statistical information for the first row in the resulting dataset.
 
 ```python
 df.iloc[0]
@@ -380,44 +378,7 @@ df.iloc[0]
 
 
 
-```python
-df.iloc[1]
-```
-
-
-
-
-    mCC_ID                                           yrt1999
-    Participant_Study_ID                                   2
-    Study Phase                                       T3-INT
-    Intervention group (TRE or HABIT)                    TRE
-    Start_Day                            2021-05-15 00:00:00
-    End_day                              2021-05-18 00:00:00
-    Eating_Window_Start                             08:00:00
-    Eating_Window_End                               18:00:00
-    phase_duration                           4 days 00:00:00
-    caloric_entries                                      8.0
-    mean_daily_eating_window                        8.666667
-    std_daily_eating_window                         8.504901
-    earliest_entry                                       7.5
-    2.5%                                                 NaN
-    97.5%                                                NaN
-    duration mid 95%                                     NaN
-    logging_day_counts                                   3.0
-    %_logging_day_counts                                0.75
-    good_logging_days                                    2.0
-    %_good_logging_days                                  0.5
-    good_window_days                                     1.0
-    %_good_window_days                                  0.25
-    outside_window_days                                  2.0
-    %_outside_window_days                                0.5
-    adherent_days                                        1.0
-    %_adherent_days                                     0.25
-    Name: 1, dtype: object
-
-
-
-## Example for data analysis using time restricted eating experiments core module
+## Example for a quick data analysis on non-phased studies.
 
 ### take a look at the original dataset
 
@@ -486,7 +447,7 @@ df.head(2)
 
 
 
-### preprocess the data to have extra basic features
+### preprocess the data to create features we might need in the furthur analysis such as float time, week count since the first week, etc.
 
 ```python
 df = treets.load_public_data(df,'unique_code', 'original_logtime',4)
@@ -565,7 +526,7 @@ df.head(2)
 
 
 
-### do a brief annalysis
+### Call summarize_data() function to make the table that contains analytic information that we want.¶
 
 ```python
 df = treets.summarize_data(df, 'unique_code', 'local_time', 'date')
@@ -662,6 +623,8 @@ df.head(2)
 
 
 
+### Look at resulting statistical information for the first row in the resulting dataset.
+
 ```python
 df.iloc[0]
 ```
@@ -691,31 +654,220 @@ df.iloc[0]
 
 
 
+## Clean text in food loggings
+
 ```python
-df.iloc[1]
+# import the dataset
+df = treets.file_loader('data/col_test_data/yrt*')
+df.head(3)
 ```
 
 
 
 
-    unique_code                      alqt14018795225
-    num_days                                      64
-    num_total_items                              488
-    num_f_n_b                                    484
-    num_medications                                3
-    num_water                                      1
-    first_cal_avg                           7.525781
-    first_cal_std                           5.434563
-    last_cal_avg                           25.858594
-    last_cal_std                            3.374839
-    eating_win_avg                         18.332813
-    eating_win_std                         -2.059723
-    good_logging_count                           484
-    first_cal variation (90%-10%)              13.45
-    last_cal variation (90%-10%)                 3.1
-    2.5%                                    4.183333
-    95%                                    27.438333
-    duration mid 95%                       23.416667
-    Name: 1, dtype: object
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Unnamed: 0</th>
+      <th>original_logtime</th>
+      <th>desc_text</th>
+      <th>food_type</th>
+      <th>PID</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0</td>
+      <td>2021-05-12 02:30:00 +0000</td>
+      <td>Milk</td>
+      <td>b</td>
+      <td>yrt1999</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1</td>
+      <td>2021-05-12 02:45:00 +0000</td>
+      <td>Some Medication</td>
+      <td>m</td>
+      <td>yrt1999</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2</td>
+      <td>2021-05-12 04:45:00 +0000</td>
+      <td>bacon egg</td>
+      <td>f</td>
+      <td>yrt1999</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+```python
+treets.clean_loggings(df, 'desc_text', 'PID').head(3)
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>PID</th>
+      <th>desc_text</th>
+      <th>cleaned</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>yrt1999</td>
+      <td>Milk</td>
+      <td>[milk]</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>yrt1999</td>
+      <td>Some Medication</td>
+      <td>[medication]</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>yrt1999</td>
+      <td>bacon egg</td>
+      <td>[bacon, egg]</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+We can see that words are lower cased, modifiers are removed(2nd row) and items are split into individual items(third row).
+
+## Visualizations
+
+```python
+# import the dataset
+df = treets.file_loader('data/test_food_details.csv')
+df.head(2)
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Unnamed: 0</th>
+      <th>ID</th>
+      <th>unique_code</th>
+      <th>research_info_id</th>
+      <th>desc_text</th>
+      <th>food_type</th>
+      <th>original_logtime</th>
+      <th>foodimage_file_name</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1340147</td>
+      <td>7572733</td>
+      <td>alqt14018795225</td>
+      <td>150</td>
+      <td>Water</td>
+      <td>w</td>
+      <td>2017-12-08 17:30:00+00:00</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1340148</td>
+      <td>411111</td>
+      <td>alqt14018795225</td>
+      <td>150</td>
+      <td>Coffee White</td>
+      <td>b</td>
+      <td>2017-12-09 00:01:00+00:00</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+## make a scatter plot for people's breakfast time
+
+```python
+# create required features for function first_cal_mean_with_error_bar()
+df['original_logtime'] = pd.to_datetime(df['original_logtime'])
+df['local_time'] = treets.find_float_time(df, 'original_logtime')
+df['date'] = treets.find_date(df, 'original_logtime')
+
+# call the function
+treets.first_cal_mean_with_error_bar(df,'unique_code', 'date', 'local_time')
+```
+
+
+![png](docs/images/output_28_0.png)
+
+
+## Use swarmplot to visualize each person's eating time distribution.
+
+```python
+treets.swarmplot(df, 50, 'unique_code', 'date', 'local_time')
+```
+
+
+![png](docs/images/output_30_0.png)
 
