@@ -13,7 +13,7 @@ import treets.core as treets
 import pandas as pd
 ```
 
-### Take a brief look on the food logging dataset and the reference information sheet
+Take a brief look on the food logging dataset and the reference information sheet
 
 ```python
 treets.file_loader('data/col_test_data/yrt*').head(2)
@@ -134,7 +134,7 @@ pd.read_excel('data/col_test_data/toy_data_17May2021.xlsx').head(2)
 
 
 
-### Call summarize_data_with_experiment_phases() function to make the table that contains analytic information that we want.
+Call summarize_data_with_experiment_phases() function to make the table that contains analytic information that we want.
 
 ```python
 df = treets.summarize_data_with_experiment_phases(treets.file_loader('data/col_test_data/yrt*')\
@@ -339,7 +339,7 @@ df
 
 
 
-### Look at resulting statistical information for the first row in the resulting dataset.
+Look at resulting statistical information for the first row in the resulting dataset.
 
 ```python
 df.iloc[0]
@@ -386,7 +386,7 @@ df.iloc[0]
 
 ## Example for a quick data analysis on non-phased studies.
 
-### take a look at the original dataset
+take a look at the original dataset
 
 ```python
 df = treets.file_loader('data/test_food_details.csv')
@@ -453,7 +453,7 @@ df.head(2)
 
 
 
-### preprocess the data to create features we might need in the furthur analysis such as float time, week count since the first week, etc.
+preprocess the data to create features we might need in the furthur analysis such as float time, week count since the first week, etc.
 
 ```python
 df = treets.load_public_data(df,'unique_code', 'original_logtime',4)
@@ -532,7 +532,7 @@ df.head(2)
 
 
 
-### Call summarize_data() function to make the table that contains analytic information that we want.¶
+Call summarize_data() function to make the table that contains analytic information that we want.¶
 
 ```python
 df = treets.summarize_data(df, 'unique_code', 'float_time', 'date')
@@ -629,7 +629,7 @@ df.head(2)
 
 
 
-### Look at resulting statistical information for the first row in the resulting dataset.
+Look at resulting statistical information for the first row in the resulting dataset.
 
 ```python
 df.iloc[0]
@@ -852,7 +852,7 @@ df.head(2)
 
 
 
-### make a scatter plot for people's breakfast time
+make a scatter plot for people's breakfast time
 
 ```python
 # create required features for function first_cal_mean_with_error_bar()
@@ -868,7 +868,7 @@ treets.first_cal_mean_with_error_bar(df,'unique_code', 'date', 'local_time')
 ![png](docs/images/output_28_0.png)
 
 
-### Use swarmplot to visualize each person's eating time distribution.
+Use swarmplot to visualize each person's eating time distribution.
 
 ```python
 treets.swarmplot(df, 50, 'unique_code', 'date', 'local_time')
