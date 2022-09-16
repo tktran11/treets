@@ -1,0 +1,9 @@
+project:
+  output-dir: docs
+
+website:
+  title: "treets"
+  site-url: "https://QiwenZz.github.io/treets/"
+  description: "This library provides functions to analyzes food logging data."
+  repo-branch: master
+  repo-url: "https://github.com/QiwenZz/treets/tree/master/"
