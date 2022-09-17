@@ -43,8 +43,8 @@ index = {"file_loader": "00_core.ipynb",
 
 modules = ["core.py"]
 
-doc_url = "https://QiwenZz.github.io/treets/"
+doc_url = "https://FleischerResearchLab.github.io/treets/"
 
-git_url = "https://github.com/QiwenZz/treets/tree/master/"
+git_url = "https://github.com/FleischerResearchLab/treets/tree/master/"
 
 def custom_doc_links(name): return None
