@@ -456,7 +456,7 @@ df.head(2)
 preprocess the data to create features we might need in the furthur analysis such as float time, week count since the first week, etc.
 
 ```python
-df = treets.load_public_data(df,'unique_code', 'original_logtime',4)
+df = treets.load_food_data(df,'unique_code', 'original_logtime',4)
 df.head(2)
 ```
 
