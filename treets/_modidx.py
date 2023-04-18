@@ -2,7 +2,7 @@
 
 d = { 'settings': { 'branch': 'master',
                 'doc_baseurl': '/treets/',
-                'doc_host': 'https://QiwenZz.github.io',
-                'git_url': 'https://github.com/QiwenZz/treets/tree/master/',
+                'doc_host': 'https://FleischerResearchLab.github.io',
+                'git_url': 'https://github.com/FleischerResearchLab/treets/tree/master/',
                 'lib_path': 'treets'},
   'syms': {'treets.core': {}}}

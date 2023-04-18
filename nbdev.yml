@@ -3,7 +3,7 @@ project:
 
 website:
   title: "treets"
-  site-url: "https://QiwenZz.github.io/treets/"
+  site-url: "https://FleischerResearchLab.github.io/treets/"
   description: "This library provides functions to analyzes food logging data."
   repo-branch: master
-  repo-url: "https://github.com/QiwenZz/treets/tree/master/"
+  repo-url: "https://github.com/FleischerResearchLab/treets/tree/master/"
