@@ -43,7 +43,7 @@ import pkg_resources
 def file_loader(data_source):
     """
     Description:\n
-        This is a helper function that 1. if data_scource is a single file path in pickle/csv format, it reads it into a pd dataframe. 2. if it is a folder path, it reads csv and pickle files that match the pattern parameter in the data_scource folder into one dataframe. \n
+        This is a helper function that 1. if data_source is a single file path in pickle/csv format, it reads it into a pd dataframe. 2. if it is a folder path, it reads csv and pickle files that match the pattern parameter in the data_source folder into one dataframe. \n
     
     Input:\n
         - data_source(str, pandas df): input path, csv or pickle file or a pattern to be matched when searching csv/pickle files that will be read into one dataframe.\n
@@ -59,7 +59,7 @@ def file_loader(data_source):
                 dfs.append(pd.read_csv(x))
             elif x[-7:] == '.pickle':
                 pickle_file = open(x, 'rb')
-                pickle_file = pickle.load(pickle_file)
+                pickle_file = pd.read_pickle(pickle_file)
                 if not isinstance(pickle_file, pd.DataFrame):
                     return pickle_file
                 dfs.append(pickle_file)
@@ -71,13 +71,13 @@ def file_loader(data_source):
     return df
 
 # %% ../00_core.ipynb 12
-def find_date(data_source, col, h=0):
+def find_date(data_source, col, h = 4):
     """
     Description:\n
         Extract date information from a column and shift each date in the column by h hours. (Day starts h hours early if h is negative and h hours late if h is positive)\n
         
     Input:\n
-        - data_scource(str, pandas df): input path, file in pickle, csv or pandas dataframe format\n
+        - data_source(str, pandas df): input path, file in pickle, csv or pandas dataframe format\n
         - col(str) : column that contains the information of date and time, which is 24 hours system.
         - h(int) : hours to shift the date. For example, when h = 4, everyday starts and ends 4 hours later than normal.
         
@@ -104,13 +104,13 @@ def find_date(data_source, col, h=0):
     return df[col].apply(find_date, args=([h]))
 
 # %% ../00_core.ipynb 17
-def find_float_time(data_scource, col, h=0):
+def find_float_time(data_source, col, h = 4):
     """
     Description:\n
         Extract time information from a column and shift each time by h hours. (Day starts h hours early if h is negative and h hours late if h is positive)\n
         
     Input:\n
-        - data_scource (str, pandas df): input path, file in pickle, csv or pandas dataframe format\n
+        - data_source (str, pandas df): input path, file in pickle, csv or pandas dataframe format\n
         - col(str) : column that contains the information of date and time that's 24 hours system.
         - h(int) : hours to shift the date. For example, when h = 4, everyday starts at 4 and ends at 28. When h = -4, everyday starts at -4 and ends at 20.
         
@@ -123,7 +123,7 @@ def find_float_time(data_scource, col, h=0):
     jf-updated-2023-04-17
             
     """
-    df = file_loader(data_scource)
+    df = file_loader(data_source)
     if df[col].dtype == 'O':
         raise TypeError("'{}' column must be converted to datetime object firsly".format(col))
     local_time = df[col].apply(lambda x: pd.Timedelta(x.time().isoformat()).total_seconds() /3600.)
@@ -137,24 +137,24 @@ def find_float_time(data_scource, col, h=0):
     
 
 # %% ../00_core.ipynb 23
-def week_from_start(data_scource, col, identifier):
+def week_from_start(data_source, col, identifier):
         """
         Description:\n
             Calculate the number of weeks for each logging since the first day of the logging for each participant(identifier). The returned values for loggings from the first week are 1. 
         Input:\n
-            - data_scource (str, pandas df): input path, file in pickle, csv or pandas dataframe format\n
-            - col (str): column name that contains date information from the data_scource dataframe.
+            - data_source (str, pandas df): input path, file in pickle, csv or pandas dataframe format\n
+            - col (str): column name that contains date information from the data_source dataframe.
             - identifier (str): unique_id or ID, or name that identifies people.
 
         Return:\n
             - a numpy array represents the date extracted from col.\n
         """
         
-        df = file_loader(data_scource)
+        df = file_loader(data_source)
         if 'date' not in df.columns:
             raise NameError("There must exist a 'date' column.")
         # Handle week from start
-        df_dic = dict(df.groupby(identifier).agg(np.min)[col])
+        df_dic = dict(df.groupby(identifier)[col].agg(np.min))
 
         def count_weeks(s):
             return (s.date - df_dic[s[identifier]]).days // 7 + 1
@@ -177,11 +177,19 @@ def find_phase_duration(df):
         - 'Start_day' and 'End_day' column exist in the df.
         - 'phase_duration' column exists in the df.
     """
+    
+    # checking if type conversion from string to datetime is necessary
+    if df['Start_Day'].apply(lambda x: isinstance(x, str)).any():
+        df['Start_Day'] = pd.to_datetime(df['Start_Day'])
+    
+    if df['End_day'].apply(lambda x: isinstance(x, str)).any():
+        df['End_day'] = pd.to_datetime(df['End_day'])
+    
     df['phase_duration'] = df['End_day'] - df['Start_Day']+ pd.Timedelta("1 days")
     return df
 
 # %% ../00_core.ipynb 28
-def load_food_data(data_scource, identifier, datetime_col, h):
+def load_food_data(data_source, identifier, datetime_col, h):
     """
     Description:\n
         Load food data and output processed data in a dataframe.\n
@@ -196,7 +204,7 @@ def load_food_data(data_scource, identifier, datetime_col, h):
         7. Generating 'year' column based on the input data.\n
 
     Input:\n
-        - data_scource (str or pandas df): input path, csv file\n
+        - data_source (str or pandas df): input path, csv file\n
         - identifier(str): id-like column that's used to identify a subject.\n
         - datetime_col(str): column that contains date and time in string format.\n
         - h(int) : hours to shift the date. For example, when h = 4, everyday starts and ends 4 hours later than normal.
@@ -205,13 +213,13 @@ def load_food_data(data_scource, identifier, datetime_col, h):
         - the processed dataframe in pandas df format.\n
 
     Requirements:\n
-        data_scource file must have the following columns:\n
+        data_source file must have the following columns:\n
             - foodimage_file_name\n
             - original_logtime\n
             - date\n
             - unique_code\n
     """
-    food_all = file_loader(data_scource)
+    food_all = file_loader(data_source)
     
     try:
         food_all = food_all.drop(columns = ['foodimage_file_name'])
@@ -256,13 +264,13 @@ def load_food_data(data_scource, identifier, datetime_col, h):
     return food_all
 
 # %% ../00_core.ipynb 30
-def in_good_logging_day(data_scource, identifier, date_col, time_col, min_log_num = 2, min_seperation = 4):
+def in_good_logging_day(data_source, identifier, date_col, time_col, min_log_num = 2, min_seperation = 4):
     """
     Description:\n
         A logging's in a good logging day if the there are more than min_log_num loggings in one day w/ more than min_seperation hoursx apart from the earliest logging and the latest logging and False otherwise.\n
         
     Input:\n
-        - data_scource (str, pandas df): input path, file in pickle, csv or pandas dataframe format.\n
+        - data_source (str, pandas df): input path, file in pickle, csv or pandas dataframe format.\n
         - identifier (str): id-like column that's used to identify a subject.\n
         - time_col (str): column that contains time in float format.\n
         - min_log_num (count,int): filtration criteria on the minimum number of loggings each day.\n
@@ -282,7 +290,7 @@ def in_good_logging_day(data_scource, identifier, date_col, time_col, min_log_nu
         else:
             return False
         
-    df = file_loader(data_scource)
+    df = file_loader(data_source)
     
     adherent_dict = dict(df.groupby([identifier, date_col])[time_col].agg(adherent))
 
@@ -535,13 +543,13 @@ class FoodParser():
         return pd.DataFrame(all_entries)
 
 # %% ../00_core.ipynb 33
-def clean_loggings(data_scource, text_col, identifier):
+def clean_loggings(data_source, text_col, identifier):
     """
     Description:\n
-       This function convert all the loggings in the data_scource file into a list of typo-corrected items based on the text_col column. This function is based on a built-in vocabulary dictionary and an n-gram searcher.\n
+       This function convert all the loggings in the data_source file into a list of typo-corrected items based on the text_col column. This function is based on a built-in vocabulary dictionary and an n-gram searcher.\n
        
     Input:\n
-        - data_scource (str, pandas df): input path, file in pickle, csv or panda dataframe format.
+        - data_source (str, pandas df): input path, file in pickle, csv or panda dataframe format.
         - text_col(str): column that will be converted to individual items.
         - identifier(str): participants' unique identifier such as id, name, etc.
         
@@ -550,7 +558,7 @@ def clean_loggings(data_scource, text_col, identifier):
 
     """
 
-    food_all = file_loader(data_scource)
+    food_all = file_loader(data_source)
     # initialize food parser instance
     fp = FoodParser()
     fp.initialization()
@@ -570,13 +578,13 @@ def clean_loggings(data_scource, text_col, identifier):
     return food_all_parsed
 
 # %% ../00_core.ipynb 35
-def get_types(data_scource, food_type):
+def get_types(data_source, food_type):
     """
     Description:\n
-       This function filters with the expected food types and return a cleaner version of data_scource file.\n 
+       This function filters with the expected food types and return a cleaner version of data_source file.\n 
        
     Input:\n
-        - data_scource (str, pandas df): input path, file in pickle, csv or panda dataframe format.\n
+        - data_source (str, pandas df): input path, file in pickle, csv or panda dataframe format.\n
         - food_type (str): expected types of the loggings for filtering, in format of list. Available types:  \n
             1. 'w' : water \n
             2. 'b' : beverage \n
@@ -587,12 +595,12 @@ def get_types(data_scource, food_type):
         - A filtered dataframe with expected food type/types with five columns: 'unique_code','food_type', 'desc_text', 'date', 'local_time'.\n
         
     Requirements:\n
-        data_scource file must have the following columns:\n
+        data_source file must have the following columns:\n
             - food_type\n
             
     """
     
-    df = file_loader(data_scource)
+    df = file_loader(data_source)
         
     if len(food_type) == 0:
         return df
@@ -652,9 +660,9 @@ def mean_daily_eating_duration(df, date_col, time_col):
     """
 
     df = df[df['food_type'].isin(['f','b'])]
-    breakfast_time = df.groupby(date_col).agg(min)
-    dinner_time = df.groupby(date_col).agg(max)
-    return (dinner_time[time_col]-breakfast_time[time_col]).mean()
+    breakfast_time = df.groupby(date_col)[time_col].agg(min)
+    dinner_time = df.groupby(date_col)[time_col].agg(max)
+    return (dinner_time - breakfast_time).mean()
 
 # %% ../00_core.ipynb 42
 def std_daily_eating_duration(df, date_col, time_col):
@@ -679,10 +687,10 @@ def std_daily_eating_duration(df, date_col, time_col):
     """
     
     df = df[df['food_type'].isin(['f','b'])]
-    breakfast_time = df.groupby(date_col).agg(min)
-    dinner_time = df.groupby(date_col).agg(max)
+    breakfast_time = df.groupby(date_col)[time_col].agg(min)
+    dinner_time = df.groupby(date_col)[time_col].agg(max)
 
-    return (dinner_time[time_col]-breakfast_time[time_col]).std()
+    return (dinner_time - breakfast_time).std()
 
 # %% ../00_core.ipynb 44
 def earliest_entry(df, date_col, time_col):
@@ -995,13 +1003,13 @@ def filtering_usable_data(df, identifier, date_col, num_items, num_days):
     return df_usable, set(df_usable.unique_code.unique())
 
 # %% ../00_core.ipynb 66
-def prepare_baseline_and_intervention_usable_data(data_scource, identifier, date_col, baseline_num_items, baseline_num_days, intervention_num_items, intervention_num_days):
+def prepare_baseline_and_intervention_usable_data(data_source, identifier, date_col, baseline_num_items, baseline_num_days, intervention_num_items, intervention_num_days):
     """
     Description:\n
-        Filter and create baseline_expanded and intervention groups based on data_scource pickle file. Expanded baseline dataset contains the first two weeks data and 13, 14 weeks data that pass the given criteria. Intervention dataset contains 13, 14 weeks data that pass the given criteria.\n
+        Filter and create baseline_expanded and intervention groups based on data_source pickle file. Expanded baseline dataset contains the first two weeks data and 13, 14 weeks data that pass the given criteria. Intervention dataset contains 13, 14 weeks data that pass the given criteria.\n
         
     Input:\n
-        - data_scource (str, pandas df): input path, file in pickle, csv or pandas dataframe format\n
+        - data_source (str, pandas df): input path, file in pickle, csv or pandas dataframe format\n
         - identifier (str): unique_id or ID, or name that identifies people.
         - date_col (str): column name that contains date information from the df dataframe.
         - baseline_num_items (int): number of items to be used as cut-off for baseline group. \n
@@ -1013,13 +1021,13 @@ def prepare_baseline_and_intervention_usable_data(data_scource, identifier, date
         - a list in which index 0 is the baseline expanded dataframe and 1 is the intervention dataframe.\n
 
     Requirements:\n
-        data_scource file must have the following columns:\n
+        data_source file must have the following columns:\n
             - week_from_start\n
             - desc_text\n
     """
     
     
-    food_all = file_loader(data_scource)
+    food_all = file_loader(data_source)
     
     # create baseline data
     df_food_baseline = food_all.query('week_from_start <= 2')
@@ -1039,13 +1047,13 @@ def prepare_baseline_and_intervention_usable_data(data_scource, identifier, date
     return [df_food_basline_usable_expanded, df_food_intervention_usable]
 
 # %% ../00_core.ipynb 70
-def users_sorted_by_logging(data_scource, food_type = ["f", "b", "m", "w"]):
+def users_sorted_by_logging(data_source, food_type = ["f", "b", "m", "w"]):
     """
     Description:\n
-        This function returns a dataframe reports the number of good logging days for each user in the data_scource file. The default order is descending.\n
+        This function returns a dataframe reports the number of good logging days for each user in the data_source file. The default order is descending.\n
         
     Input:\n
-        - data_scource (str, pandas df): input path, file in pickle, csv or pandas dataframe format.\n
+        - data_source (str, pandas df): input path, file in pickle, csv or pandas dataframe format.\n
         - food_type (str): food types to filter in a list format. Default: ["f", "b", "m", "w"]. Available food types:\n
             1. 'w' : water \n
             2. 'b' : beverage \n
@@ -1056,14 +1064,14 @@ def users_sorted_by_logging(data_scource, food_type = ["f", "b", "m", "w"]):
         - A dataframe contains the number of good logging days for each user.\n
         
     Requirements:\n
-        data_scource file must have the following columns:\n
+        data_source file must have the following columns:\n
             - food_type\n
             - unique_code\n
             - date\n
     
     """
 
-    food_all = file_loader(data_scource)
+    food_all = file_loader(data_source)
     
     # filter the dataframe so it only contains input food type
     
@@ -1079,23 +1087,23 @@ def users_sorted_by_logging(data_scource, food_type = ["f", "b", "m", "w"]):
     return food_top_users_day_counts
 
 # %% ../00_core.ipynb 72
-def eating_intervals_percentile(data_scource, time_col, identifier):
+def eating_intervals_percentile(data_source, time_col, identifier):
     """
     Description:
        This function calculates the .025, .05, .10, .125, .25, .5, .75, .875, .9, .95, .975 quantile of eating time and mid 95%, mid 90%, mid 80%, mid 75% and mid 50% duration for each user.\n 
     
     Input:
-        - data_scource (str, pandas df): input path, file in pickle, csv or panda dataframe format.
+        - data_source (str, pandas df): input path, file in pickle, csv or panda dataframe format.
         - time_col(str) : the column that represents the eating time.
         - identitfier(str) : participants' unique identifier such as id, name, etc.
         
     Return:\n
-        - A summary table with count, mean, std, min, quantiles and mid durations for all subjects from the data_scource file.
+        - A summary table with count, mean, std, min, quantiles and mid durations for all subjects from the data_source file.
     
     Optional functions to use to have proper inputs:
         - find_float_time() for time_col
     """
-    df = file_loader(data_scource)
+    df = file_loader(data_source)
     
     if df.shape[0] == 0:
         return pd.DataFrame(np.array([[np.nan]*21]), columns = ['count', 'mean', 'std', 'min', '2.5%', '5%', '10%', '12.5%', '25%',
@@ -1113,13 +1121,13 @@ def eating_intervals_percentile(data_scource, time_col, identifier):
     return ptile
 
 # %% ../00_core.ipynb 74
-def first_cal_analysis_summary(data_scource, identifier, date_col, time_col,min_log_num=2, min_separation=4):
+def first_cal_analysis_summary(data_source, identifier, date_col, time_col,min_log_num=2, min_separation=4):
     """
     Description:\n
        This function takes the loggings in good logging days and calculate the 5%,10%,25%,50%,75%,90%,95% quantile of first_cal time for each user.\n 
     
     Input:\n
-        - data_scource (str, pandas df): input path, file in pickle, csv or panda dataframe format.
+        - data_source (str, pandas df): input path, file in pickle, csv or panda dataframe format.
         - identitfier(str) : participants' unique identifier such as id, name, etc.
         - date_col(str) : the column that represents the dates.
         - time_col(str) : the column that represents the float time.
@@ -1128,14 +1136,14 @@ def first_cal_analysis_summary(data_scource, identifier, date_col, time_col,min_
         
         
     Return:\n
-        - A summary table with 5%,10%,25%,50%,75%,90%,95% quantile of first_cal time for all subjects from the data_scource file.\n
+        - A summary table with 5%,10%,25%,50%,75%,90%,95% quantile of first_cal time for all subjects from the data_source file.\n
         
     Optional functions to use to have proper inputs:
         - find_date() for date_col
         - find_float_time() for time_col
     """
 
-    df = file_loader(data_scource)
+    df = file_loader(data_source)
         
     # leave only the loggings in a good logging day
     df['in_good_logging_day'] = in_good_logging_day(df, identifier, date_col, time_col, min_log_num, min_separation)
@@ -1155,13 +1163,13 @@ def first_cal_analysis_summary(data_scource, identifier, date_col, time_col,min_
     return first_cal_summary_df
 
 # %% ../00_core.ipynb 76
-def last_cal_analysis_summary(data_scource, identifier, date_col, time_col, min_log_num=2, min_separation=4):
+def last_cal_analysis_summary(data_source, identifier, date_col, time_col, min_log_num=2, min_separation=4):
     """
     Description:\n
        This function takes the loggings in good logging days and calculate the 5%,10%,25%,50%,75%,90%,95% quantile of last_cal time for each user.\n 
     
     Input:\n
-        - data_scource (str, pandas df): input path, file in pickle, csv or panda dataframe format.
+        - data_source (str, pandas df): input path, file in pickle, csv or panda dataframe format.
         - identitfier(str) : participants' unique identifier such as id, name, etc.
         - date_col(str) : the column that represents the dates.
         - time_col(str) : the column that represents the float time.
@@ -1169,14 +1177,14 @@ def last_cal_analysis_summary(data_scource, identifier, date_col, time_col, min_
         - min_seperation(hours,int): filtration criteria on the minimum separations between the earliest and latest loggings each day.
         
     Return:\n
-        - A summary table with 5%,10%,25%,50%,75%,90%,95% quantile of last_cal time for all subjects from the data_scource file.\n
+        - A summary table with 5%,10%,25%,50%,75%,90%,95% quantile of last_cal time for all subjects from the data_source file.\n
     
     Optional functions to use to have proper inputs:
         - find_date() for date_col
         - find_float_time() for time_col
     """
     
-    df = file_loader(data_scource)
+    df = file_loader(data_source)
         
     # leave only the loggings that are in a good logging day
     df['in_good_logging_day'] = in_good_logging_day(df, identifier,date_col, time_col, min_log_num, min_separation)
@@ -1201,13 +1209,13 @@ def last_cal_analysis_summary(data_scource, identifier, date_col, time_col, min_
 
 
 # %% ../00_core.ipynb 78
-def summarize_data(data_scource, identifier, float_time_col, date_col, min_log_num = 2, min_seperation = 4):
+def summarize_data(data_source, identifier, float_time_col, date_col, min_log_num = 2, min_seperation = 4):
     """
     Description:\n
        This function calculates num_days, num_total_items, num_f_n_b, num_medications, num_water, duration_mid_95, start_95, end_95, first_cal_avg, first_cal_std, last_cal_avg, last_cal_std, eating_win_avg, eating_win_std, adherent_count, first_cal variation (90%-10%), last_cal variation (90%-10%).\n 
     
     Input:\n
-        - data_scource (str, pandas df): input path, file in pickle, csv or panda dataframe format.
+        - data_source (str, pandas df): input path, file in pickle, csv or panda dataframe format.
         - float_time_col(str) : the column that represents the eating time.
         - identitfier(str) : participants' unique identifier such as id, name, etc.
         - date_col(str) : the column that represents the dates.
@@ -1215,17 +1223,17 @@ def summarize_data(data_scource, identifier, float_time_col, date_col, min_log_n
         - min_seperation(hours,int): filtration criteria on the minimum separations between the earliest and latest loggings each day.\n
         
     Return:\n
-        - A summary table with count, mean, std, min, quantiles and mid durations for all subjects from the data_scource file.\n
+        - A summary table with count, mean, std, min, quantiles and mid durations for all subjects from the data_source file.\n
         
     Requirements:\n
-        data_scource file must have the following columns:\n
+        data_source file must have the following columns:\n
             - food_type\n
   
     Optional functions to use to have proper inputs:
         - find_date() for date_col
         - find_float_time() for time_col
     """
-    df = file_loader(data_scource)
+    df = file_loader(data_source)
     
     #num_days
     num_days = df.groupby(identifier).date.nunique()
@@ -1326,6 +1334,15 @@ def summarize_data_with_experiment_phases(food_data, ref_tbl, min_log_num=2, min
     
     """
     df = food_data.copy()
+    
+    # checking for necessary typecasting for reference table
+    if not ref_tbl['Start_Day'].apply(lambda x: isinstance(x, datetime.date)).all():
+        ref_tbl['Start_Day'] = pd.to_datetime(ref_tbl['Start_Day']).dt.date
+        
+    if not ref_tbl['End_day'].apply(lambda x: isinstance(x, datetime.date)).all():
+        ref_tbl['End_day'] = pd.to_datetime(ref_tbl['End_day']).dt.date
+    
+    
     # preprocess to get the date and float_time column
     df['original_logtime'] = pd.to_datetime(df['original_logtime'])
     df['date'] =  find_date(df, 'original_logtime', h)
@@ -1503,13 +1520,13 @@ def summarize_data_with_experiment_phases(food_data, ref_tbl, min_log_num=2, min
     
 
 # %% ../00_core.ipynb 83
-def first_cal_mean_with_error_bar(data_scource, identifier, date_col, time_col, min_log_num=2, min_separation=4):
+def first_cal_mean_with_error_bar(data_source, identifier, date_col, time_col, min_log_num=2, min_separation=4):
     """
     Description:\n
        This function takes the loggings in good logging days, calculates the means and standard deviations of first_cal time for each participant and represent the calculated data with a scatter plot where the x axis is participants and the y axis is hours in a day.\n 
     
     Input:\n
-        - data_scource (str, pandas df): input path, file in pickle, csv or panda dataframe format.
+        - data_source (str, pandas df): input path, file in pickle, csv or panda dataframe format.
         - identitfier(str) : participants' unique identifier such as id, name, etc.
         - date_col(str) : the column that represents the dates.
         - time_col(str) : the column that represents the float time.
@@ -1523,7 +1540,7 @@ def first_cal_mean_with_error_bar(data_scource, identifier, date_col, time_col, 
         - find_date() for date_col
         - find_float_time() for time_col
     """
-    df = file_loader(data_scource)
+    df = file_loader(data_source)
 
     # leave only the loggings that are in a good logging day
     df['in_good_logging_day'] = in_good_logging_day(df, identifier, date_col, time_col, min_log_num, min_separation)
@@ -1550,13 +1567,13 @@ def first_cal_mean_with_error_bar(data_scource, identifier, date_col, time_col, 
     plt.title('first_cal Time per Person in Ascending Order')
 
 # %% ../00_core.ipynb 85
-def last_cal_mean_with_error_bar(data_scource, identifier, date_col, time_col, min_log_num=2, min_separation=4):
+def last_cal_mean_with_error_bar(data_source, identifier, date_col, time_col, min_log_num=2, min_separation=4):
     """
     Description:\n
        This function takes the loggings in good logging days, calculates the means and standard deviations of last_cal time for each participant and represent the calculated data with a scatter plot where the x axis is participants and the y axis is hours in a day.\n
     
     Input:\n
-        - data_scource (str, pandas df): input path, file in pickle, csv or panda dataframe format.
+        - data_source (str, pandas df): input path, file in pickle, csv or panda dataframe format.
         - identitfier(str) : participants' unique identifier such as id, name, etc.
         - date_col(str) : the column that represents the dates.
         - time_col(str) : the column that represents the float time.
@@ -1570,7 +1587,7 @@ def last_cal_mean_with_error_bar(data_scource, identifier, date_col, time_col, m
         - find_date() for date_col
         - find_float_time() for time_col
     """
-    df = file_loader(data_scource)
+    df = file_loader(data_source)
 
     # leave only the loggings that are in a good logging day
     df['in_good_logging_day'] = in_good_logging_day(df, identifier, date_col, time_col, min_log_num, min_separation)
@@ -1597,13 +1614,13 @@ def last_cal_mean_with_error_bar(data_scource, identifier, date_col, time_col, m
     plt.title('last_cal Time per Person in Ascending Order')
 
 # %% ../00_core.ipynb 87
-def first_cal_analysis_variability_plot(data_scource,identifier, date_col, time_col, min_log_num=2, min_separation=4):
+def first_cal_analysis_variability_plot(data_source,identifier, date_col, time_col, min_log_num=2, min_separation=4):
     """
     Description:\n
        This function calculates the variability of loggings in good logging day by subtracting 5%,10%,25%,50%,75%,90%,95% quantile of first_cal time from the 50% first_cal time. It can also make a histogram that represents the 90%-10% interval for all subjects.\n
     
     Input:\n
-        - data_scource (str, pandas df): input path, file in pickle, csv or panda dataframe format.
+        - data_source (str, pandas df): input path, file in pickle, csv or panda dataframe format.
         - identitfier(str) : participants' unique identifier such as id, name, etc.
         - date_col(str) : the column that represents the dates.
         - time_col(str) : the column that represents the float time.
@@ -1612,7 +1629,7 @@ def first_cal_analysis_variability_plot(data_scource,identifier, date_col, time_
         - plot(bool) : Whether generating a histogram for first_cal variability. Default = True.
         
     Return:\n
-        - A dataframe that contains 5%,10%,25%,50%,75%,90%,95% quantile of first_cal time minus 50% time for each subjects from the data_scource file.\n
+        - A dataframe that contains 5%,10%,25%,50%,75%,90%,95% quantile of first_cal time minus 50% time for each subjects from the data_source file.\n
         
     Optional functions to use to have proper inputs:
         - find_date() for date_col
@@ -1620,7 +1637,7 @@ def first_cal_analysis_variability_plot(data_scource,identifier, date_col, time_
     """
     
 
-    df = file_loader(data_scource)
+    df = file_loader(data_source)
         
     # leave only the loggings in a good logging day
     df['in_good_logging_day'] = in_good_logging_day(df, identifier, date_col, time_col, min_log_num, min_separation)
@@ -1650,13 +1667,13 @@ def first_cal_analysis_variability_plot(data_scource,identifier, date_col, time_
     
 
 # %% ../00_core.ipynb 89
-def last_cal_analysis_variability_plot(data_scource, identifier, date_col, time_col, min_log_num=2, min_separation=4):
+def last_cal_analysis_variability_plot(data_source, identifier, date_col, time_col, min_log_num=2, min_separation=4):
     """
     Description:\n
        This function calculates the variability of loggings in good logging day by subtracting 5%,10%,25%,50%,75%,90%,95% quantile of last_cal time from the 50% last_cal time and makes a histogram that represents the 90%-10% interval for all subjects.\n
     
     Input:\n
-        - data_scource (str, pandas df): input path, file in pickle, csv or panda dataframe format.
+        - data_source (str, pandas df): input path, file in pickle, csv or panda dataframe format.
         - identitfier(str) : participants' unique identifier such as id, name, etc.
         - date_col(str) : the column that represents the dates.
         - time_col(str) : the column that represents the float time.
@@ -1671,7 +1688,7 @@ def last_cal_analysis_variability_plot(data_scource, identifier, date_col, time_
         - find_float_time() for time_col
     """
     
-    df = file_loader(data_scource)
+    df = file_loader(data_source)
         
     # leave only the loggings that are in a good logging day
     df['in_good_logging_day'] = in_good_logging_day(df, identifier,date_col, time_col, min_log_num, min_separation)
@@ -1701,13 +1718,13 @@ def last_cal_analysis_variability_plot(data_scource, identifier, date_col, time_
     
 
 # %% ../00_core.ipynb 91
-def first_cal_avg_histplot(data_scource, identifier, date_col, time_col):
+def first_cal_avg_histplot(data_source, identifier, date_col, time_col):
     """
     Description:\n
        This function take the first caloric event (no water or med) and calculate average event's time for “each participant”.\n
     
     Input:\n
-        - data_scource (str, pandas df): input path, file in pickle, csv or panda dataframe format.
+        - data_source (str, pandas df): input path, file in pickle, csv or panda dataframe format.
         - identitfier(str) : participants' unique identifier such as id, name, etc.
         - date_col(str) : the column that represents the dates.
         - time_col(str) : the column that represents the float time.
@@ -1716,28 +1733,28 @@ def first_cal_avg_histplot(data_scource, identifier, date_col, time_col):
         - None
         
     Requirements:\n
-        data_scource file must have the following columns:\n
+        data_source file must have the following columns:\n
             - food_type\n
     Optional functions to use to have proper inputs:
         - find_date() for date_col
         - find_float_time() for time_col
     """
-    df = file_loader(data_scource)
+    df = file_loader(data_source)
     df = df.query('food_type in ["f", "b"]')
     first_cal_time = df.groupby([identifier, date_col])[time_col].min()
-    avg_first_cal_time = first_cal_time.reset_index().groupby(identifier).mean()
+    avg_first_cal_time = first_cal_time.reset_index().groupby(identifier)[time_col].mean()
     fig, ax = plt.subplots(1, 1, figsize = (10, 10), dpi=80)
-    sns.distplot(avg_first_cal_time[time_col], kde = False)
+    sns.distplot(avg_first_cal_time, kde = False)
     ax.set(xlabel='First Meal Time - Averaged by Person', ylabel='Frequency Count')
 
 # %% ../00_core.ipynb 93
-def first_cal_sample_distplot(data_scource, n, identifier, date_col, time_col):
+def first_cal_sample_distplot(data_source, n, identifier, date_col, time_col):
     """
     Description:\n
        This function plots the distplot for the first_cal time from n participants that will be randomly selected with replacement.\n
     
     Input:\n
-        - data_scource (str, pandas df): input path, file in pickle, csv or panda dataframe format.\n
+        - data_source (str, pandas df): input path, file in pickle, csv or panda dataframe format.\n
         - n (int): the number of distplot in the output figure
         - identitfier(str) : participants' unique identifier such as id, name, etc.
         - date_col(str) : the column that represents the dates.
@@ -1747,14 +1764,14 @@ def first_cal_sample_distplot(data_scource, n, identifier, date_col, time_col):
         - None
         
     Requirements:\n
-        data_scource file must have the following columns:\n
+        data_source file must have the following columns:\n
             - food_type\n
     
     Optional functions to use to have proper inputs:
         - find_date() for date_col
         - find_float_time() for time_col
     """
-    df = file_loader(data_scource)
+    df = file_loader(data_source)
     df = df[df['food_type'].isin(['f','b'])]
     first_cal_by_person = pd.DataFrame(df.groupby([identifier, date_col])\
                                        [time_col].min())
@@ -1766,13 +1783,13 @@ def first_cal_sample_distplot(data_scource, n, identifier, date_col, time_col):
         sns.distplot(first_cal_by_person[time_col].loc[i])
 
 # %% ../00_core.ipynb 95
-def last_cal_avg_histplot(data_scource, identifier, date_col, time_col):
+def last_cal_avg_histplot(data_source, identifier, date_col, time_col):
     """
     Description:\n
        This function take the last caloric event (no water or med) and calculate average event's time for “each participant”.\n
     
     Input:\n
-        - data_scource (str, pandas df): input path, file in pickle, csv or panda dataframe format.
+        - data_source (str, pandas df): input path, file in pickle, csv or panda dataframe format.
         - identitfier(str) : participants' unique identifier such as id, name, etc.
         - date_col(str) : the column that represents the dates.
         - time_col(str) : the column that represents the float time.
@@ -1787,22 +1804,22 @@ def last_cal_avg_histplot(data_scource, identifier, date_col, time_col):
         - find_date() for date_col
         - find_float_time() for time_col
     """
-    df = file_loader(data_scource)
+    df = file_loader(data_source)
     df = df.query('food_type in ["f", "b"]')
-    first_cal_time = df.groupby([identifier, date_col])[time_col].max()
-    avg_first_cal_time = first_cal_time.reset_index().groupby(identifier).mean()
+    last_cal_time = df.groupby([identifier, date_col])[time_col].max()
+    avg_last_cal_time = last_cal_time.reset_index().groupby(identifier)[time_col].mean()
     fig, ax = plt.subplots(1, 1, figsize = (10, 10), dpi=80)
-    sns.distplot(avg_first_cal_time[time_col], kde = False)
+    sns.distplot(avg_last_cal_time, kde = False)
     ax.set(xlabel='Last Meal Time - Averaged by Person', ylabel='Frequency Count')
 
 # %% ../00_core.ipynb 97
-def last_cal_sample_distplot(data_scource, n, identifier, date_col, time_col):
+def last_cal_sample_distplot(data_source, n, identifier, date_col, time_col):
     """
     Description:\n
        This function plots the distplot for the last_cal time from n participants that will be randomly selected with replacement.\n
     
     Input:\n
-        - data_scource (str, pandas df): input path, file in pickle, csv or panda dataframe format.
+        - data_source (str, pandas df): input path, file in pickle, csv or panda dataframe format.
         - n (int): the number of participants that will be randomly selected in the output figure
         - identitfier(str) : participants' unique identifier such as id, name, etc.
         - date_col(str) : the column that represents the dates.
@@ -1819,7 +1836,7 @@ def last_cal_sample_distplot(data_scource, n, identifier, date_col, time_col):
         - find_float_time() for time_col
         
     """
-    df = file_loader(data_scource)
+    df = file_loader(data_source)
     df = df[df['food_type'].isin(['f','b'])]
     last_cal_by_person = pd.DataFrame(df.groupby([identifier, date_col])\
                                        [time_col].max())
@@ -1831,13 +1848,13 @@ def last_cal_sample_distplot(data_scource, n, identifier, date_col, time_col):
         sns.distplot(last_cal_by_person[time_col].loc[i])
 
 # %% ../00_core.ipynb 99
-def swarmplot(data_scource, max_loggings, identifier, date_col, time_col):
+def swarmplot(data_source, max_loggings, identifier, date_col, time_col):
     """
     Description:\n
-       This function plots the swarmplot the participants from the data_scource file.\n
+       This function plots the swarmplot the participants from the data_source file.\n
     
     Input:\n
-        - data_scource (str, pandas df): input path, file in pickle, csv or panda dataframe format.\n
+        - data_source (str, pandas df): input path, file in pickle, csv or panda dataframe format.\n
         - max_loggings (int): the max number of loggings to be plotted for each participants, loggings will be randomly selected.
         - identitfier(str) : participants' unique identifier such as id, name, etc.
         - date_col(str) : the column that represents the dates.
@@ -1846,14 +1863,14 @@ def swarmplot(data_scource, max_loggings, identifier, date_col, time_col):
         - None
         
     Requirements:\n
-        data_scource file must have the following columns:\n
+        data_source file must have the following columns:\n
             - food_type\n
     Optional functions to use to have proper inputs:
         - find_date() for date_col
         - find_float_time() for time_col
     """
     
-    df = file_loader(data_scource)
+    df = file_loader(data_source)
     
     def subsamp_by_cond(alldat):
         alld = []
