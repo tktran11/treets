@@ -71,14 +71,13 @@ def file_loader(data_source):
     return df
 
 # %% ../00_core.ipynb 12
-def find_date(data_source, col, h = 4):
+def find_date(data_source, h = 4, date_col = 5):
     """
     Description:\n
         Extract date information from a column and shift each date in the column by h hours. (Day starts h hours early if h is negative and h hours late if h is positive)\n
         
     Input:\n
         - data_source(str, pandas df): input path, file in pickle, csv or pandas dataframe format\n
-        - col(str) : column that contains the information of date and time, which is 24 hours system.
         - h(int) : hours to shift the date. For example, when h = 4, everyday starts and ends 4 hours later than normal.
         
     Return:\n
@@ -89,7 +88,8 @@ def find_date(data_source, col, h = 4):
             
     """
     df = file_loader(data_source)
-    
+    # fifth column of food log dataframes should represent date/time in a 24 hour system
+    col = df.columns[date_col]
     if df[col].dtype == 'O':
         raise TypeError("'{}' column must be converted to datetime object".format(col))
         
@@ -103,15 +103,14 @@ def find_date(data_source, col, h = 4):
         return d.date()
     return df[col].apply(find_date, args=([h]))
 
-# %% ../00_core.ipynb 17
-def find_float_time(data_source, col, h = 4):
+# %% ../00_core.ipynb 18
+def find_float_time(data_source, h = 4, date_col = 5):
     """
     Description:\n
         Extract time information from a column and shift each time by h hours. (Day starts h hours early if h is negative and h hours late if h is positive)\n
         
     Input:\n
         - data_source (str, pandas df): input path, file in pickle, csv or pandas dataframe format\n
-        - col(str) : column that contains the information of date and time that's 24 hours system.
         - h(int) : hours to shift the date. For example, when h = 4, everyday starts at 4 and ends at 28. When h = -4, everyday starts at -4 and ends at 20.
         
     Return:\n
@@ -124,6 +123,8 @@ def find_float_time(data_source, col, h = 4):
             
     """
     df = file_loader(data_source)
+    # fifth column of food log dataframes should represent date/time in a 24 hour system
+    col = df.columns[date_col]
     if df[col].dtype == 'O':
         raise TypeError("'{}' column must be converted to datetime object firsly".format(col))
     local_time = df[col].apply(lambda x: pd.Timedelta(x.time().isoformat()).total_seconds() /3600.)
@@ -137,7 +138,7 @@ def find_float_time(data_source, col, h = 4):
     
 
 # %% ../00_core.ipynb 23
-def week_from_start(data_source, col, identifier):
+def week_from_start(data_source, identifier = 1):
         """
         Description:\n
             Calculate the number of weeks for each logging since the first day of the logging for each participant(identifier). The returned values for loggings from the first week are 1. 
@@ -153,6 +154,8 @@ def week_from_start(data_source, col, identifier):
         df = file_loader(data_source)
         if 'date' not in df.columns:
             raise NameError("There must exist a 'date' column.")
+        col = df.columns[df.columns.get_loc('date')]
+        identifier = df.columns[identifier]
         # Handle week from start
         df_dic = dict(df.groupby(identifier)[col].agg(np.min))
 
@@ -177,19 +180,22 @@ def find_phase_duration(df):
         - 'Start_day' and 'End_day' column exist in the df.
         - 'phase_duration' column exists in the df.
     """
+    # column order is specified in our how-to document for data from collaborators
+    start_day = df.columns[4]
+    end_day = df.columns[5]
     
     # checking if type conversion from string to datetime is necessary
-    if df['Start_Day'].apply(lambda x: isinstance(x, str)).any():
-        df['Start_Day'] = pd.to_datetime(df['Start_Day'])
+    if df[start_day].apply(lambda x: isinstance(x, str)).any():
+        df[start_day] = pd.to_datetime(df[start_day])
     
-    if df['End_day'].apply(lambda x: isinstance(x, str)).any():
-        df['End_day'] = pd.to_datetime(df['End_day'])
+    if df[end_day].apply(lambda x: isinstance(x, str)).any():
+        df[end_day] = pd.to_datetime(df[end_day])
     
-    df['phase_duration'] = df['End_day'] - df['Start_Day']+ pd.Timedelta("1 days")
+    df['phase_duration'] = df[end_day] - df[start_day] + pd.Timedelta("1 days")
     return df
 
-# %% ../00_core.ipynb 28
-def load_food_data(data_source, identifier, datetime_col, h):
+# %% ../00_core.ipynb 29
+def load_food_data(data_source, h, identifier = 1, datetime_col = 5):
     """
     Description:\n
         Load food data and output processed data in a dataframe.\n
@@ -220,7 +226,11 @@ def load_food_data(data_source, identifier, datetime_col, h):
             - unique_code\n
     """
     food_all = file_loader(data_source)
-    
+    # identifier column(s) should be 0 and 1, with 1 being study specific
+    identifier = food_all.columns[identifier]
+    # fifth column of food log dataframes should represent date/time in a 24 hour system
+    datetime_col = food_all.columns[datetime_col]
+        
     try:
         food_all = food_all.drop(columns = ['foodimage_file_name'])
     except KeyError:
@@ -242,39 +252,35 @@ def load_food_data(data_source, identifier, datetime_col, h):
                 return np.nan
 
     food_all[datetime_col] = food_all[datetime_col].apply(handle_time)
-    
     food_all = food_all.dropna().reset_index(drop = True)
-    
-
-    food_all['date'] = find_date(food_all, datetime_col, h)
-    
+    food_all['date'] = find_date(food_all, h)
     
     # Handle the time - Time in floating point format
     
-    food_all['float_time'] = find_float_time(food_all, datetime_col, h)
+    food_all['float_time'] = find_float_time(food_all, h)
     
     # Handle the time - Time in Datetime object format
     food_all['time'] = pd.DatetimeIndex(food_all[datetime_col]).time
     
     # Handle week from start
-    food_all['week_from_start'] = week_from_start(food_all,'date',identifier)
+    food_all['week_from_start'] = week_from_start(food_all)
     
     food_all['year'] = food_all.date.apply(lambda d: d.year)
     
     return food_all
 
-# %% ../00_core.ipynb 30
-def in_good_logging_day(data_source, identifier, date_col, time_col, min_log_num = 2, min_seperation = 4):
+# %% ../00_core.ipynb 31
+def in_good_logging_day(data_source, min_log_num = 2, min_separation = 4, identifier = 1, date_col = 6, time_col = 7):
     """
     Description:\n
-        A logging's in a good logging day if the there are more than min_log_num loggings in one day w/ more than min_seperation hoursx apart from the earliest logging and the latest logging and False otherwise.\n
+        A logging's in a good logging day if the there are more than min_log_num loggings in one day w/ more than min_separation hoursx apart from the earliest logging and the latest logging and False otherwise.\n
         
     Input:\n
         - data_source (str, pandas df): input path, file in pickle, csv or pandas dataframe format.\n
         - identifier (str): id-like column that's used to identify a subject.\n
         - time_col (str): column that contains time in float format.\n
         - min_log_num (count,int): filtration criteria on the minimum number of loggings each day.\n
-        - min_seperation(hours,int): filtration criteria on the minimum separations between the earliest and latest loggings each day.\n
+        - min_separation(hours,int): filtration criteria on the minimum separations between the earliest and latest loggings each day.\n
         
     Return:\n
         - A boolean numpy array indicating whether the corresponding row is in a good logging day. Details on the criteria is in the description.\n
@@ -285,19 +291,30 @@ def in_good_logging_day(data_source, identifier, date_col, time_col, min_log_num
 
     """
     def adherent(s):
-        if len(s.values) >= min_log_num and (max(s.values) - min(s.values)) >= min_seperation:
+        if len(s.values) >= min_log_num and (max(s.values) - min(s.values)) >= min_separation:
             return True
         else:
             return False
         
     df = file_loader(data_source)
-    
+    identifier = df.columns[identifier]
+    # if treets functions have been used (in any order) to generate columns
+    # find appropriate column names, if not check for expected column position
+    if 'date' in df.columns:
+        date_col = df.columns[df.columns.get_loc('date')]
+    else:
+        date_col = df.columns[date_col]
+        
+    if 'float_time' in df.columns:
+        time_col = df.columns[df.columns.get_loc('float_time')]
+    else:
+        time_col = df.columns[time_col]
+        
     adherent_dict = dict(df.groupby([identifier, date_col])[time_col].agg(adherent))
 
-    
     return df.apply(lambda x: adherent_dict[(x[identifier], x.date)], axis = 1)
 
-# %% ../00_core.ipynb 32
+# %% ../00_core.ipynb 33
 class FoodParser():
     """
     A class that reads in food loggings from the app. Used as helper function for the function clean_loggings().
@@ -542,8 +559,8 @@ class FoodParser():
 
         return pd.DataFrame(all_entries)
 
-# %% ../00_core.ipynb 33
-def clean_loggings(data_source, text_col, identifier):
+# %% ../00_core.ipynb 34
+def clean_loggings(data_source, identifier = 1):
     """
     Description:\n
        This function convert all the loggings in the data_source file into a list of typo-corrected items based on the text_col column. This function is based on a built-in vocabulary dictionary and an n-gram searcher.\n
@@ -558,26 +575,28 @@ def clean_loggings(data_source, text_col, identifier):
 
     """
 
-    food_all = file_loader(data_source)
+    df = file_loader(data_source)
+    identifier = df.columns[identifier]
+    text_col = df.columns[df.columns.get_loc('desc_text')]
     # initialize food parser instance
     fp = FoodParser()
     fp.initialization()
     
     # parse food
-    parsed = [fp.parse_food(i, return_sentence_tag = True) for i in food_all.desc_text.values]
+    parsed = [fp.parse_food(i, return_sentence_tag = True) for i in df.desc_text.values]
     
-    food_all_parsed = pd.DataFrame({
-    identifier: food_all[identifier],
-    text_col: food_all[text_col],
+    df_parsed = pd.DataFrame({
+    identifier: df[identifier],
+    text_col: df[text_col],
     'cleaned': parsed
     })
     
-    food_all_parsed['cleaned'] = food_all_parsed['cleaned'].apply(lambda x: x[0])
+    df_parsed['cleaned'] = df_parsed['cleaned'].apply(lambda x: x[0])
     
     
-    return food_all_parsed
+    return df_parsed
 
-# %% ../00_core.ipynb 35
+# %% ../00_core.ipynb 36
 def get_types(data_source, food_type):
     """
     Description:\n
@@ -615,7 +634,7 @@ def get_types(data_source, food_type):
     
     return filtered
 
-# %% ../00_core.ipynb 38
+# %% ../00_core.ipynb 39
 def count_caloric_entries(df):
     """
     Description:\n
@@ -632,12 +651,12 @@ def count_caloric_entries(df):
     """
     if 'food_type' not in df.columns:
         raise Exception("'food_type' column must exist in the dataframe.")
+    food_type_col = df.columns[df.columns.get_loc('food_type')]
         
-    
-    return df[df['food_type'].isin(['f','b'])].shape[0]
+    return df[df[food_type_col].isin(['f','b'])].shape[0]
 
-# %% ../00_core.ipynb 40
-def mean_daily_eating_duration(df, date_col, time_col):
+# %% ../00_core.ipynb 41
+def mean_daily_eating_duration(df, date_col = 6, time_col = 7):
     """
     Description:\n
         This is a function that calculates the mean daily eating window, which is defined as the duration of first and last caloric intake.
@@ -658,14 +677,23 @@ def mean_daily_eating_duration(df, date_col, time_col):
         - find_date() for date_col
         - find_float_time() for time_col
     """
+    if 'date' in df.columns:
+        date_col = df.columns[df.columns.get_loc('date')]
+    else:
+        date_col = df.columns[date_col]
+        
+    if 'float_time' in df.columns:
+        time_col = df.columns[df.columns.get_loc('float_time')]
+    else:
+        time_col = df.columns[time_col]
 
     df = df[df['food_type'].isin(['f','b'])]
     breakfast_time = df.groupby(date_col)[time_col].agg(min)
     dinner_time = df.groupby(date_col)[time_col].agg(max)
     return (dinner_time - breakfast_time).mean()
 
-# %% ../00_core.ipynb 42
-def std_daily_eating_duration(df, date_col, time_col):
+# %% ../00_core.ipynb 43
+def std_daily_eating_duration(df, date_col = 6, time_col = 7):
     """
     Description:\n
         This function calculates the standard deviation of daily eating window, which is defined as the duration between the first and last caloric intake.
@@ -685,21 +713,29 @@ def std_daily_eating_duration(df, date_col, time_col):
         - find_date() for date_col
         - find_float_time() for time_col
     """
-    
+    if 'date' in df.columns:
+        date_col = df.columns[df.columns.get_loc('date')]
+    else:
+        date_col = df.columns[date_col]
+        
+    if 'float_time' in df.columns:
+        time_col = df.columns[df.columns.get_loc('float_time')]
+    else:
+        time_col = df.columns[time_col]
+        
     df = df[df['food_type'].isin(['f','b'])]
     breakfast_time = df.groupby(date_col)[time_col].agg(min)
     dinner_time = df.groupby(date_col)[time_col].agg(max)
 
     return (dinner_time - breakfast_time).std()
 
-# %% ../00_core.ipynb 44
-def earliest_entry(df, date_col, time_col):
+# %% ../00_core.ipynb 45
+def earliest_entry(df, time_col = 7):
     """
     Description:\n
         This function calculates the earliest first calorie on any day in the study period. 
     Input:\n
         - df(pandas df) : food_logging data.
-        - date_col(column existed in df, string) : column name that contains date information from the df dataframe.
         - time_col(column existed in df, string) : contains information of logging time in float.
     
     Output:\n
@@ -712,13 +748,16 @@ def earliest_entry(df, date_col, time_col):
         - find_date() for date_col
         - find_float_time() for time_col
     """
-    
+    if 'float_time' in df.columns:
+        time_col = df.columns[df.columns.get_loc('float_time')]
+    else:
+        time_col = df.columns[time_col]
     df = get_types(df, ['f', 'b'])
     
     return df[time_col].min()
 
-# %% ../00_core.ipynb 46
-def mean_first_cal(df, date_col, time_col):
+# %% ../00_core.ipynb 47
+def mean_first_cal(df, date_col = 6, time_col = 7):
     """
     Description:\n
         This function calculates the average time of first calory intake. 
@@ -737,12 +776,22 @@ def mean_first_cal(df, date_col, time_col):
         - find_date() for date_col
         - find_float_time() for time_col
     """
+    
+    if 'date' in df.columns:
+        date_col = df.columns[df.columns.get_loc('date')]
+    else:
+        date_col = df.columns[date_col]
+    
+    if 'float_time' in df.columns:
+        time_col = df.columns[df.columns.get_loc('float_time')]
+    else:
+        time_col = df.columns[time_col]
     
     
     return df.groupby([date_col])[time_col].min().mean()
 
-# %% ../00_core.ipynb 49
-def std_first_cal(df, date_col, time_col):
+# %% ../00_core.ipynb 50
+def std_first_cal(df, date_col = 6, time_col = 7):
     """
     Description:\n
         This function calculates the average time of first calory intake. 
@@ -761,12 +810,20 @@ def std_first_cal(df, date_col, time_col):
         - find_date() for date_col
         - find_float_time() for time_col
     """
+    if 'date' in df.columns:
+        date_col = df.columns[df.columns.get_loc('date')]
+    else:
+        date_col = df.columns[date_col]
     
+    if 'float_time' in df.columns:
+        time_col = df.columns[df.columns.get_loc('float_time')]
+    else:
+        time_col = df.columns[time_col]
     
     return df.groupby([date_col])[time_col].min().std()
 
-# %% ../00_core.ipynb 51
-def mean_last_cal(df, date_col, time_col):
+# %% ../00_core.ipynb 52
+def mean_last_cal(df, date_col = None, time_col = None):
     """
     Description:\n
         This function calculates the average time of last calory intake. 
@@ -785,12 +842,20 @@ def mean_last_cal(df, date_col, time_col):
         - find_date() for date_col
         - find_float_time() for time_col
     """
+    if 'date' in df.columns:
+        date_col = df.columns[df.columns.get_loc('date')]
+    else:
+        date_col = df.columns[6]
     
+    if 'float_time' in df.columns:
+        time_col = df.columns[df.columns.get_loc('float_time')]
+    else:
+        time_col = df.columns[7]
     
     return df.groupby([date_col])[time_col].max().mean()
 
-# %% ../00_core.ipynb 53
-def std_last_cal(df, date_col, time_col):
+# %% ../00_core.ipynb 54
+def std_last_cal(df, date_col = 6, time_col = 7):
     """
     Description:\n
         This function calculates the average time of last calory intake. 
@@ -809,11 +874,19 @@ def std_last_cal(df, date_col, time_col):
         - find_date() for date_col
         - find_float_time() for time_col
     """
+    if 'date' in df.columns:
+        date_col = df.columns[df.columns.get_loc('date')]
+    else:
+        date_col = df.columns[date_col]
     
+    if 'float_time' in df.columns:
+        time_col = df.columns[df.columns.get_loc('float_time')]
+    else:
+        time_col = df.columns[time_col]
     
     return df.groupby([date_col])[time_col].max().std()
 
-# %% ../00_core.ipynb 55
+# %% ../00_core.ipynb 56
 def logging_day_counts(df):
     """
     Description:\n
@@ -827,11 +900,11 @@ def logging_day_counts(df):
     Requirement:\n
         - 'date' column existed in the df.
     """
-    
-    return df.date.nunique()
+    date_col = df.columns[df.columns.get_loc('date')]
+    return df[date_col].nunique()
 
-# %% ../00_core.ipynb 57
-def find_missing_logging_days(df, start_date='not_defined', end_date='not_defined'):
+# %% ../00_core.ipynb 58
+def find_missing_logging_days(df, start_date = "not_defined", end_date = "not_defined"):
     """
     Description:\n
         This function finds the days during which there's no logging within the period from start_date to end_date. 
@@ -846,13 +919,16 @@ def find_missing_logging_days(df, start_date='not_defined', end_date='not_define
     Requirement:\n
         - 'date' column existed in the df.
     """
+    
     # if start_date or end_date is missing, return nan
+    # intended behavior for participants when their study phase is ongoing
     if pd.isnull(start_date) or pd.isnull(end_date):
         return np.nan
+    
     # if there is no input on start_date or end_date, use earliest date and latest date
-    if start_date=='not_defined':
+    if start_date == "not_defined":
         start_date = df['date'].min()
-    if end_date=='not_defined':
+    if end_date == "not_defined":
         end_date = df['date'].max()
         
     df = df[(df['date']>=start_date) & (df['date']<=end_date)]
@@ -866,11 +942,11 @@ def find_missing_logging_days(df, start_date='not_defined', end_date='not_define
     return lst
         
 
-# %% ../00_core.ipynb 59
-def good_lwa_day_counts(df, window_start, window_end, time_col, min_log_num=2, min_seperation=5, buffer_time= '15 minutes',h=4, start_date='not_defined', end_date='not_defined'):
+# %% ../00_core.ipynb 60
+def good_lwa_day_counts(df, window_start, window_end, min_log_num = 2, min_separation = 5, buffer_time= '15 minutes', h = 4, start_date = "not_defined", end_date = "not_defined", time_col = 7):
     """
     Description:\n
-        This function calculates the number of good logging days, good window days, outside window days and adherent days. Good logging day is defined as a day that the person makes at least min_log_num number of loggings and the time separation between the earliest and the latest logging are greater than min_seperation.\n
+        This function calculates the number of good logging days, good window days, outside window days and adherent days. Good logging day is defined as a day that the person makes at least min_log_num number of loggings and the time separation between the earliest and the latest logging are greater than min_separation.\n
         A good window day is defined as a date that all the food loggings are within the assigned restricted window. An adherent day is defined as a date that is both a good logging day and a good window day.
     Input:\n
         - df(pandas df): food_logging data.
@@ -878,7 +954,7 @@ def good_lwa_day_counts(df, window_start, window_end, time_col, min_log_num=2, m
         - window_end(datetime.time object): end time of the restriction window.
         - time_col(str) : the column that represents the eating time.
         - min_log_num(count, int): minimum number of loggings to qualify a day as a good logging day
-        - min_seperation(hours, int): minimum period of separation between earliest and latest loggings to qualify a day as a good logging day
+        - min_separation(hours, int): minimum period of separation between earliest and latest loggings to qualify a day as a good logging day
         - buffer_time(time in string that can be passed into pd.Timedelta()): wiggle room for to be added/subtracted on the ends of windows.
         - h(hours, int): hours to be pushed back
         - start_date(datetime.date object): start date of the period for calculation. If not defined, it will be automatically set to be the earliest date in df.
@@ -892,30 +968,34 @@ def good_lwa_day_counts(df, window_start, window_end, time_col, min_log_num=2, m
         - float time is calculated as time_col.
 
     """
-    # if start_date or end_date is missing, return nan
+    # check for treets created float time column, otherwise default to expected column number
+    if 'float_time' in df.columns:
+        time_col = df.columns[df.columns.get_loc('float_time')]
+    else:
+        time_col = df.columns[time_col]
+    
+    # if start_date or end_Date is missing, return nan
+    # intended behavior for participants when their study phase is ongoing
     if pd.isnull(start_date) or pd.isnull(end_date):
-        return [np.nan,np.nan,np.nan,np.nan], [[],[],[]]
+        return [np.nan, np.nan, np.nan, np.nan], [[],[],[]]
+    
+    # if there is no input on start_date or end_date, use earliest date and latest date
+    if start_date == "not_defined":
+        start_date = df['date'].min()
+    if end_date == "not_defined":
+        end_date = df['date'].max()
     
     # if window start or window end are nan, make the windows the same as control's window time.
     if pd.isnull(window_start):
         window_start = datetime.time(0,0)
     if pd.isnull(window_end):
         window_end = datetime.time(23,59)
-        
-    # if there is no input on start_date or end_date, use earliest date and latest date
-    if start_date=='not_defined':
-        start_date = df['date'].min()
-    if end_date=='not_defined':
-        end_date = df['date'].max()
 
     # helper function to determine a good logging
     def good_logging(local_time_series):
-        if len(local_time_series.values) >= min_log_num and (max(local_time_series.values) - min(local_time_series.values)) >= min_seperation:
-            return True
-        else:
-            return False
-
-    df = df[(df['date']>=start_date) & (df['date']<=end_date)]
+        return len(local_time_series.values) >= min_log_num and (max(local_time_series.values) - min(local_time_series.values)) >= min_separation
+   
+    df = df[(df['date'] >= start_date) & (df['date'] <= end_date)]
     df = df[df['food_type'].isin(['f','b'])]
     df['original_logtime'] = pd.to_datetime(df['original_logtime']).dt.tz_localize(None)
 
@@ -926,24 +1006,24 @@ def good_lwa_day_counts(df, window_start, window_end, time_col, min_log_num=2, m
     good_logging_count = []
     cur_dates = df['date'].sort_values(ascending = True).unique()
     for aday in cur_dates:
-        window_start_daily = window_start.hour+window_start.minute/60- buffer_time
-        window_end_daily = window_end.hour+window_end.minute/60 + buffer_time
-        tmp = df[df['date']==aday]
+        window_start_daily = window_start.hour + window_start.minute / 60 - buffer_time
+        window_end_daily = window_end.hour + window_end.minute / 60 + buffer_time
+        tmp = df[df['date'] == aday]
         if (window_start == datetime.time(0,0)) and (window_end == datetime.time(23,59)):
-            in_window_count.append(tmp[(tmp[time_col]>=window_start_daily+h) & (tmp[time_col]<=window_end_daily+h)].shape[0])
+            in_window_count.append(tmp[(tmp[time_col] >= window_start_daily + h) & (tmp[time_col] <= window_end_daily + h)].shape[0])
         else:
-            in_window_count.append(tmp[(tmp[time_col]>=window_start_daily) & (tmp[time_col]<=window_end_daily)].shape[0])
-        daily_count.append(df[df['date']==aday].shape[0])
-        good_logging_count.append(good_logging(df[df['date']==aday][time_col]))
+            in_window_count.append(tmp[(tmp[time_col] >= window_start_daily) & (tmp[time_col] <= window_end_daily)].shape[0])
+        daily_count.append(df[df['date'] == aday].shape[0])
+        good_logging_count.append(good_logging(df[df['date'] == aday][time_col]))
 
     in_window_count = np.array(in_window_count)
     daily_count = np.array(daily_count)
     good_logging_count = np.array(good_logging_count)
-    good_logging_by_date = [cur_dates[i] for i, x in enumerate(good_logging_count) if x == False]
+    good_logging_by_date = [cur_dates[i] for i, x in enumerate(good_logging_count) if not x]
 
     good_window_days = (in_window_count==daily_count)
     good_window_day_counts = good_window_days.sum()
-    good_window_by_date = [cur_dates[i] for i, x in enumerate(good_window_days) if x == False]
+    good_window_by_date = [cur_dates[i] for i, x in enumerate(good_window_days) if not x]
     
     outside_window_days = in_window_count.size - good_window_days.sum()
     good_logging_days = good_logging_count.sum()
@@ -951,8 +1031,8 @@ def good_lwa_day_counts(df, window_start, window_end, time_col, min_log_num=2, m
         adherent_day_counts = 0
         adherent_days_by_date = []
     else:
-        adherent_days = (good_logging_count & (in_window_count==daily_count))
-        adherent_days_by_date = [cur_dates[i] for i, x in enumerate(adherent_days) if x == False]
+        adherent_days = (good_logging_count & (in_window_count == daily_count))
+        adherent_days_by_date = [cur_dates[i] for i, x in enumerate(adherent_days) if not x]
         adherent_day_counts = adherent_days.sum()
     
     rows = [good_logging_days, good_window_day_counts, outside_window_days, adherent_day_counts]
@@ -960,8 +1040,8 @@ def good_lwa_day_counts(df, window_start, window_end, time_col, min_log_num=2, m
 
     return rows, bad_dates
 
-# %% ../00_core.ipynb 63
-def filtering_usable_data(df, identifier, date_col, num_items, num_days):
+# %% ../00_core.ipynb 64
+def filtering_usable_data(df, num_items, num_days, identifier = 1, date_col = 6):
     '''
     Description:\n
         This function filters the cleaned app data so the users who satisfies the criteria are left. The criteria is that the person is left if the total loggings for that person are more than num_items and at the same time, the total days of loggings are more than num_days.\n
@@ -982,6 +1062,12 @@ def filtering_usable_data(df, identifier, date_col, num_items, num_days):
     '''
     print(' => filtering_usable_data()')
     print('  => using the following criteria:', num_items, 'items and', num_days, 'days.')
+    
+    identifier = df.columns[1]
+    if 'date' in df.columns:
+        date_col = df.columns[df.columns.get_loc('date')]
+    else:
+        date_col = df.columns[date_col]
 
     # Item logged
     log_item_count = df.groupby(identifier).agg('count')[['desc_text']].rename(columns = {'desc_text': 'Total Logged'})
@@ -1002,8 +1088,8 @@ def filtering_usable_data(df, identifier, date_col, num_items, num_days):
     # display(df_usable.head(5))
     return df_usable, set(df_usable.unique_code.unique())
 
-# %% ../00_core.ipynb 66
-def prepare_baseline_and_intervention_usable_data(data_source, identifier, date_col, baseline_num_items, baseline_num_days, intervention_num_items, intervention_num_days):
+# %% ../00_core.ipynb 67
+def prepare_baseline_and_intervention_usable_data(data_source, baseline_num_items, baseline_num_days, intervention_num_items, intervention_num_days, identifier = 1, date_col = 6):
     """
     Description:\n
         Filter and create baseline_expanded and intervention groups based on data_source pickle file. Expanded baseline dataset contains the first two weeks data and 13, 14 weeks data that pass the given criteria. Intervention dataset contains 13, 14 weeks data that pass the given criteria.\n
@@ -1032,12 +1118,12 @@ def prepare_baseline_and_intervention_usable_data(data_source, identifier, date_
     # create baseline data
     df_food_baseline = food_all.query('week_from_start <= 2')
     df_food_baseline_usable, food_baseline_usable_id_set = \
-    filtering_usable_data(df_food_baseline,identifier, date_col, num_items = baseline_num_items, num_days = baseline_num_days)
+    filtering_usable_data(df_food_baseline, num_items = baseline_num_items, num_days = baseline_num_days, identifier = identifier, date_col = date_col)
     
     # create intervention data
     df_food_intervention = food_all.query('week_from_start in [13, 14]')
     df_food_intervention_usable, food_intervention_usable_id_set = \
-    filtering_usable_data(df_food_intervention,identifier, date_col, num_items = intervention_num_items, num_days = intervention_num_days)
+    filtering_usable_data(df_food_intervention, num_items = intervention_num_items, num_days = intervention_num_days, identifier = identifier, date_col = date_col)
     
     # create df that contains both baseline and intervention id_set that contains data for the first two weeks
     expanded_baseline_usable_id_set = set(list(food_baseline_usable_id_set) + list(food_intervention_usable_id_set))
@@ -1046,8 +1132,8 @@ def prepare_baseline_and_intervention_usable_data(data_source, identifier, date_
         
     return [df_food_basline_usable_expanded, df_food_intervention_usable]
 
-# %% ../00_core.ipynb 70
-def users_sorted_by_logging(data_source, food_type = ["f", "b", "m", "w"]):
+# %% ../00_core.ipynb 71
+def users_sorted_by_logging(data_source, food_type = ["f", "b", "m", "w"], min_log_num = 2, min_separation = 4, identifier = 1, date_col = 6, time_col = 7):
     """
     Description:\n
         This function returns a dataframe reports the number of good logging days for each user in the data_source file. The default order is descending.\n
@@ -1076,8 +1162,7 @@ def users_sorted_by_logging(data_source, food_type = ["f", "b", "m", "w"]):
     # filter the dataframe so it only contains input food type
     
     filtered_users = food_all.query('food_type in @food_type')
-    
-    filtered_users['in_good_logging_day'] = in_good_logging_day(filtered_users,'unique_code','date','local_time')
+    filtered_users['in_good_logging_day'] = in_good_logging_day(filtered_users, min_log_num, min_separation, identifier, date_col, time_col)
     
     food_top_users_day_counts = pd.DataFrame(filtered_users.query('in_good_logging_day == True')\
                             [['date', 'unique_code']].groupby('unique_code')['date'].nunique())\
@@ -1086,8 +1171,8 @@ def users_sorted_by_logging(data_source, food_type = ["f", "b", "m", "w"]):
     
     return food_top_users_day_counts
 
-# %% ../00_core.ipynb 72
-def eating_intervals_percentile(data_source, time_col, identifier):
+# %% ../00_core.ipynb 73
+def eating_intervals_percentile(data_source, identifier = 1, time_col = 7):
     """
     Description:
        This function calculates the .025, .05, .10, .125, .25, .5, .75, .875, .9, .95, .975 quantile of eating time and mid 95%, mid 90%, mid 80%, mid 75% and mid 50% duration for each user.\n 
@@ -1105,6 +1190,12 @@ def eating_intervals_percentile(data_source, time_col, identifier):
     """
     df = file_loader(data_source)
     
+    identifier = df.columns[1]
+    if 'float_time' in df.columns:
+        time_col = df.columns[df.columns.get_loc('float_time')]
+    else:
+        time_col = df.columns[time_col]
+    
     if df.shape[0] == 0:
         return pd.DataFrame(np.array([[np.nan]*21]), columns = ['count', 'mean', 'std', 'min', '2.5%', '5%', '10%', '12.5%', '25%',
        '50%', '75%', '87.5%', '90%', '95%', '97.5%', 'max', 'duration mid 95%',
@@ -1120,8 +1211,8 @@ def eating_intervals_percentile(data_source, time_col, identifier):
         
     return ptile
 
-# %% ../00_core.ipynb 74
-def first_cal_analysis_summary(data_source, identifier, date_col, time_col,min_log_num=2, min_separation=4):
+# %% ../00_core.ipynb 75
+def first_cal_analysis_summary(data_source, min_log_num=2, min_separation=4, identifier = 1, date_col = 6, time_col = 7):
     """
     Description:\n
        This function takes the loggings in good logging days and calculate the 5%,10%,25%,50%,75%,90%,95% quantile of first_cal time for each user.\n 
@@ -1132,7 +1223,7 @@ def first_cal_analysis_summary(data_source, identifier, date_col, time_col,min_l
         - date_col(str) : the column that represents the dates.
         - time_col(str) : the column that represents the float time.
         - min_log_num (count,int): filtration criteria on the minimum number of loggings each day.
-        - min_seperation(hours,int): filtration criteria on the minimum separations between the earliest and latest loggings each day.
+        - min_separation(hours,int): filtration criteria on the minimum separations between the earliest and latest loggings each day.
         
         
     Return:\n
@@ -1144,10 +1235,20 @@ def first_cal_analysis_summary(data_source, identifier, date_col, time_col,min_l
     """
 
     df = file_loader(data_source)
-        
+    
     # leave only the loggings in a good logging day
-    df['in_good_logging_day'] = in_good_logging_day(df, identifier, date_col, time_col, min_log_num, min_separation)
+    df['in_good_logging_day'] = in_good_logging_day(df, min_log_num, min_separation, identifier, date_col, time_col)
     df = df[df['in_good_logging_day']==True]
+    
+    identifier = df.columns[identifier]
+    if 'date' in df.columns:
+        date_col = df.columns[df.columns.get_loc('date')]
+    else:
+        date_col = df.columns[date_col]
+    if 'float_time' in df.columns:
+        time_col = df.columns[df.columns.get_loc('float_time')]
+    else:
+        time_col = df.columns[time_col]
     
     first_cal_series = df.groupby([identifier, date_col])[time_col].min().groupby(identifier).quantile([0.05, 0.10, 0.25, 0.5, 0.75, 0.90, 0.95])
     first_cal_df = pd.DataFrame(first_cal_series)
@@ -1162,8 +1263,8 @@ def first_cal_analysis_summary(data_source, identifier, date_col, time_col,min_l
     
     return first_cal_summary_df
 
-# %% ../00_core.ipynb 76
-def last_cal_analysis_summary(data_source, identifier, date_col, time_col, min_log_num=2, min_separation=4):
+# %% ../00_core.ipynb 77
+def last_cal_analysis_summary(data_source, min_log_num = 2, min_separation = 4, identifier = 1, date_col = 6, time_col = 7):
     """
     Description:\n
        This function takes the loggings in good logging days and calculate the 5%,10%,25%,50%,75%,90%,95% quantile of last_cal time for each user.\n 
@@ -1174,7 +1275,7 @@ def last_cal_analysis_summary(data_source, identifier, date_col, time_col, min_l
         - date_col(str) : the column that represents the dates.
         - time_col(str) : the column that represents the float time.
         - min_log_num (count,int): filtration criteria on the minimum number of loggings each day.
-        - min_seperation(hours,int): filtration criteria on the minimum separations between the earliest and latest loggings each day.
+        - min_separation(hours,int): filtration criteria on the minimum separations between the earliest and latest loggings each day.
         
     Return:\n
         - A summary table with 5%,10%,25%,50%,75%,90%,95% quantile of last_cal time for all subjects from the data_source file.\n
@@ -1185,10 +1286,23 @@ def last_cal_analysis_summary(data_source, identifier, date_col, time_col, min_l
     """
     
     df = file_loader(data_source)
-        
+    
     # leave only the loggings that are in a good logging day
-    df['in_good_logging_day'] = in_good_logging_day(df, identifier,date_col, time_col, min_log_num, min_separation)
+    df['in_good_logging_day'] = in_good_logging_day(df, min_log_num, min_separation, identifier, date_col, time_col)
     df = df[df['in_good_logging_day']==True]
+    
+    identifier = df.columns[identifier]
+    # if treets functions have been used (in any order) to generate columns
+    # find appropriate column names, if not check for expected column position
+    if 'date' in df.columns:
+        date_col = df.columns[df.columns.get_loc('date')]
+    else:
+        date_col = df.columns[date_col]
+        
+    if 'float_time' in df.columns:
+        time_col = df.columns[df.columns.get_loc('float_time')]
+    else:
+        time_col = df.columns[time_col]
     
     last_cal_series = df.groupby([identifier, date_col])[time_col].max().groupby(identifier).quantile([0.05, 0.10, 0.25, 0.5, 0.75, 0.90, 0.95])
     last_cal_df = pd.DataFrame(last_cal_series)
@@ -1204,12 +1318,8 @@ def last_cal_analysis_summary(data_source, identifier, date_col, time_col, min_l
     
     return last_cal_summary_df
 
-
-
-
-
-# %% ../00_core.ipynb 78
-def summarize_data(data_source, identifier, float_time_col, date_col, min_log_num = 2, min_seperation = 4):
+# %% ../00_core.ipynb 79
+def summarize_data(data_source, min_log_num = 2, min_separation = 4, identifier = 1, date_col = 6, time_col = 7):
     """
     Description:\n
        This function calculates num_days, num_total_items, num_f_n_b, num_medications, num_water, duration_mid_95, start_95, end_95, first_cal_avg, first_cal_std, last_cal_avg, last_cal_std, eating_win_avg, eating_win_std, adherent_count, first_cal variation (90%-10%), last_cal variation (90%-10%).\n 
@@ -1220,7 +1330,7 @@ def summarize_data(data_source, identifier, float_time_col, date_col, min_log_nu
         - identitfier(str) : participants' unique identifier such as id, name, etc.
         - date_col(str) : the column that represents the dates.
         - min_log_num (count,int): filtration criteria on the minimum number of loggings each day.
-        - min_seperation(hours,int): filtration criteria on the minimum separations between the earliest and latest loggings each day.\n
+        - min_separation(hours,int): filtration criteria on the minimum separations between the earliest and latest loggings each day.\n
         
     Return:\n
         - A summary table with count, mean, std, min, quantiles and mid durations for all subjects from the data_source file.\n
@@ -1234,63 +1344,79 @@ def summarize_data(data_source, identifier, float_time_col, date_col, min_log_nu
         - find_float_time() for time_col
     """
     df = file_loader(data_source)
+    df['in_good_logging_day'] = in_good_logging_day(df, min_log_num, min_separation, identifier, date_col, time_col)
     
-    #num_days
-    num_days = df.groupby(identifier).date.nunique()
-
-    #num_total_items
-    num_total_items = df.groupby(identifier).count().iloc[:,0]
-
-    #num_f_n_b
-    num_f_n_b = get_types(df, ['f','b']).groupby(identifier).count().iloc[:,0]
-
-    #num_medications
-    num_medications = get_types(df, ['m']).groupby(identifier).count().iloc[:,0]
-
-    #num_water
-    num_water = get_types(df, ['w']).groupby(identifier).count().iloc[:,0]
-
-    #duration_mid_95, start_95, end_95
-    eating_intervals = eating_intervals_percentile(df, float_time_col, identifier)[['2.5%','95%','duration mid 95%']]
-
-    #first_cal_avg
-    first_cal_avg = df.groupby([identifier, date_col])[float_time_col].min().groupby(identifier).mean()
-
-    #first_cal_std
-    first_cal_std = df.groupby([identifier, date_col])[float_time_col].min().groupby(identifier).std()
-
-    #last_cal_avg
-    last_cal_avg = df.groupby([identifier, date_col])[float_time_col].max().groupby(identifier).mean()
-
-    #last_cal_std
-    last_cal_std = df.groupby([identifier, date_col])[float_time_col].max().groupby(identifier).std()
-
-    #eating_win_avg
-    eating_win_avg = last_cal_avg - first_cal_avg
-
-    #eating_win_std
-    eating_win_std = (df.groupby([identifier, date_col])[float_time_col].max()-
-                          df.groupby([identifier, date_col])[float_time_col].min()).groupby(identifier).std()
-    
-    #good_logging_count
-    df['in_good_logging_day'] = in_good_logging_day(df,identifier,date_col, float_time_col, min_log_num=min_log_num, min_seperation=min_seperation)
-    good_logging_count = df.groupby(identifier)['in_good_logging_day'].sum()
-
-    #first_cal variation (90%-10%)
-    first_cal_variability = first_cal_analysis_summary(df,identifier,date_col,float_time_col).set_index('id')
+    # first_cal variation (90%-10%)
+    first_cal_variability = first_cal_analysis_summary(df, min_log_num, min_separation, identifier, date_col, time_col).set_index('id')
     for col in first_cal_variability.columns:
         if col == 'id' or col == '50%':
             continue
         first_cal_variability[col] = first_cal_variability[col] - first_cal_variability['50%']
     first_cal_ser = first_cal_variability['90%'] - first_cal_variability['10%']
 
-    #last_cal variation (90%-10%)
-    last_cal_variability = last_cal_analysis_summary(df,identifier,date_col,float_time_col).set_index('id')
+    # last_cal variation (90%-10%)
+    last_cal_variability = last_cal_analysis_summary(df,min_log_num, min_separation, identifier, date_col, time_col).set_index('id')
     for col in last_cal_variability.columns:
         if col == 'id' or col == '50%':
             continue
         last_cal_variability[col] = last_cal_variability[col] - last_cal_variability['50%']
     last_cal_ser = last_cal_variability['90%'] - last_cal_variability['10%']
+    
+    
+    identifier = df.columns[identifier]
+    # if treets functions have been used (in any order) to generate columns
+    # find appropriate column names, if not check for expected column position
+    if 'date' in df.columns:
+        date_col = df.columns[df.columns.get_loc('date')]
+    else:
+        date_col = df.columns[date_col]
+        
+    if 'float_time' in df.columns:
+        time_col = df.columns[df.columns.get_loc('float_time')]
+    else:
+        time_col = df.columns[time_col]
+    
+    
+    # num_days
+    num_days = df.groupby(identifier).date.nunique()
+
+    # num_total_items
+    num_total_items = df.groupby(identifier).count().iloc[:,0]
+
+    # num_f_n_b
+    num_f_n_b = get_types(df, ['f','b']).groupby(identifier).count().iloc[:,0]
+
+    # num_medications
+    num_medications = get_types(df, ['m']).groupby(identifier).count().iloc[:,0]
+
+    # num_water
+    num_water = get_types(df, ['w']).groupby(identifier).count().iloc[:,0]
+
+    # duration_mid_95, start_95, end_95
+    eating_intervals = eating_intervals_percentile(df, time_col, identifier)[['2.5%','95%','duration mid 95%']]
+
+    # first_cal_avg
+    first_cal_avg = df.groupby([identifier, date_col])[time_col].min().groupby(identifier).mean()
+
+    # first_cal_std
+    first_cal_std = df.groupby([identifier, date_col])[time_col].min().groupby(identifier).std()
+
+    # last_cal_avg
+    last_cal_avg = df.groupby([identifier, date_col])[time_col].max().groupby(identifier).mean()
+
+    # last_cal_std
+    last_cal_std = df.groupby([identifier, date_col])[time_col].max().groupby(identifier).std()
+
+    # eating_win_avg
+    eating_win_avg = last_cal_avg - first_cal_avg
+
+    # eating_win_std
+    eating_win_std = (df.groupby([identifier, date_col])[time_col].max()-
+                          df.groupby([identifier, date_col])[time_col].min()).groupby(identifier).std()
+    
+    # good_logging_count
+    good_logging_count = df.groupby(identifier)['in_good_logging_day'].sum()
+
 
     returned = pd.concat([num_days, num_total_items, num_f_n_b, num_medications, num_water, first_cal_avg, first_cal_std, last_cal_avg, last_cal_std, eating_win_avg, eating_win_std, good_logging_count, first_cal_ser, last_cal_ser], axis=1).reset_index()
     returned.columns = [identifier,'num_days', 'num_total_items', 'num_f_n_b', 'num_medications', 'num_water', 'first_cal_avg', 'first_cal_std', 'last_cal_avg', 'last_cal_std', 'eating_win_avg', 'eating_win_std', 'good_logging_count', 'first_cal variation (90%-10%)', 'last_cal variation (90%-10%)']
@@ -1301,12 +1427,8 @@ def summarize_data(data_source, identifier, float_time_col, date_col, min_log_nu
     
     return returned
 
-    
-    
-    
-
-# %% ../00_core.ipynb 80
-def summarize_data_with_experiment_phases(food_data, ref_tbl, min_log_num=2, min_seperation=5, buffer_time= '15 minutes', h=4,report_level=2, txt = False):
+# %% ../00_core.ipynb 81
+def summarize_data_with_experiment_phases(food_data, ref_tbl, min_log_num=2, min_separation=5, buffer_time= '15 minutes', h=4,report_level=2, txt = False, time_col = 7):
     """
     Description:\n
         This is a comprehensive function that performs all of the functionalities needed.
@@ -1321,7 +1443,6 @@ def summarize_data_with_experiment_phases(food_data, ref_tbl, min_log_num=2, min
         - report_level(int): whether to print out the dates of no logging days, bad logging days, bad window days and non-adherent days for each participant. 0 - no report. 1 - report no logging days. 2 - report no logging days, bad logging days, bad window days and non adherent days.
         - txt(boolean): if True, a txt format report will be saved in the current directory named "treets_warning_dates.txt".
         
-
     Output:\n
         - df : dataframe that has all the variables needed and has the same row number as the ref_tbl.
         
@@ -1335,18 +1456,26 @@ def summarize_data_with_experiment_phases(food_data, ref_tbl, min_log_num=2, min
     """
     df = food_data.copy()
     
+    mcc_id = ref_tbl.columns[0]
+    start_day = ref_tbl.columns[4]
+    end_day = ref_tbl.columns[5]
+    window_start = ref_tbl.columns[6]
+    window_end = ref_tbl.columns[7]
+    
+    
+    
     # checking for necessary typecasting for reference table
-    if not ref_tbl['Start_Day'].apply(lambda x: isinstance(x, datetime.date)).all():
-        ref_tbl['Start_Day'] = pd.to_datetime(ref_tbl['Start_Day']).dt.date
+    if not ref_tbl[start_day].apply(lambda x: isinstance(x, datetime.date)).all():
+        ref_tbl[start_day] = pd.to_datetime(ref_tbl[start_day]).dt.date
         
     if not ref_tbl['End_day'].apply(lambda x: isinstance(x, datetime.date)).all():
-        ref_tbl['End_day'] = pd.to_datetime(ref_tbl['End_day']).dt.date
+        ref_tbl[end_day] = pd.to_datetime(ref_tbl[end_day]).dt.date
     
     
     # preprocess to get the date and float_time column
     df['original_logtime'] = pd.to_datetime(df['original_logtime'])
-    df['date'] =  find_date(df, 'original_logtime', h)
-    df['float_time'] =  find_float_time(df, 'original_logtime', h)
+    df['date'] =  find_date(df, h, df.columns.get_loc('original_logtime'))
+    df['float_time'] =  find_float_time(df, h, df.columns.get_loc('original_logtime'))
     
     # get study phase duration
     result = find_phase_duration(ref_tbl)
@@ -1361,10 +1490,10 @@ def summarize_data_with_experiment_phases(food_data, ref_tbl, min_log_num=2, min
     bad_dates_dic = {}
    
     for index, row in ref_tbl.iterrows():
-        id_ = row['mCC_ID']
+        id_ = row[mcc_id]
         rows = []
-        temp_df = df[df['PID']==id_]
-        temp_df = temp_df[(temp_df['date']>=row['Start_Day']) & (temp_df['date']<=row['End_day'])]
+        temp_df = df[df["PID"] == id_]
+        temp_df = temp_df[(temp_df['date'] >= row[start_day]) & (temp_df['date'] <= row[end_day])]
         # num of caloric entries
         rows.append(count_caloric_entries(temp_df))
         # num of medication
@@ -1383,18 +1512,17 @@ def summarize_data_with_experiment_phases(food_data, ref_tbl, min_log_num=2, min
         rows.append(mean_daily_eating_duration(temp_df,'date','float_time'))
         
         rows.append(std_daily_eating_duration(temp_df,'date','float_time'))
-        rows.append(earliest_entry(temp_df, 'date','float_time'))
+        rows.append(earliest_entry(temp_df, time_col))
 
         rows.append(logging_day_counts(temp_df))
-        row_day_num, bad_dates = good_lwa_day_counts(df[df['PID']==id_]
-                                           , window_start=row['Eating_Window_Start']
-                                           , window_end = row['Eating_Window_End']
-                                           , time_col = 'float_time'
+        row_day_num, bad_dates = good_lwa_day_counts(df[df["PID"]==id_]
+                                           , window_start=row[window_start]
+                                           , window_end = row[window_end]
                                            , min_log_num=min_log_num
-                                           , min_seperation=min_seperation
+                                           , min_separation=min_separation
                                            , buffer_time= buffer_time
-                                           , start_date=row['Start_Day']
-                                           , end_date=row['End_day']
+                                           , start_date=row[start_day]
+                                           , end_date=row[start_day]
                                             , h=h)
         for x in row_day_num:
             rows.append(x)
@@ -1412,7 +1540,7 @@ def summarize_data_with_experiment_phases(food_data, ref_tbl, min_log_num=2, min
             bad_dates_dic['{}_non_adherent'.format(id_)]+=non_adherent
                 
         matrix.append(rows)
-        date_lst = find_missing_logging_days(df[df['PID']==id_], row['Start_Day'],row['End_day'])
+        date_lst = find_missing_logging_days(df[df["PID"]==id_], row[start_day],row[end_day])
         # only consider when the result is not nan
         if isinstance(date_lst, list)==True:
             if id_ in missing_dates:
@@ -1432,10 +1560,10 @@ def summarize_data_with_experiment_phases(food_data, ref_tbl, min_log_num=2, min
     column_025 = []
     column_975 = []
     for index, row in ref_tbl.iterrows():
-        id_ = row['mCC_ID']
-        temp_df = df[df['PID']==id_]
-        temp_df = temp_df[(temp_df['date']>=row['Start_Day']) & (temp_df['date']<=row['End_day'])]
-        series = eating_intervals_percentile(temp_df, 'float_time', 'PID')
+        id_ = row[mcc_id]
+        temp_df = df[df["PID"] == id_]
+        temp_df = temp_df[(temp_df['date'] >= row[start_day]) & (temp_df['date'] <= row[end_day])]
+        series = eating_intervals_percentile(temp_df, 'float_time', "PID")
         try:
             column_025.append(series.iloc[0]['2.5%'])
         except:
@@ -1515,12 +1643,9 @@ def summarize_data_with_experiment_phases(food_data, ref_tbl, min_log_num=2, min
                     print(date)
     
     return returned
-    
-    
-    
 
-# %% ../00_core.ipynb 83
-def first_cal_mean_with_error_bar(data_source, identifier, date_col, time_col, min_log_num=2, min_separation=4):
+# %% ../00_core.ipynb 84
+def first_cal_mean_with_error_bar(data_source, min_log_num = 2, min_separation = 4, identifier = 1, date_col = 6, time_col = 7):
     """
     Description:\n
        This function takes the loggings in good logging days, calculates the means and standard deviations of first_cal time for each participant and represent the calculated data with a scatter plot where the x axis is participants and the y axis is hours in a day.\n 
@@ -1531,7 +1656,7 @@ def first_cal_mean_with_error_bar(data_source, identifier, date_col, time_col, m
         - date_col(str) : the column that represents the dates.
         - time_col(str) : the column that represents the float time.
         - min_log_num (count,int): filtration criteria on the minimum number of loggings each day.
-        - min_seperation(hours,int): filtration criteria on the minimum separations between the earliest and latest loggings each day.
+        - min_separation(hours,int): filtration criteria on the minimum separations between the earliest and latest loggings each day.
         
     Return:\n
         - None.\n
@@ -1541,17 +1666,30 @@ def first_cal_mean_with_error_bar(data_source, identifier, date_col, time_col, m
         - find_float_time() for time_col
     """
     df = file_loader(data_source)
-
+    
     # leave only the loggings that are in a good logging day
-    df['in_good_logging_day'] = in_good_logging_day(df, identifier, date_col, time_col, min_log_num, min_separation)
+    df['in_good_logging_day'] = in_good_logging_day(df, min_log_num, min_separation, identifier, date_col, time_col)
     df = df[df['in_good_logging_day']==True]
+    
+    identifier = df.columns[identifier]
+    # if treets functions have been used (in any order) to generate columns
+    # find appropriate column names, if not check for expected column position
+    if 'date' in df.columns:
+        date_col = df.columns[df.columns.get_loc('date')]
+    else:
+        date_col = df.columns[date_col]
+        
+    if 'float_time' in df.columns:
+        time_col = df.columns[df.columns.get_loc('float_time')]
+    else:
+        time_col = df.columns[time_col]
 
     first_cal_series = df.groupby([identifier, date_col])[time_col].min()
     
     
     # find means and stds for each person
-    means = first_cal_series.groupby('unique_code').mean().to_frame().rename(columns={'local_time':'mean'})
-    stds = first_cal_series.groupby('unique_code').std().fillna(0).to_frame().rename(columns={'local_time':'std'})
+    means = first_cal_series.groupby(identifier).mean().to_frame().rename(columns={'local_time':'mean'})
+    stds = first_cal_series.groupby(identifier).std().fillna(0).to_frame().rename(columns={'local_time':'std'})
     
     if means.shape[0] > 50:
         print("More than 50 people are present which might make the graph look messy")
@@ -1566,8 +1704,8 @@ def first_cal_mean_with_error_bar(data_source, identifier, date_col, time_col, m
     plt.ylabel("Hours in a day")
     plt.title('first_cal Time per Person in Ascending Order')
 
-# %% ../00_core.ipynb 85
-def last_cal_mean_with_error_bar(data_source, identifier, date_col, time_col, min_log_num=2, min_separation=4):
+# %% ../00_core.ipynb 86
+def last_cal_mean_with_error_bar(data_source, min_log_num = 2, min_separation = 4, identifier = 1, date_col = 6, time_col = 7):
     """
     Description:\n
        This function takes the loggings in good logging days, calculates the means and standard deviations of last_cal time for each participant and represent the calculated data with a scatter plot where the x axis is participants and the y axis is hours in a day.\n
@@ -1578,7 +1716,7 @@ def last_cal_mean_with_error_bar(data_source, identifier, date_col, time_col, mi
         - date_col(str) : the column that represents the dates.
         - time_col(str) : the column that represents the float time.
         - min_log_num (count,int): filtration criteria on the minimum number of loggings each day.
-        - min_seperation(hours,int): filtration criteria on the minimum separations between the earliest and latest loggings each day.
+        - min_separation(hours,int): filtration criteria on the minimum separations between the earliest and latest loggings each day.
         
     Return:\n
         - None.\n
@@ -1590,15 +1728,31 @@ def last_cal_mean_with_error_bar(data_source, identifier, date_col, time_col, mi
     df = file_loader(data_source)
 
     # leave only the loggings that are in a good logging day
-    df['in_good_logging_day'] = in_good_logging_day(df, identifier, date_col, time_col, min_log_num, min_separation)
+    df['in_good_logging_day'] = in_good_logging_day(df, min_log_num, min_separation, identifier, date_col, time_col)
     df = df[df['in_good_logging_day']==True]
+    
+    identifier = df.columns[identifier]
+    # if treets functions have been used (in any order) to generate columns
+    # find appropriate column names, if not check for expected column position
+    if 'date' in df.columns:
+        date_col = df.columns[df.columns.get_loc('date')]
+    else:
+        date_col = df.columns[date_col]
+        
+    if 'float_time' in df.columns:
+        time_col = df.columns[df.columns.get_loc('float_time')]
+    else:
+        time_col = df.columns[time_col]
+
+    first_cal_series = df.groupby([identifier, date_col])[time_col].min()
+    
 
     last_cal_series = df.groupby([identifier, date_col])[time_col].max()
     
     
     # find means and stds for each person
-    means = last_cal_series.groupby('unique_code').mean().to_frame().rename(columns={'local_time':'mean'})
-    stds = last_cal_series.groupby('unique_code').std().fillna(0).to_frame().rename(columns={'local_time':'std'})
+    means = last_cal_series.groupby(identifier).mean().to_frame().rename(columns={'local_time':'mean'})
+    stds = last_cal_series.groupby(identifier).std().fillna(0).to_frame().rename(columns={'local_time':'std'})
     
     if means.shape[0] > 50:
         print("More than 50 people are present which might make the graph look messy")
@@ -1613,8 +1767,8 @@ def last_cal_mean_with_error_bar(data_source, identifier, date_col, time_col, mi
     plt.ylabel("Hours in a day")
     plt.title('last_cal Time per Person in Ascending Order')
 
-# %% ../00_core.ipynb 87
-def first_cal_analysis_variability_plot(data_source,identifier, date_col, time_col, min_log_num=2, min_separation=4):
+# %% ../00_core.ipynb 88
+def first_cal_analysis_variability_plot(data_source, min_log_num = 2, min_separation = 4, identifier = 1, date_col = 6, time_col = 7):
     """
     Description:\n
        This function calculates the variability of loggings in good logging day by subtracting 5%,10%,25%,50%,75%,90%,95% quantile of first_cal time from the 50% first_cal time. It can also make a histogram that represents the 90%-10% interval for all subjects.\n
@@ -1625,7 +1779,7 @@ def first_cal_analysis_variability_plot(data_source,identifier, date_col, time_c
         - date_col(str) : the column that represents the dates.
         - time_col(str) : the column that represents the float time.
         - min_log_num (count,int): filtration criteria on the minimum number of loggings each day.
-        - min_seperation(hours,int): filtration criteria on the minimum separations between the earliest and latest loggings each day.
+        - min_separation(hours,int): filtration criteria on the minimum separations between the earliest and latest loggings each day.
         - plot(bool) : Whether generating a histogram for first_cal variability. Default = True.
         
     Return:\n
@@ -1640,10 +1794,24 @@ def first_cal_analysis_variability_plot(data_source,identifier, date_col, time_c
     df = file_loader(data_source)
         
     # leave only the loggings in a good logging day
-    df['in_good_logging_day'] = in_good_logging_day(df, identifier, date_col, time_col, min_log_num, min_separation)
+    df['in_good_logging_day'] = in_good_logging_day(df, min_log_num, min_separation, identifier, date_col, time_col)
     df = df[df['in_good_logging_day']==True]
     
-    first_cal_series = df.groupby(['unique_code', 'date'])['local_time'].min().groupby('unique_code').quantile([0.05, 0.10, 0.25, 0.5, 0.75, 0.90, 0.95])
+    identifier = df.columns[identifier]
+    print(identifier)
+    # if treets functions have been used (in any order) to generate columns
+    # find appropriate column names, if not check for expected column position
+    if 'date' in df.columns:
+        date_col = df.columns[df.columns.get_loc('date')]
+    else:
+        date_col = df.columns[date_col]
+        
+    if 'float_time' in df.columns:
+        time_col = df.columns[df.columns.get_loc('float_time')]
+    else:
+        time_col = df.columns[time_col]
+    
+    first_cal_series = df.groupby([identifier, date_col])[time_col].min().groupby(identifier).quantile([0.05, 0.10, 0.25, 0.5, 0.75, 0.90, 0.95])
     first_cal_df = pd.DataFrame(first_cal_series)
     all_rows = []
     for index in first_cal_df.index:
@@ -1666,8 +1834,8 @@ def first_cal_analysis_variability_plot(data_source,identifier, date_col, time_c
     ax.set(xlabel='Variation Distribution for first_cal (90% - 10%)', ylabel='Kernel Density Estimation')
     
 
-# %% ../00_core.ipynb 89
-def last_cal_analysis_variability_plot(data_source, identifier, date_col, time_col, min_log_num=2, min_separation=4):
+# %% ../00_core.ipynb 90
+def last_cal_analysis_variability_plot(data_source, min_log_num = 2, min_separation = 4, identifier = 1, date_col = 6, time_col = 7):
     """
     Description:\n
        This function calculates the variability of loggings in good logging day by subtracting 5%,10%,25%,50%,75%,90%,95% quantile of last_cal time from the 50% last_cal time and makes a histogram that represents the 90%-10% interval for all subjects.\n
@@ -1678,7 +1846,7 @@ def last_cal_analysis_variability_plot(data_source, identifier, date_col, time_c
         - date_col(str) : the column that represents the dates.
         - time_col(str) : the column that represents the float time.
         - min_log_num (count,int): filtration criteria on the minimum number of loggings each day.
-        - min_seperation(hours,int): filtration criteria on the minimum separations between the earliest and latest loggings each day.
+        - min_separation(hours,int): filtration criteria on the minimum separations between the earliest and latest loggings each day.
         - plot(bool) : Whether generating a histogram for first_cal variability. Default = True.
     Return:\n
         - None\n
@@ -1691,10 +1859,23 @@ def last_cal_analysis_variability_plot(data_source, identifier, date_col, time_c
     df = file_loader(data_source)
         
     # leave only the loggings that are in a good logging day
-    df['in_good_logging_day'] = in_good_logging_day(df, identifier,date_col, time_col, min_log_num, min_separation)
+    df['in_good_logging_day'] = in_good_logging_day(df, min_log_num, min_separation, identifier, date_col, time_col)
     df = df[df['in_good_logging_day']==True]
     
-    last_cal_series = df.groupby(['unique_code', 'date'])['local_time'].max().groupby('unique_code').quantile([0.05, 0.10, 0.25, 0.5, 0.75, 0.90, 0.95])
+    identifier = df.columns[identifier]
+    # if treets functions have been used (in any order) to generate columns
+    # find appropriate column names, if not check for expected column position
+    if 'date' in df.columns:
+        date_col = df.columns[df.columns.get_loc('date')]
+    else:
+        date_col = df.columns[date_col]
+        
+    if 'float_time' in df.columns:
+        time_col = df.columns[df.columns.get_loc('float_time')]
+    else:
+        time_col = df.columns[time_col]
+    
+    last_cal_series = df.groupby([identifier, date_col])[time_col].max().groupby(identifier).quantile([0.05, 0.10, 0.25, 0.5, 0.75, 0.90, 0.95])
     last_cal_df = pd.DataFrame(last_cal_series)
     all_rows = []
     for index in last_cal_df.index:
@@ -1717,8 +1898,8 @@ def last_cal_analysis_variability_plot(data_source, identifier, date_col, time_c
     ax.set(xlabel='Variation Distribution for last_cal (90% - 10%)', ylabel='Kernel Density Estimation')
     
 
-# %% ../00_core.ipynb 91
-def first_cal_avg_histplot(data_source, identifier, date_col, time_col):
+# %% ../00_core.ipynb 92
+def first_cal_avg_histplot(data_source, identifier = 1, date_col = 6, time_col = 7):
     """
     Description:\n
        This function take the first caloric event (no water or med) and calculate average event's time for “each participant”.\n
@@ -1740,6 +1921,20 @@ def first_cal_avg_histplot(data_source, identifier, date_col, time_col):
         - find_float_time() for time_col
     """
     df = file_loader(data_source)
+    
+    identifier = df.columns[identifier]
+    # if treets functions have been used (in any order) to generate columns
+    # find appropriate column names, if not check for expected column position
+    if 'date' in df.columns:
+        date_col = df.columns[df.columns.get_loc('date')]
+    else:
+        date_col = df.columns[date_col]
+        
+    if 'float_time' in df.columns:
+        time_col = df.columns[df.columns.get_loc('float_time')]
+    else:
+        time_col = df.columns[time_col]
+    
     df = df.query('food_type in ["f", "b"]')
     first_cal_time = df.groupby([identifier, date_col])[time_col].min()
     avg_first_cal_time = first_cal_time.reset_index().groupby(identifier)[time_col].mean()
@@ -1747,8 +1942,8 @@ def first_cal_avg_histplot(data_source, identifier, date_col, time_col):
     sns.distplot(avg_first_cal_time, kde = False)
     ax.set(xlabel='First Meal Time - Averaged by Person', ylabel='Frequency Count')
 
-# %% ../00_core.ipynb 93
-def first_cal_sample_distplot(data_source, n, identifier, date_col, time_col):
+# %% ../00_core.ipynb 94
+def first_cal_sample_distplot(data_source, n, identifier = 1, date_col = 6, time_col = 7):
     """
     Description:\n
        This function plots the distplot for the first_cal time from n participants that will be randomly selected with replacement.\n
@@ -1773,6 +1968,20 @@ def first_cal_sample_distplot(data_source, n, identifier, date_col, time_col):
     """
     df = file_loader(data_source)
     df = df[df['food_type'].isin(['f','b'])]
+    
+    identifier = df.columns[identifier]
+    # if treets functions have been used (in any order) to generate columns
+    # find appropriate column names, if not check for expected column position
+    if 'date' in df.columns:
+        date_col = df.columns[df.columns.get_loc('date')]
+    else:
+        date_col = df.columns[date_col]
+        
+    if 'float_time' in df.columns:
+        time_col = df.columns[df.columns.get_loc('float_time')]
+    else:
+        time_col = df.columns[time_col]
+    
     first_cal_by_person = pd.DataFrame(df.groupby([identifier, date_col])\
                                        [time_col].min())
     fig, ax = plt.subplots(1, 1, figsize = (10, 10), dpi=80)
@@ -1782,8 +1991,8 @@ def first_cal_sample_distplot(data_source, n, identifier, date_col, time_col):
         print(i)
         sns.distplot(first_cal_by_person[time_col].loc[i])
 
-# %% ../00_core.ipynb 95
-def last_cal_avg_histplot(data_source, identifier, date_col, time_col):
+# %% ../00_core.ipynb 96
+def last_cal_avg_histplot(data_source, identifier = 1, date_col = 6, time_col = 7):
     """
     Description:\n
        This function take the last caloric event (no water or med) and calculate average event's time for “each participant”.\n
@@ -1806,14 +2015,28 @@ def last_cal_avg_histplot(data_source, identifier, date_col, time_col):
     """
     df = file_loader(data_source)
     df = df.query('food_type in ["f", "b"]')
+    
+    identifier = df.columns[identifier]
+    # if treets functions have been used (in any order) to generate columns
+    # find appropriate column names, if not check for expected column position
+    if 'date' in df.columns:
+        date_col = df.columns[df.columns.get_loc('date')]
+    else:
+        date_col = df.columns[date_col]
+        
+    if 'float_time' in df.columns:
+        time_col = df.columns[df.columns.get_loc('float_time')]
+    else:
+        time_col = df.columns[time_col]
+    
     last_cal_time = df.groupby([identifier, date_col])[time_col].max()
     avg_last_cal_time = last_cal_time.reset_index().groupby(identifier)[time_col].mean()
     fig, ax = plt.subplots(1, 1, figsize = (10, 10), dpi=80)
     sns.distplot(avg_last_cal_time, kde = False)
     ax.set(xlabel='Last Meal Time - Averaged by Person', ylabel='Frequency Count')
 
-# %% ../00_core.ipynb 97
-def last_cal_sample_distplot(data_source, n, identifier, date_col, time_col):
+# %% ../00_core.ipynb 98
+def last_cal_sample_distplot(data_source, n, identifier = 1, date_col = 6, time_col = 7):
     """
     Description:\n
        This function plots the distplot for the last_cal time from n participants that will be randomly selected with replacement.\n
@@ -1838,6 +2061,20 @@ def last_cal_sample_distplot(data_source, n, identifier, date_col, time_col):
     """
     df = file_loader(data_source)
     df = df[df['food_type'].isin(['f','b'])]
+    
+    identifier = df.columns[identifier]
+    # if treets functions have been used (in any order) to generate columns
+    # find appropriate column names, if not check for expected column position
+    if 'date' in df.columns:
+        date_col = df.columns[df.columns.get_loc('date')]
+    else:
+        date_col = df.columns[date_col]
+        
+    if 'float_time' in df.columns:
+        time_col = df.columns[df.columns.get_loc('float_time')]
+    else:
+        time_col = df.columns[time_col]
+    
     last_cal_by_person = pd.DataFrame(df.groupby([identifier, date_col])\
                                        [time_col].max())
     fig, ax = plt.subplots(1, 1, figsize = (10, 10), dpi=80)
@@ -1847,8 +2084,8 @@ def last_cal_sample_distplot(data_source, n, identifier, date_col, time_col):
         print(i)
         sns.distplot(last_cal_by_person[time_col].loc[i])
 
-# %% ../00_core.ipynb 99
-def swarmplot(data_source, max_loggings, identifier, date_col, time_col):
+# %% ../00_core.ipynb 100
+def swarmplot(data_source, max_loggings, identifier = 1, date_col = 6, time_col = 7):
     """
     Description:\n
        This function plots the swarmplot the participants from the data_source file.\n
@@ -1872,6 +2109,19 @@ def swarmplot(data_source, max_loggings, identifier, date_col, time_col):
     
     df = file_loader(data_source)
     
+    identifier = df.columns[identifier]
+    # if treets functions have been used (in any order) to generate columns
+    # find appropriate column names, if not check for expected column position
+    if 'date' in df.columns:
+        date_col = df.columns[df.columns.get_loc('date')]
+    else:
+        date_col = df.columns[date_col]
+        
+    if 'float_time' in df.columns:
+        time_col = df.columns[df.columns.get_loc('float_time')]
+    else:
+        time_col = df.columns[time_col]
+    
     def subsamp_by_cond(alldat):
         alld = []
         for apart in alldat[identifier].unique():
@@ -1890,7 +2140,7 @@ def swarmplot(data_source, max_loggings, identifier, date_col, time_col):
     ax.axvspan(18,28.5, alpha=0.2, color=[0.8, 0.8, 0.8]  )
     # plt.xlabel('Hour of day')
     plt.xticks([4,8,12,16,20,24,28],[4,8,12,16,20,24,4])
-    plt.title('Food events for TRE group')
+    plt.title('Caloric Events for TRE Group')
 
     ax = sns.swarmplot(data = sample, 
                   y = identifier, 
@@ -1901,7 +2151,7 @@ def swarmplot(data_source, max_loggings, identifier, date_col, time_col):
 
     ax.set(
         facecolor = 'white', 
-        title = 'Food events (F & B)',
+        title = 'Caloric Events (Food & Bev)',
         ylabel = 'Participant',
-        xlabel = 'Local time of consumption'
+        xlabel = 'Local Time of Consumption'
     )
