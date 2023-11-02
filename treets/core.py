@@ -39,17 +39,25 @@ from nltk.corpus import stopwords
 wordsegment.load()
 
 # %% ../00_core.ipynb 5
-def file_loader(data_source):
+def file_loader(data_source: str):
     """
-    Description:\n
-        This is a helper function that 1. if data_source is a single file path in json/csv format, it reads it into a pd dataframe. 2. if it is a folder path, it reads csv and pickle files that match the pattern parameter in the data_source folder into one dataframe. \n
+    Flexible file loader able to read a single file path or folder path.
+    Accepts .csv and .json file format loading.
     
-    Input:\n
-        - data_source(str, pandas df): input path, csv or pickle file or a pattern to be matched when searching csv/json files that will be read into one dataframe.\n
-    Output:\n
-        - a pandas dataframe.\n
+    Parameters
+    ----------
+    data_source
+        String file or folder path. Single .json or .csv paths create
+        a pd.DataFrame. Folder paths with files matching the input 
+        pattern are read together into a single pd.DataFrame.
+        
+    Returns
+    -------
+    df
+        A single dataframe consisting of all data matching the provided
+        file or folder path.
+    
     """
-    
     if isinstance(data_source, str):
         data_lst = glob.glob(data_source)
         dfs = []
