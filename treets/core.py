@@ -15,38 +15,37 @@ __all__ = ['file_loader', 'find_date', 'find_float_time', 'week_from_start', 'fi
 # %% ../00_core.ipynb 3
 import warnings
 warnings.filterwarnings('ignore')
+
+import re
+import os
+import glob
+import string
+import datetime
+import wordsegment
+
 import pandas as pd
 import numpy as np
-from scipy import stats
 import seaborn as sns
-import os
 import matplotlib.pyplot as plt
-import pickle
-from datetime import date 
-from datetime import datetime
-import datetime
-from collections import defaultdict 
+
 import nltk
 nltk.download('words', quiet=True)
 nltk.download('stopwords', quiet=True)
 nltk.download('wordnet', quiet=True)
 nltk.download('punkt', quiet=True)
 from nltk.stem import WordNetLemmatizer
-from nltk.corpus import stopwords, words
-import glob
+from nltk.corpus import stopwords
 
-import re
-import string
-import pkg_resources
+wordsegment.load()
 
 # %% ../00_core.ipynb 5
 def file_loader(data_source):
     """
     Description:\n
-        This is a helper function that 1. if data_source is a single file path in pickle/csv format, it reads it into a pd dataframe. 2. if it is a folder path, it reads csv and pickle files that match the pattern parameter in the data_source folder into one dataframe. \n
+        This is a helper function that 1. if data_source is a single file path in json/csv format, it reads it into a pd dataframe. 2. if it is a folder path, it reads csv and pickle files that match the pattern parameter in the data_source folder into one dataframe. \n
     
     Input:\n
-        - data_source(str, pandas df): input path, csv or pickle file or a pattern to be matched when searching csv/pickle files that will be read into one dataframe.\n
+        - data_source(str, pandas df): input path, csv or pickle file or a pattern to be matched when searching csv/json files that will be read into one dataframe.\n
     Output:\n
         - a pandas dataframe.\n
     """
@@ -57,12 +56,11 @@ def file_loader(data_source):
         for x in data_lst:
             if x[-4:] == '.csv':
                 dfs.append(pd.read_csv(x))
-            elif x[-7:] == '.pickle':
-                pickle_file = open(x, 'rb')
-                pickle_file = pd.read_pickle(pickle_file)
-                if not isinstance(pickle_file, pd.DataFrame):
-                    return pickle_file
-                dfs.append(pickle_file)
+            elif x[-5:] == '.json':
+                json_file = pd.read_json(x)
+                if not isinstance(json_file, pd.DataFrame):
+                    return json_file
+                dfs.append(json_file)
         df = pd.concat(dfs).reset_index(drop=True)
     else:
         df = data_source
@@ -315,166 +313,426 @@ def in_good_logging_day(data_source, min_log_num = 2, min_separation = 4, identi
     return df.apply(lambda x: adherent_dict[(x[identifier], x.date)], axis = 1)
 
 # %% ../00_core.ipynb 33
-class FoodParser():
+class FoodParser:
     """
-    A class that reads in food loggings from the app. Used as helper function for the function clean_loggings().
+    Food parser handles taking unprocessed food log entries and adding relevant
+    information from a pre-made dictionary (taken from a variety of Panda Lab
+    studies) of food items. This includes matching unprocessed terms to
+    their likely matches, adding food type and other identifying information.
     """
 
     def __init__(self):
-        # self.__version__ = '0.1.9'
-        self.wnl = WordNetLemmatizer()
-        # self.spell = SpellChecker()
-        return
-
-    ################# Read in Annotations #################
-    def process_parser_keys_df(self, parser_keys_df):
-        parser_keys_df = parser_keys_df.query('food_type in ["f", "b", "m", "w", "modifier", "general", "stopword", "selfcare"]').reset_index(drop = True)
-
-        # 1. all_gram_sets
-        all_gram_set = []
-        for i in range(1, 6):
-            all_gram_set.append(set(parser_keys_df.query('gram_type == ' + str(i)).gram_key.values))
-
-        # 2. food_type_dict
-        food_type_dict = dict(zip(parser_keys_df.gram_key.values, parser_keys_df.food_type.values))
-
-        # 3. food2tag
-        def find_all_tags(s):
-            tags = []
-            for i in range(1, 8):
-                if not isinstance(s['tag' + str(i)], str) and np.isnan(s['tag' + str(i)]):
-                    continue
-                tags.append(s['tag' + str(i)])
-            return tags
-        food2tags = dict(zip(parser_keys_df.gram_key.values, parser_keys_df.apply(find_all_tags, axis = 1)))
-        return all_gram_set, food_type_dict, food2tags
-
-
-    def initialization(self):
-        # 1. read in manually annotated file and bind it to the object
-        
-        # pypi version
-#         parser_keys_df = pd.read_csv(pkg_resources.resource_stream(__name__, "/data/parser_keys.csv"))
-#         all_gram_set, food_type_dict, food2tags = self.process_parser_keys_df(parser_keys_df)
-#         correction_dic = pickle.load(pkg_resources.resource_stream(__name__, "/data/correction_dic.pickle"))
-        
-#         # testing version
-        parser_keys_df = pd.read_csv("data/parser_keys.csv")
-        all_gram_set, food_type_dict, food2tags = self.process_parser_keys_df(parser_keys_df)
-        correction_dic = file_loader("data/correction_dic.pickle")
-        
+        """Initializes food parser object."""
+        # read in manually annotated file
+        parser_keys_df = pd.read_csv("data/09_14_2023_parser_keys.csv")
+        all_gram_set, food_type_dict, food2tags = self.process_parser_keys_df(
+            parser_keys_df
+        )
+        correction_dic = pd.read_json("data/correction_dic.json", typ="series")
         
         self.all_gram_set = all_gram_set
         self.food_type_dict = food_type_dict
+        self._food_phrases = np.unique(
+            [
+                word
+                for key in self.food_type_dict
+                for word in key.split()
+                if self.food_type_dict[key] in ["f", "b", "m"] and len(word) > 2
+            ]
+        )
         self.correction_dic = correction_dic
-        self.tmp_correction = {}
+        self.food2tags = food2tags
 
+        # Load common stop words and nlp type objects
+        self.wnl = WordNetLemmatizer()
 
-        # 2. Load common stop words and bind it to the object
-        stop_words = stopwords.words('english')
-        # Updated by Katherine August 23rd 2020
-        stop_words.remove('out') # since pre work out is a valid beverage name
-        stop_words.remove('no')
-        stop_words.remove('not')
-        self.stop_words = stop_words
-        return
+        self.stop_words = stopwords.words("english")
+        self.stop_words.remove("out")  # since pre work out is a valid beverage name
+        self.stop_words.remove("no")
+        self.stop_words.remove("not")
+        self.stop_words.remove("and")
+        self.stop_words.remove("m")
+        self.stop_words.remove("of")
+        # preventing common vitamins from being removed
+        self.stop_words.remove("d")
+
+    @staticmethod
+    def process_parser_keys_df(parser_keys_df):
+        """Takes a dataframe of parser keys and processes gram sets and
+        food type information.
+
+        Parameters
+        ----------
+        parser_keys_df: pd.DataFrame
+            Dataframe of parser keys.
+
+        Returns
+        -------
+        all_gram_set: list
+            List of sets where each set corresponds to all (n-grams for n in range 1-6)
+
+        food_type_dict: dict
+            Dictionary of gram key and food type pairings where gram key
+            is the food (e.g. 'milk') and the value is the type (e.g. 'b')
+
+        food2tags: dict
+            Dictionary of gram key and corresponding tags. (e.g. key = 'vodka'
+            with tags 'alcohol', 'liquor', etc..)
+        """
+        # f = food, b = beverage, m = medicine, w = water
+        # below are the possible valid item types
+        parser_keys_df = parser_keys_df.query(
+            'food_type in ["f", "b", "m", "w", "modifier", "general", "stopword", "selfcare"]'
+        ).reset_index(drop=True)
+
+        # creates an all_gram_set to store n-grams (e.g. 1-grams, 2-grams, etc.)
+        all_gram_set = []
+        for i in range(1, 5 + 1):
+            all_gram_set.append(
+                set(parser_keys_df.query("gram_type == " + str(i))["gram_key"].values)
+            )
+
+        # pair gram key and corresponding food type for items as a dictionary
+        food_type_dict = dict(
+            zip(parser_keys_df["gram_key"].values, parser_keys_df["food_type"].values)
+        )
+
+        # find all relevant tags
+        def find_all_tags(df):
+            """Finds tags for each 'food' item.
+
+            Parameters
+            -----------
+            df: DataFrame
+                Dataframe with food tag columns (e.g. tag1)
+            """
+            tags = []
+            for i in range(1, 8):
+                # expects column names of the format 'tag#'
+                if not isinstance(df["tag" + str(i)], str) and np.isnan(
+                    df["tag" + str(i)]
+                ):
+                    # append empty tag if tag doesn't exist
+                    # forced food2tags to have length 8 + can restore tags
+                    # in order with a dictionary
+                    tags.append("")
+                    continue
+                # append existing tags
+                tags.append(df["tag" + str(i)])
+            return tags
+
+        # pair gram_keys (food names) and their corresponding list of informative tags
+        food2tags = dict(
+            zip(
+                parser_keys_df["gram_key"].values,
+                parser_keys_df.apply(find_all_tags, axis=1),
+            )
+        )
+        return all_gram_set, food_type_dict, food2tags
 
     ########## Pre-Processing ##########
+
     # Function for removing numbers
-    def handle_numbers(self, text):
-        clean_text = text
-        clean_text = re.sub('[0-9]+\.[0-9]+', '' , clean_text)
-        clean_text = re.sub('[0-9]+', '' , clean_text)
-        clean_text = re.sub('\s\s+', ' ', clean_text)
-        return clean_text
+    @staticmethod
+    def handle_numbers(text):
+        """Removes numeric characters from text.
+
+        Parameters
+        ----------
+        text: str
+            Text to be cleaned
+
+        Returns
+        -------
+        text: str
+            Text with numbers removed.
+        """
+        # regex pattern removes all decimal numbers
+        text = re.sub("[0-9]+\.[0-9]+", "", text)
+        # retaining common items (h2o, co2, v8, ag1)
+        if any(sub in text for sub in ["v8", "h2", "ag1", "co2", "0z"]):
+            # regex pattern strips any numbers not immediately preceded or followed by a letter
+            text = re.sub(r"(?<![a-zA-Z])\d+(?![a-zA-Z])", "", text)
+        else:
+            # regex pattern strips all whole numbers
+            text = re.sub("[0-9+]", "", text)
+        # regex pattern truncates any duplicate whitespace (e.g. "  " becomes  " ")
+        text = re.sub("\s\s+", " ", text)
+        return text
 
     # Function for removing punctuation
-    def drop_punc(self, text):
-        clean_text = re.sub('[%s]' % re.escape(string.punctuation), ' ', text)
-        return clean_text
+    @staticmethod
+    def drop_punc(text):
+        """
+        Removes punctuation from text.
+
+         Parameters
+        ----------
+        text: str
+            Text to be cleaned
+
+        Returns
+        -------
+        text: str
+            Text with punctuation removed.
+        """
+        return re.sub("[%s]" % re.escape(string.punctuation), " ", text)
 
     # Remove normal stopwords
-    def remove_stop(self, my_text):
-        text_list = my_text.split()
-        return ' '.join([word for word in text_list if word not in self.stop_words])
+    def remove_stop(self, text):
+        """
+        Removes english stop words defined by nltk (e.g. 'the') from text.
 
+         Parameters
+        ----------
+        text: str
+            Text to be cleaned
+
+        Returns
+        -------
+        text: str
+            Text with stop words removed.
+        """
+        return " ".join([word for word in text.split() if word not in self.stop_words])
 
     def pre_processing(self, text):
-        text = text.lower()
-        return self.remove_stop(self.handle_numbers(self.drop_punc(text))).strip()
+        """
+        Handles text cleaning overall.
+
+        Parameters
+        ----------
+        text: str
+            Text to be pre-processed/cleaned.
+
+        Returns
+        --------
+        text: str
+            Cleaned text.
+        """
+        return self.remove_stop(
+            self.handle_numbers(self.drop_punc(text.lower()))
+        ).strip()
 
     ########## Handle Format ##########
-    def handle_front_mixing(self, sent, front_mixed_tokens):
+    @staticmethod
+    def handle_front_mixing(sent, front_mixed_tokens):
+        """
+        Handles cleaned front mixed tokens, which seem to be some sort of digit/numerical.
+        Potentially dealing with cleaning out item quantities? (e.g. 12oz?)
+
+        Parameters
+        ----------
+        sent: str
+            Phrase/sentence describing a food item.
+
+        front_mixed_tokens: list
+            List of front mixed tokens (I think these are supposed to be amount tokens),
+            e.g. 12oz
+
+        Returns
+        --------
+        sent: str
+            Original sentence with any front mixed tokens cleaned (e.g. 12oz --> 12 oz).
+        """
         cleaned_tokens = []
         for t in sent.split():
             if t in front_mixed_tokens:
-                number = re.findall('\d+[xX]*', t)[0]
-                for t_0 in t.replace(number, number + ' ').split():
+                number = re.findall("\d+[xX]*", t)[0]
+                for t_0 in t.replace(number, number + " ").split():
                     cleaned_tokens.append(t_0)
             else:
                 cleaned_tokens.append(t)
-        return ' '.join(cleaned_tokens)
+        return " ".join(cleaned_tokens)
 
-    def handle_x2(self, sent, times_x_tokens):
-        for t in times_x_tokens:
-            sent = sent.replace(t, ' ' + t.replace(' ', '').lower() + ' ')
-        return ' '.join([s for s in sent.split() if s != '']).strip()
+    @staticmethod
+    def handle_x2(sent, times_x_tokens):
+        """
+        Handles variations in spacing or capitalization for the same token.
+        e.g. ('x2' vs 'X2' vs 'X 2' vs 'X 2')
+
+        Parameters
+        ----------
+        sent: str
+            Phrase/sentence describing a food item.
+
+        times_x_tokens: list of 'times x' tokens to be dealt with.
+
+        Returns
+        --------
+        sent: str
+            Original sentence with any 'times x' variations cleaned.
+        """
+        for token in times_x_tokens:
+            sent = sent.replace(token, " " + token.replace(" ", "").lower() + " ")
+
+        return " ".join([s for s in sent.split() if s != ""]).strip()
 
     def clean_format(self, sent):
-        return_sent = sent
+        """
+        Cleans text of any amount indications. Specifically deals with
+        front mixing (amount of an item noted at the front of the string)
+        and 'times x' where multiple of an item is recorded in the style of
+        (item x 2) or some variation of that.
 
+        Parameters
+        ----------
+        sent: str
+            Sentence to be cleaned.
+
+        Returns
+        -------
+        sent: str
+            Sentence after all amount/format style cleaning applied.
+        """
         # Problem 1: 'front mixing'
-        front_mixed_tokens = re.findall('\d+[^\sxX]+', sent)
+        front_mixed_tokens = re.findall("\d+[^\sxX]+", sent)
         if len(front_mixed_tokens) != 0:
-            return_sent = self.handle_front_mixing(return_sent, front_mixed_tokens)
+            sent = self.handle_front_mixing(sent, front_mixed_tokens)
 
         # Problem 2: 'x2', 'X2', 'X 2', 'x 2'
-        times_x_tokens = re.findall('[xX]\s*?\d', return_sent)
+        times_x_tokens = re.findall("[xX]\s*?\d", sent)
         if len(times_x_tokens) != 0:
-            return_sent = self.handle_x2(return_sent, times_x_tokens)
-        return return_sent
+            sent = self.handle_x2(sent, times_x_tokens)
+        return sent
 
-    ########## Handle Typo ##########
-    def fix_spelling(self, entry, speller_check = False):
+    ########## Handle Typos ##########
+
+    def fix_spelling(self, entry):
+        """Corrects spelling mistakes.
+
+        Parameters
+        ----------
+        entry: str
+            String entry to be corrected.
+
+        Returns
+        -------
+        entry: str
+            Original entry with spelling corrections applied.
+        """
         result = []
-        for token in entry.split():
-            # Check known corrections
-            if token in self.correction_dic.keys():
-                token_alt = self.wnl.lemmatize(self.correction_dic[token])
-            else:
-                if speller_check and token in self.tmp_correction.keys():
-                    token_alt = self.wnl.lemmatize(self.tmp_correction[token])
-                elif speller_check and token not in self.food_type_dict.keys():
-                    token_alt = self.wnl.lemmatize(token)
-                    self.tmp_correction[token] = token_alt
-                else:
-                    token_alt = self.wnl.lemmatize(token)
-            result.append(token_alt)
-        return ' '.join(result)
 
-    ########### Combine all cleaning ##########
+        # if entry is recognized keep it
+        if entry in self.food_type_dict:
+            return entry
+        # try looking for entry in correction dictionary
+        if entry in self.correction_dic:
+            return " ".join(
+                [self.wnl.lemmatize(i) for i in self.correction_dic[entry].split()]
+            )
+        # try lemmatized version of whole entry
+        if self.wnl.lemmatize(entry) in self.food_type_dict:
+            return self.wnl.lemmatize(entry)
+        # try correcting individual tokens within entry phrase
+        for token in entry.split():
+            # try lemmatized version of the token
+            lem_token = self.wnl.lemmatize(token)
+            if (lem_token in self._food_phrases) or (lem_token in self.food_type_dict):
+                token = lem_token
+            # try looking for token in correction dictionary
+            elif token in self.correction_dic:
+                token = " ".join(
+                    [self.wnl.lemmatize(i) for i in self.correction_dic[token].split()]
+                )
+            # check if token is incorrectly joined
+            # (e.g. blueberrymuffin instead of blueberry muffin)
+            elif token not in self._food_phrases:
+                temp = []
+                token_alt = wordsegment.segment(token)
+                for word in token_alt:
+                    if self.wnl.lemmatize(word) in self._food_phrases:
+                        temp += [word]
+                    # check if split word needs spell correction
+                    elif (
+                        word in self.correction_dic
+                        and self.correction_dic[word] in self._food_phrases
+                    ):
+                        temp += [self.correction_dic[word]]
+                # if there are any newly corrected/unjoined tokens add them back to the result
+                if len(temp) > 1:
+                    token = " ".join([self.wnl.lemmatize(i) for i in temp])
+            result.append(token.strip())
+        return " ".join(result).strip()
+
     def handle_all_cleaning(self, entry):
-        cleaned = self.pre_processing(entry)
-        cleaned = self.clean_format(cleaned)
-        cleaned = self.fix_spelling(cleaned)
-        return cleaned
+        """
+        Performs all types of text cleaning.
+
+        Parameters
+        ----------
+        entry: str
+            String entry to be corrected.
+
+        Returns
+        -------
+        entry: str
+            String entry with all forms of pre-processing and cleaning
+            applied.
+        """
+        entry = self.pre_processing(entry)
+        entry = self.clean_format(entry)
+        entry = self.fix_spelling(entry)
+        entry = re.sub("\s\s+", " ", entry)
+        return entry
 
     ########## Handle Gram Matching ##########
-    def parse_single_gram(self, gram_length, gram_set, gram_lst, sentence_tag):
+    @staticmethod
+    def parse_single_gram(gram_length, gram_set, gram_lst, sentence_tag):
+        """
+        Parses a single gram, combining words as necessary for the proper gram
+        length (e.g. grape juice is a bigram) and then adding any new words
+        to a food list.
+
+        Parameters
+        ----------
+        gram_length: int
+            Length of gram to look for (e.g. 2 --> bigram).
+
+        gram_set: list
+            Existing gram set.
+
+        gram_list: list
+            List of grams to check for entry into the gram set.
+
+        sentence tag: list
+            List of tags for the sentence?
+
+        Returns
+        -------
+            food_lst: list
+                All unique items for the given gram being parsed.
+        """
         food_lst = []
-        # print(gram_length, gram_lst, sentence_tag)
-        for i in range(len(gram_lst)):
+        for i, gram in enumerate(gram_lst):
+            # if not a unigram, combine the words from the gram list into a
+            # gram string
             if gram_length > 1:
-                curr_word = ' '.join(gram_lst[i])
+                curr_word = " ".join(gram)
             else:
-                curr_word = gram_lst[i]
-            if curr_word in gram_set and sum([t != 'Unknown' for t in sentence_tag[i: i+gram_length]]) == 0:
-                sentence_tag[i: i+gram_length] = str(gram_length)
+                curr_word = gram
+            if (
+                curr_word in gram_set
+                and sum([t != "Unknown" for t in sentence_tag[i : i + gram_length]])
+                == 0
+            ):
+                # add any first occurance of a food to the food list
+                sentence_tag[i : i + gram_length] = str(gram_length)
                 food_lst.append(curr_word)
         return food_lst
 
-    def parse_single_entry(self, entry, return_sentence_tag = False):
-        # Pre-processing and Cleaning
+    def parse_single_entry(self, entry, return_sentence_tag=False):
+        """
+        Handles pre-processing, cleaning, and gram processing for a single entry.
+
+        Parameters
+        ----------
+        entry: str
+            Entry to be processed
+
+        Returns
+        -------
+        All grams of length 5 or under for the particular entry.
+        """
         cleaned = self.handle_all_cleaning(entry)
 
         # Create tokens and n-grams
@@ -486,78 +744,139 @@ class FoodParser():
         all_gram_lst = [tokens, bigram, trigram, quadgram, pentagram]
 
         # Create an array of tags
-        sentence_tag = np.array(['Unknown'] * len(tokens))
+        sentence_tag = np.array(["Unknown"] * len(tokens))
 
         all_food = []
-        food_counter = 0
         for gram_length in [5, 4, 3, 2, 1]:
             if len(tokens) < gram_length:
                 continue
-            tmp_food_lst = self.parse_single_gram(gram_length,
-                                                self.all_gram_set[gram_length - 1],
-                                                all_gram_lst[gram_length - 1],
-                                                sentence_tag)
+            tmp_food_lst = self.parse_single_gram(
+                gram_length,
+                self.all_gram_set[gram_length - 1],
+                all_gram_lst[gram_length - 1],
+                sentence_tag,
+            )
             all_food += tmp_food_lst
         if return_sentence_tag:
             return all_food, sentence_tag
-        else:
-            return all_food
+        return all_food
 
-    def parse_food(self, entry, return_sentence_tag = False):
+    def parse_food(self, series, calc_unknowns = False):
+        """
+        Parses a series of single food entries.
+
+        Parameters
+        ----------
+        series: list or series of str
+            Food entries to be parsed.
+        
+        calc_unknowns: bool
+            If true, includes unknown token information in return. Default is false.
+            
+        Returns
+        -------
+        Series of parsed food items.
+        """
+        def parse(x, calc_unknowns = calc_unknowns):
+            return self._parse_food(x, calc_unknowns)
+        vec = np.vectorize(parse)
+        return vec(series)
+
+    def _parse_food(self, entry, calc_unknowns = False):
+        """
+        Parses a single food entry.
+
+        Parameters
+        ----------
+        entry: str
+            Food entry to be parsed.
+        
+        calc_unknowns: bool
+            If true, includes unknown token information in return. Default is false.
+            
+        Returns
+        -------
+        A single parsed food entry.
+        """
         result = []
         unknown_tokens = []
         num_unknown = 0
         num_token = 0
-        for w in entry.split(','):
-            all_food, sentence_tag = self.parse_single_entry(w, return_sentence_tag)
+
+        for word in entry.split(","):
+            # previous versions of this if statement assume that
+            # return_sentence_tag is True and will actually break
+            # if the default parameters are used
+            all_food, sentence_tag = self.parse_single_entry(word, True)
             result += all_food
-            if len(sentence_tag) > 0:
-                num_unknown += sum(np.array(sentence_tag) == 'Unknown')
-                num_token += len(sentence_tag)
-                cleaned = nltk.word_tokenize(self.handle_all_cleaning(w))
+            if calc_unknowns:
+                if sentence_tag is not None and len(sentence_tag) > 0:
+                    num_unknown += sum(np.array(sentence_tag) == "Unknown")
+                    num_token += len(sentence_tag)
+                    cleaned = nltk.word_tokenize(self.handle_all_cleaning(word))
 
-                # Return un-catched tokens, groupped into sub-sections
-                tmp_unknown = ''
-                for i in range(len(sentence_tag)):
-                    if sentence_tag[i] == 'Unknown':
-                        # unknown_tokens.append(cleaned[i])
-                        tmp_unknown += (' ' + cleaned[i])
-                        if i == len(sentence_tag) - 1:
-                            unknown_tokens.append(tmp_unknown)
-                    elif tmp_unknown != '':
-                        unknown_tokens.append(tmp_unknown)
-                        tmp_unknown = ''
-
-        if return_sentence_tag:
-            return result, num_token, num_unknown, unknown_tokens
-        else:
-            return result
+                    # Return uncaught tokens, grouped into sub-sections
+                    tmp_unknown = ""
+                    for i, tag in enumerate(sentence_tag):
+                        if tag == "Unknown":
+                            tmp_unknown += " " + cleaned[i]
+                            if i == len(sentence_tag) - 1:
+                                unknown_tokens.append(tmp_unknown.strip())
+                        elif tmp_unknown != "":
+                            unknown_tokens.append(tmp_unknown.strip())
+                            tmp_unknown = ""
+        if calc_unknowns:
+            return np.array(
+                [result, num_token, num_unknown, unknown_tokens], dtype = "object"
+            )
+            
+        return np.array(result, dtype = "object")
 
     def find_food_type(self, food):
-        if food in self.food_type_dict.keys():
+        """
+        Finds corresponding food-item type for a given food. Types include
+        beverage, water, food, medicine.
+
+        Parameters
+        ----------
+        food: str
+            Food to find type for
+
+        Returns
+        -------
+        Corresponding food type abbrevation or 'u' if not found.
+        """
+        if food in self.food_type_dict:
             return self.food_type_dict[food]
-        else:
-            return 'u'
+        # shorthand for unknown
+        return "u"
 
     ################# DataFrame Functions #################
     def expand_entries(self, df):
-        assert 'desc_text' in df.columns, '[ERROR!] Required a column of "desc_text"!!'
+        """
+        Creates an 'exploded' version of the given dataframe, expanding entries
+        from within list-style 'desc_text' column entries such that each
+        entry in a list has its own corresponding row.
 
-        all_entries = []
-        for idx in range(df.shape[0]):
-            curr_row = df.iloc[idx]
-            logging = curr_row.desc_text
-            tmp_dict = dict(curr_row)
-            if ',' in logging:
-                for entry in logging.split(','):
-                    tmp_dict = tmp_dict.copy()
-                    tmp_dict['desc_text'] = entry
-                    all_entries.append(tmp_dict)
-            else:
-                tmp_dict['desc_text'] = logging
-                all_entries.append(tmp_dict)
+        Parameters
+        ----------
+        df: pd.Dataframe
+            Dataframe to be expanded.
 
-        return pd.DataFrame(all_entries)
+        Returns
+        -------
+        df: pd.Dataframe
+            Expanded dataframe.
+        """
+        assert "desc_text" in df.columns, '[ERROR] Required a column of "desc_text".'
+        df = df.copy()
+        df["desc_text"] = df["desc_text"].str.split(",")
+        df = df.explode("desc_text")
+        # remove entries that are only spaces or digits (entries with no alphabetical characters)
+        df = df[~df["desc_text"].str.isspace()]
+        df = df[~df["desc_text"].str.isdigit()]
+        return df
+
 
 # %% ../00_core.ipynb 34
 def clean_loggings(data_source, identifier = 1):
@@ -578,20 +897,17 @@ def clean_loggings(data_source, identifier = 1):
     df = file_loader(data_source)
     identifier = df.columns[identifier]
     text_col = df.columns[df.columns.get_loc('desc_text')]
+    
     # initialize food parser instance
     fp = FoodParser()
-    fp.initialization()
     
     # parse food
-    parsed = [fp.parse_food(i, return_sentence_tag = True) for i in df.desc_text.values]
-    
+    parsed = fp.parse_food(df["desc_text"])
     df_parsed = pd.DataFrame({
     identifier: df[identifier],
     text_col: df[text_col],
     'cleaned': parsed
     })
-    
-    df_parsed['cleaned'] = df_parsed['cleaned'].apply(lambda x: x[0])
     
     
     return df_parsed
@@ -1212,7 +1528,7 @@ def eating_intervals_percentile(data_source, identifier = 1, time_col = 7):
     return ptile
 
 # %% ../00_core.ipynb 75
-def first_cal_analysis_summary(data_source, min_log_num=2, min_separation=4, identifier = 1, date_col = 6, time_col = 7):
+def first_cal_analysis_summary(data_source, min_log_num = 2, min_separation = 4, identifier = 1, date_col = 6, time_col = 7):
     """
     Description:\n
        This function takes the loggings in good logging days and calculate the 5%,10%,25%,50%,75%,90%,95% quantile of first_cal time for each user.\n 
@@ -1428,7 +1744,7 @@ def summarize_data(data_source, min_log_num = 2, min_separation = 4, identifier 
     return returned
 
 # %% ../00_core.ipynb 81
-def summarize_data_with_experiment_phases(food_data, ref_tbl, min_log_num=2, min_separation=5, buffer_time= '15 minutes', h=4,report_level=2, txt = False, time_col = 7):
+def summarize_data_with_experiment_phases(food_data, ref_tbl, min_log_num = 2, min_separation = 5, buffer_time = '15 minutes', h = 4,report_level = 2, txt = False, time_col = 7):
     """
     Description:\n
         This is a comprehensive function that performs all of the functionalities needed.
@@ -1798,7 +2114,6 @@ def first_cal_analysis_variability_plot(data_source, min_log_num = 2, min_separa
     df = df[df['in_good_logging_day']==True]
     
     identifier = df.columns[identifier]
-    print(identifier)
     # if treets functions have been used (in any order) to generate columns
     # find appropriate column names, if not check for expected column position
     if 'date' in df.columns:
