@@ -43,7 +43,7 @@ from nltk.corpus import stopwords
 wordsegment.load()
 
 # %% ../00_core.ipynb 6
-def file_loader(data_source: str|pd.DataFrame) -> pd.DataFrame:
+def file_loader(data_source:str|pd.DataFrame) -> pd.DataFrame:
     """
     Flexible file loader able to read a single file path or folder path.
     Accepts .csv and .json file format loading.
@@ -77,11 +77,10 @@ def file_loader(data_source: str|pd.DataFrame) -> pd.DataFrame:
     else:
         df = data_source
 
-        
     return df
 
 # %% ../00_core.ipynb 13
-def find_date(data_source: str|pd.DataFrame, h:int = 4, date_col:int = 5) -> pd.Series:
+def find_date(data_source:str|pd.DataFrame, h:int = 4, date_col:int = 5) -> pd.Series:
     """
     Extracts date from a datetime column and after shifting datetime by 'h' hours.
     (A day starts 'h' hours early if 'h' is negative, or 'h' hours later if 'h' is
@@ -94,7 +93,7 @@ def find_date(data_source: str|pd.DataFrame, h:int = 4, date_col:int = 5) -> pd.
         Folder paths with files matching the input pattern are read together into a single pd.DataFrame. Existing
         dataframes are read as is.
     h
-        Number of hours to shift the definition for 'date' by. For example, h = 4 would shift days so that time membership
+        Number of hours to shift the definition for 'date' by. h = 4 would shift days so that time membership
         to each date starts at 4:00 AM and ends at 3:59:59 AM the next calendar day.
     date_col
         Column number for existing datetime column in provided data source. Default column
@@ -122,24 +121,32 @@ def find_date(data_source: str|pd.DataFrame, h:int = 4, date_col:int = 5) -> pd.
         return d.date()
     return df[col].apply(find_date, args=([h]))
 
-# %% ../00_core.ipynb 18
-def find_float_time(data_source, h = 4, date_col = 5):
+# %% ../00_core.ipynb 20
+def find_float_time(data_source:str|pd.DataFrame, h:int = 4, date_col:int = 5) -> pd.Series:
     """
-    Description:\n
-        Extract time information from a column and shift each time by h hours. (Day starts h hours early if h is negative and h hours late if h is positive)\n
-        
-    Input:\n
-        - data_source (str, pandas df): input path, file in pickle, csv or pandas dataframe format\n
-        - h(int) : hours to shift the date. For example, when h = 4, everyday starts at 4 and ends at 28. When h = -4, everyday starts at -4 and ends at 20.
-        
-    Return:\n
-        - a pandas series with an index matching data_source; floating point time (clock hours) running from h to h per day.\n
-
-    Requirements:\n
-        Elements in col should be pd.datetime objects
-        
-    jf-updated-2023-04-17
-            
+    Extracts time from a datetime column and after shifting datetime by 'h' hours.
+    (A day starts 'h' hours early if 'h' is negative, or 'h' hours later if 'h' is
+    positive.)
+    
+    Parameters
+    ----------
+    data_source
+        String file or folder path. Single .json or .csv paths create a pd.DataFrame. 
+        Folder paths with files matching the input pattern are read together into a single pd.DataFrame. Existing
+        dataframes are read as is.
+    h
+        Number of hours to shift the definition for 'time' by. h = 4 would allow float representations of time
+        between 4 (inclusive) and 28 (exclusive), representing time that goes from 4:00 AM to 3:59:59 AM the next
+        calendar day. NOTE: h value for this function should match the h value used for generating dates.
+    date_col
+        Column number for existing datetime column in provided data source. Default column
+        number is defined by the accompanying HOWTO document for TREETS.
+    
+    
+    Returns
+    -------
+    local_time
+        Series of times.
     """
     df = file_loader(data_source)
     # fifth column of food log dataframes should represent date/time in a 24 hour system
@@ -149,55 +156,71 @@ def find_float_time(data_source, h = 4, date_col = 5):
     local_time = df[col].apply(lambda x: pd.Timedelta(x.time().isoformat()).total_seconds() /3600.)
     if h > 0:
         local_time = np.where(local_time < h, 24+ local_time, local_time)
-        return pd.Series(local_time, index=df.index) #jf added index= to prevent mistaken assignments when data source and target df have a non-trivial index
+        # index= to prevent mistaken assignments when data source and target df have a non-trivial index
+        return pd.Series(local_time, index=df.index) 
     if h < 0:
         local_time = np.where(local_time > (24+h), local_time-24., local_time)
         return pd.Series(local_time, index=df.index)
     return local_time
     
 
-# %% ../00_core.ipynb 23
-def week_from_start(data_source, identifier = 1):
-        """
-        Description:\n
-            Calculate the number of weeks for each logging since the first day of the logging for each participant(identifier). The returned values for loggings from the first week are 1. 
-        Input:\n
-            - data_source (str, pandas df): input path, file in pickle, csv or pandas dataframe format\n
-            - col (str): column name that contains date information from the data_source dataframe.
-            - identifier (str): unique_id or ID, or name that identifies people.
-
-        Return:\n
-            - a numpy array represents the date extracted from col.\n
-        """
-        
-        df = file_loader(data_source)
-        if 'date' not in df.columns:
-            raise NameError("There must exist a 'date' column.")
-        col = df.columns[df.columns.get_loc('date')]
-        identifier = df.columns[identifier]
-        # Handle week from start
-        df_dic = dict(df.groupby(identifier)[col].agg(np.min))
-
-        def count_weeks(s):
-            return (s.date - df_dic[s[identifier]]).days // 7 + 1
-    
-        return df.apply(count_weeks, axis = 1)
-
-# %% ../00_core.ipynb 26
-def find_phase_duration(df):
+# %% ../00_core.ipynb 28
+def week_from_start(data_source:str|pd.DataFrame, identifier:int = 1) -> np.array:
     """
-    Description:\n
-        This is a function that calculates how many days each phase in the study took. Result includes the start and end date for that phase.
+    Calculates the number of weeks between each logging entry and the first logging entry
+    for each participant (unique identifier).
     
-    Input:\n
-        - df(pandas df) : information dataframe that contains columns: Start_Day, End_day
-    
-    Output:\n
-        - a dataframe contains the phase_duration column.
+    Parameters
+    ----------
+    data_source
+        String file or folder path. Single .json or .csv paths create a pd.DataFrame. 
+        Folder paths with files matching the input pattern are read together into a single pd.DataFrame. Existing
+        dataframes are read as is.
+    identifier
+        Column number for an existing unique identifier column in provided data source. Default column
+        number is defined by the accompanying HOWTO document for TREETS.
+
+
+    Returns
+    -------
+    count_weeks
+        Array of weeks passed from minimum date.
         
-    Requirement:\n
-        - 'Start_day' and 'End_day' column exist in the df.
-        - 'phase_duration' column exists in the df.
+    Notes
+    -----
+    A 'date' column must exist in the provided data source. Using the provided find_date function is recommended.
+    """
+        
+    df = file_loader(data_source)
+    if 'date' not in df.columns:
+        raise NameError("There must exist a 'date' column.")
+    col = df.columns[df.columns.get_loc('date')]
+    identifier = df.columns[identifier]
+    # Handle week from start
+    df_dic = dict(df.groupby(identifier)[col].agg(np.min))
+
+    def count_weeks(s):
+        return (s.date - df_dic[s[identifier]]).days // 7 + 1
+
+    return df.apply(count_weeks, axis = 1)
+
+# %% ../00_core.ipynb 32
+def find_phase_duration(df:pd.DataFrame) -> pd.DataFrame:
+    """
+    Calculates the duration (in days) of the study phase for each row.
+    
+    Parameters
+    ----------
+    df
+        Participant information dataframe with columns for start and ending date for that row's study phase.
+        The expected column numbers for starting and ending dates are outlined in the HOWTO document that
+        accompanies TREETS.
+    
+    
+    Returns
+    -------
+    df
+        Provided dataframe with an additional column describing phase duration.
     """
     # column order is specified in our how-to document for data from collaborators
     start_day = df.columns[4]
@@ -213,36 +236,35 @@ def find_phase_duration(df):
     df['phase_duration'] = df[end_day] - df[start_day] + pd.Timedelta("1 days")
     return df
 
-# %% ../00_core.ipynb 29
-def load_food_data(data_source, h, identifier = 1, datetime_col = 5):
+# %% ../00_core.ipynb 34
+def load_food_data(data_source:str|pd.DataFrame, h:int, identifier:int = 1, datetime_col:int = 5) -> pd.DataFrame:
     """
-    Description:\n
-        Load food data and output processed data in a dataframe.\n
+    Loads and processes existing logging data, adding specific datetime information in formats
+    more suitable for TREETS functions.
     
-        Process includes:\n
-        1. Dropping 'foodimage_file_name' column.\n
-        2. Handling the format of time by deleting am/pm by generating a new column, 'original_logtime_notz'\n
-        3. Generating the date column with possible hour shifts, 'date'\n
-        4. Converting time into float number into a new column with possible hour shifts, 'float_time'\n
-        5. Converting time to a format of HH:MM:SS, 'time'\n
-        6. Generating the column 'week_from_start' that contains the week number that the participants input the food item.\n
-        7. Generating 'year' column based on the input data.\n
-
-    Input:\n
-        - data_source (str or pandas df): input path, csv file\n
-        - identifier(str): id-like column that's used to identify a subject.\n
-        - datetime_col(str): column that contains date and time in string format.\n
-        - h(int) : hours to shift the date. For example, when h = 4, everyday starts and ends 4 hours later than normal.
-        
-    Output:\n
-        - the processed dataframe in pandas df format.\n
-
-    Requirements:\n
-        data_source file must have the following columns:\n
-            - foodimage_file_name\n
-            - original_logtime\n
-            - date\n
-            - unique_code\n
+    Parameters
+    ----------
+    data_source
+        String file or folder path. Single .json or .csv paths create a pd.DataFrame. 
+        Folder paths with files matching the input pattern are read together into a single pd.DataFrame. Existing
+        dataframes are read as is.
+    h
+        Number of hours to shift the definition of 'date' by. h = 4 would indicate that a log date begins at
+        4:00 AM and ends the following calendar day at 3:59:59. Float representations of time would therefore
+        go from 4.0 (inclusive) to 28.0 (exclusive) to represent 'date' membership for days shifted from their
+        original calendar date.
+    identifier
+        Column number for an existing unique identifier column in provided data source. Default column
+        number is defined by the accompanying HOWTO document for TREETS.
+    datetime_col
+        Column number for an existing datetime column in provided data source. Default column
+        number is defined by the accompanying HOWTO document for TREETS.
+    
+    
+    Returns
+    -------
+    food_all
+        Processed dataframe with additional date, flat time, and week from start columns.
     """
     food_all = file_loader(data_source)
     # identifier column(s) should be 0 and 1, with 1 being study specific
@@ -288,7 +310,7 @@ def load_food_data(data_source, h, identifier = 1, datetime_col = 5):
     
     return food_all
 
-# %% ../00_core.ipynb 31
+# %% ../00_core.ipynb 36
 def in_good_logging_day(data_source, min_log_num = 2, min_separation = 4, identifier = 1, date_col = 6, time_col = 7):
     """
     Description:\n
@@ -333,7 +355,7 @@ def in_good_logging_day(data_source, min_log_num = 2, min_separation = 4, identi
 
     return df.apply(lambda x: adherent_dict[(x[identifier], x.date)], axis = 1)
 
-# %% ../00_core.ipynb 33
+# %% ../00_core.ipynb 38
 class FoodParser:
     """
     Food parser handles taking unprocessed food log entries and adding relevant
@@ -899,7 +921,7 @@ class FoodParser:
         return df
 
 
-# %% ../00_core.ipynb 34
+# %% ../00_core.ipynb 39
 def clean_loggings(data_source, identifier = 1):
     """
     Description:\n
@@ -933,7 +955,7 @@ def clean_loggings(data_source, identifier = 1):
     
     return df_parsed
 
-# %% ../00_core.ipynb 36
+# %% ../00_core.ipynb 41
 def get_types(data_source, food_type):
     """
     Description:\n
@@ -971,7 +993,7 @@ def get_types(data_source, food_type):
     
     return filtered
 
-# %% ../00_core.ipynb 39
+# %% ../00_core.ipynb 44
 def count_caloric_entries(df):
     """
     Description:\n
@@ -992,7 +1014,7 @@ def count_caloric_entries(df):
         
     return df[df[food_type_col].isin(['f','b'])].shape[0]
 
-# %% ../00_core.ipynb 41
+# %% ../00_core.ipynb 46
 def mean_daily_eating_duration(df, date_col = 6, time_col = 7):
     """
     Description:\n
@@ -1029,7 +1051,7 @@ def mean_daily_eating_duration(df, date_col = 6, time_col = 7):
     dinner_time = df.groupby(date_col)[time_col].agg(max)
     return (dinner_time - breakfast_time).mean()
 
-# %% ../00_core.ipynb 43
+# %% ../00_core.ipynb 48
 def std_daily_eating_duration(df, date_col = 6, time_col = 7):
     """
     Description:\n
@@ -1066,7 +1088,7 @@ def std_daily_eating_duration(df, date_col = 6, time_col = 7):
 
     return (dinner_time - breakfast_time).std()
 
-# %% ../00_core.ipynb 45
+# %% ../00_core.ipynb 50
 def earliest_entry(df, time_col = 7):
     """
     Description:\n
@@ -1093,7 +1115,7 @@ def earliest_entry(df, time_col = 7):
     
     return df[time_col].min()
 
-# %% ../00_core.ipynb 47
+# %% ../00_core.ipynb 52
 def mean_first_cal(df, date_col = 6, time_col = 7):
     """
     Description:\n
@@ -1127,7 +1149,7 @@ def mean_first_cal(df, date_col = 6, time_col = 7):
     
     return df.groupby([date_col])[time_col].min().mean()
 
-# %% ../00_core.ipynb 50
+# %% ../00_core.ipynb 55
 def std_first_cal(df, date_col = 6, time_col = 7):
     """
     Description:\n
@@ -1159,7 +1181,7 @@ def std_first_cal(df, date_col = 6, time_col = 7):
     
     return df.groupby([date_col])[time_col].min().std()
 
-# %% ../00_core.ipynb 52
+# %% ../00_core.ipynb 57
 def mean_last_cal(df, date_col = None, time_col = None):
     """
     Description:\n
@@ -1191,7 +1213,7 @@ def mean_last_cal(df, date_col = None, time_col = None):
     
     return df.groupby([date_col])[time_col].max().mean()
 
-# %% ../00_core.ipynb 54
+# %% ../00_core.ipynb 59
 def std_last_cal(df, date_col = 6, time_col = 7):
     """
     Description:\n
@@ -1223,7 +1245,7 @@ def std_last_cal(df, date_col = 6, time_col = 7):
     
     return df.groupby([date_col])[time_col].max().std()
 
-# %% ../00_core.ipynb 56
+# %% ../00_core.ipynb 61
 def logging_day_counts(df):
     """
     Description:\n
@@ -1240,7 +1262,7 @@ def logging_day_counts(df):
     date_col = df.columns[df.columns.get_loc('date')]
     return df[date_col].nunique()
 
-# %% ../00_core.ipynb 58
+# %% ../00_core.ipynb 63
 def find_missing_logging_days(df, start_date = "not_defined", end_date = "not_defined"):
     """
     Description:\n
@@ -1279,7 +1301,7 @@ def find_missing_logging_days(df, start_date = "not_defined", end_date = "not_de
     return lst
         
 
-# %% ../00_core.ipynb 60
+# %% ../00_core.ipynb 65
 def good_lwa_day_counts(df, window_start, window_end, min_log_num = 2, min_separation = 5, buffer_time= '15 minutes', h = 4, start_date = "not_defined", end_date = "not_defined", time_col = 7):
     """
     Description:\n
@@ -1377,7 +1399,7 @@ def good_lwa_day_counts(df, window_start, window_end, min_log_num = 2, min_separ
 
     return rows, bad_dates
 
-# %% ../00_core.ipynb 64
+# %% ../00_core.ipynb 69
 def filtering_usable_data(df, num_items, num_days, identifier = 1, date_col = 6):
     '''
     Description:\n
@@ -1425,7 +1447,7 @@ def filtering_usable_data(df, num_items, num_days, identifier = 1, date_col = 6)
     # display(df_usable.head(5))
     return df_usable, set(df_usable.unique_code.unique())
 
-# %% ../00_core.ipynb 67
+# %% ../00_core.ipynb 72
 def prepare_baseline_and_intervention_usable_data(data_source, baseline_num_items, baseline_num_days, intervention_num_items, intervention_num_days, identifier = 1, date_col = 6):
     """
     Description:\n
@@ -1469,7 +1491,7 @@ def prepare_baseline_and_intervention_usable_data(data_source, baseline_num_item
         
     return [df_food_basline_usable_expanded, df_food_intervention_usable]
 
-# %% ../00_core.ipynb 71
+# %% ../00_core.ipynb 76
 def users_sorted_by_logging(data_source, food_type = ["f", "b", "m", "w"], min_log_num = 2, min_separation = 4, identifier = 1, date_col = 6, time_col = 7):
     """
     Description:\n
@@ -1508,7 +1530,7 @@ def users_sorted_by_logging(data_source, food_type = ["f", "b", "m", "w"], min_l
     
     return food_top_users_day_counts
 
-# %% ../00_core.ipynb 73
+# %% ../00_core.ipynb 78
 def eating_intervals_percentile(data_source, identifier = 1, time_col = 7):
     """
     Description:
@@ -1548,7 +1570,7 @@ def eating_intervals_percentile(data_source, identifier = 1, time_col = 7):
         
     return ptile
 
-# %% ../00_core.ipynb 75
+# %% ../00_core.ipynb 80
 def first_cal_analysis_summary(data_source, min_log_num = 2, min_separation = 4, identifier = 1, date_col = 6, time_col = 7):
     """
     Description:\n
@@ -1600,7 +1622,7 @@ def first_cal_analysis_summary(data_source, min_log_num = 2, min_separation = 4,
     
     return first_cal_summary_df
 
-# %% ../00_core.ipynb 77
+# %% ../00_core.ipynb 82
 def last_cal_analysis_summary(data_source, min_log_num = 2, min_separation = 4, identifier = 1, date_col = 6, time_col = 7):
     """
     Description:\n
@@ -1655,7 +1677,7 @@ def last_cal_analysis_summary(data_source, min_log_num = 2, min_separation = 4, 
     
     return last_cal_summary_df
 
-# %% ../00_core.ipynb 79
+# %% ../00_core.ipynb 84
 def summarize_data(data_source, min_log_num = 2, min_separation = 4, identifier = 1, date_col = 6, time_col = 7):
     """
     Description:\n
@@ -1764,7 +1786,7 @@ def summarize_data(data_source, min_log_num = 2, min_separation = 4, identifier 
     
     return returned
 
-# %% ../00_core.ipynb 81
+# %% ../00_core.ipynb 86
 def summarize_data_with_experiment_phases(food_data, ref_tbl, min_log_num = 2, min_separation = 5, buffer_time = '15 minutes', h = 4,report_level = 2, txt = False, time_col = 7):
     """
     Description:\n
@@ -1981,7 +2003,7 @@ def summarize_data_with_experiment_phases(food_data, ref_tbl, min_log_num = 2, m
     
     return returned
 
-# %% ../00_core.ipynb 84
+# %% ../00_core.ipynb 89
 def first_cal_mean_with_error_bar(data_source, min_log_num = 2, min_separation = 4, identifier = 1, date_col = 6, time_col = 7):
     """
     Description:\n
@@ -2041,7 +2063,7 @@ def first_cal_mean_with_error_bar(data_source, min_log_num = 2, min_separation =
     plt.ylabel("Hours in a day")
     plt.title('first_cal Time per Person in Ascending Order')
 
-# %% ../00_core.ipynb 86
+# %% ../00_core.ipynb 91
 def last_cal_mean_with_error_bar(data_source, min_log_num = 2, min_separation = 4, identifier = 1, date_col = 6, time_col = 7):
     """
     Description:\n
@@ -2104,7 +2126,7 @@ def last_cal_mean_with_error_bar(data_source, min_log_num = 2, min_separation = 
     plt.ylabel("Hours in a day")
     plt.title('last_cal Time per Person in Ascending Order')
 
-# %% ../00_core.ipynb 88
+# %% ../00_core.ipynb 93
 def first_cal_analysis_variability_plot(data_source, min_log_num = 2, min_separation = 4, identifier = 1, date_col = 6, time_col = 7):
     """
     Description:\n
@@ -2170,7 +2192,7 @@ def first_cal_analysis_variability_plot(data_source, min_log_num = 2, min_separa
     ax.set(xlabel='Variation Distribution for first_cal (90% - 10%)', ylabel='Kernel Density Estimation')
     
 
-# %% ../00_core.ipynb 90
+# %% ../00_core.ipynb 95
 def last_cal_analysis_variability_plot(data_source, min_log_num = 2, min_separation = 4, identifier = 1, date_col = 6, time_col = 7):
     """
     Description:\n
@@ -2234,7 +2256,7 @@ def last_cal_analysis_variability_plot(data_source, min_log_num = 2, min_separat
     ax.set(xlabel='Variation Distribution for last_cal (90% - 10%)', ylabel='Kernel Density Estimation')
     
 
-# %% ../00_core.ipynb 92
+# %% ../00_core.ipynb 97
 def first_cal_avg_histplot(data_source, identifier = 1, date_col = 6, time_col = 7):
     """
     Description:\n
@@ -2278,7 +2300,7 @@ def first_cal_avg_histplot(data_source, identifier = 1, date_col = 6, time_col =
     sns.distplot(avg_first_cal_time, kde = False)
     ax.set(xlabel='First Meal Time - Averaged by Person', ylabel='Frequency Count')
 
-# %% ../00_core.ipynb 94
+# %% ../00_core.ipynb 99
 def first_cal_sample_distplot(data_source, n, identifier = 1, date_col = 6, time_col = 7):
     """
     Description:\n
@@ -2327,7 +2349,7 @@ def first_cal_sample_distplot(data_source, n, identifier = 1, date_col = 6, time
         print(i)
         sns.distplot(first_cal_by_person[time_col].loc[i])
 
-# %% ../00_core.ipynb 96
+# %% ../00_core.ipynb 101
 def last_cal_avg_histplot(data_source, identifier = 1, date_col = 6, time_col = 7):
     """
     Description:\n
@@ -2371,7 +2393,7 @@ def last_cal_avg_histplot(data_source, identifier = 1, date_col = 6, time_col = 
     sns.distplot(avg_last_cal_time, kde = False)
     ax.set(xlabel='Last Meal Time - Averaged by Person', ylabel='Frequency Count')
 
-# %% ../00_core.ipynb 98
+# %% ../00_core.ipynb 103
 def last_cal_sample_distplot(data_source, n, identifier = 1, date_col = 6, time_col = 7):
     """
     Description:\n
@@ -2420,7 +2442,7 @@ def last_cal_sample_distplot(data_source, n, identifier = 1, date_col = 6, time_
         print(i)
         sns.distplot(last_cal_by_person[time_col].loc[i])
 
-# %% ../00_core.ipynb 100
+# %% ../00_core.ipynb 105
 def swarmplot(data_source, max_loggings, identifier = 1, date_col = 6, time_col = 7):
     """
     Description:\n
