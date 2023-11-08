@@ -2389,7 +2389,7 @@ def first_cal_analysis_variability_plot(data_source:str|pd.DataFrame,
                                         min_separation:int = 4,
                                         identifier:int = 1,
                                         date_col:int = 6,
-                                        time_col:int = 7) -> plt.figure.Figure:
+                                        time_col:int = 7) -> matplotlib.figure.Figure:
     """
     Calculates first caloric log time variability for 'good' logging days by subtracting 5, 10, 25, 50, 75, 90, 95
     percentile of first caloric intake time from the 50th percentile first caloric intake time.
@@ -2470,7 +2470,7 @@ def last_cal_analysis_variability_plot(data_source:str|pd.DataFrame,
                                        min_separation:int = 4,
                                        identifier:int = 1,
                                        date_col:int = 6,
-                                       time_col:int = 7) -> plt.figure.Figure:
+                                       time_col:int = 7) -> matplotlib.figure.Figure:
     """
     Calculates last caloric log time variability for 'good' logging days by subtracting 5, 10, 25, 50, 75, 90, 95
     percentile of last caloric intake time from the 50th percentile last caloric intake time.
