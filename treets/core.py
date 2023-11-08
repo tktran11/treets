@@ -85,7 +85,7 @@ def find_date(data_source:str|pd.DataFrame,
               h:int = 4,
               date_col:int = 5) -> pd.Series:
     """
-    Extracts date from a datetime column and after shifting datetime by 'h' hours.
+    Extracts date from a datetime column after shifting datetime by 'h' hours.
     A day starts 'h' hours early if 'h' is negative, or 'h' hours later if 'h' is
     positive.
     
@@ -100,7 +100,7 @@ def find_date(data_source:str|pd.DataFrame,
         to each date starts at 4:00 AM and ends at 3:59:59 AM the next calendar day.
     date_col
         Column number for existing datetime column in provided data source. Data exported from mCC typically
-        has datetime as its 5th column.
+        has datetime as its 5th column (with indexing starting from 0).
     
     
     Returns
@@ -145,7 +145,7 @@ def find_float_time(data_source:str|pd.DataFrame,
         calendar day. NOTE: h value for this function should match the h value used for generating dates.
     date_col
         Column number for existing datetime column in provided data source. Data exported from mCC typically
-        has datetime as its 5th column.
+        has datetime as its 5th column (with indexing starting from 0).
     
     
     Returns
@@ -174,7 +174,7 @@ def week_from_start(data_source:str|pd.DataFrame,
                     identifier:int = 1) -> np.array:
     """
     Calculates the number of weeks between each logging entry and the first logging entry
-    for each participant (unique identifier). A 'date' column must exist in the provided data source. 
+    for each participant. A 'date' column must exist in the provided data source. 
     Using the provided find_date function is recommended.
     
     Parameters
@@ -185,13 +185,13 @@ def week_from_start(data_source:str|pd.DataFrame,
         dataframes are read as is.
     identifier
         Column number for an existing unique identifier column in provided data source. Data exported from mCC typically
-        has a unique identifier as its 1st column.
+        has a unique identifier as its 1st column (with indexing starting from 0).
 
 
     Returns
     -------
     count_weeks
-        Array of weeks passed from minimum date.
+        Array of weeks passed from log date to the minimum date for each participant.
     """
         
     df = file_loader(data_source)
@@ -216,14 +216,13 @@ def find_phase_duration(df:pd.DataFrame) -> pd.DataFrame:
     ----------
     df
         Participant information dataframe with columns for start and ending date for that row's study phase.
-        The expected column numbers for starting and ending dates are outlined in the HOWTO document that
-        accompanies TREETS.
+        The expected column numbers for starting and ending dates are outlined in the HOWTO document that accompanies TREETS.
     
     
     Returns
     -------
     df
-        Provided dataframe with an additional column describing phase duration.
+        Provided dataframe with an additional column describing study phase duration.
     """
     # column order is specified in our how-to document for data from collaborators
     start_day = df.columns[4]
@@ -261,25 +260,25 @@ def load_food_data(data_source:str|pd.DataFrame,
         original calendar date.
     identifier
         Column number for an existing unique identifier column in provided data source. Data exported from mCC typically
-        has a unique identifier as its 1st column.
+        has a unique identifier as its 1st column (with indexing starting from 0).
     datetime_col
         Column number for an existing datetime column in provided data source. Data exported from mCC typically
-        has datetime as its 5th column.
+        has datetime as its 5th column (with indexing starting from 0).
     
     
     Returns
     -------
-    food_all
+    food_data
         Processed dataframe with additional date, flat time, and week from start columns.
     """
-    food_all = file_loader(data_source)
+    food_data = file_loader(data_source)
     # identifier column(s) should be 0 and 1, with 1 being study specific
-    identifier = food_all.columns[identifier]
+    identifier = food_data.columns[identifier]
     # fifth column of food log dataframes should represent date/time in a 24 hour system
-    datetime_col = food_all.columns[datetime_col]
+    datetime_col = food_data.columns[datetime_col]
         
     try:
-        food_all = food_all.drop(columns = ['foodimage_file_name'])
+        food_data = food_data.drop(columns = ['foodimage_file_name'])
     except KeyError:
         pass
     
@@ -298,23 +297,23 @@ def load_food_data(data_source:str|pd.DataFrame,
             except:
                 return np.nan
 
-    food_all[datetime_col] = food_all[datetime_col].apply(handle_time)
-    food_all = food_all.dropna().reset_index(drop = True)
-    food_all['date'] = find_date(food_all, h)
+    food_data[datetime_col] = food_data[datetime_col].apply(handle_time)
+    food_data = food_data.dropna().reset_index(drop = True)
+    food_data['date'] = find_date(food_data, h)
     
     # Handle the time - Time in floating point format
     
-    food_all['float_time'] = find_float_time(food_all, h)
+    food_data['float_time'] = find_float_time(food_data, h)
     
     # Handle the time - Time in Datetime object format
-    food_all['time'] = pd.DatetimeIndex(food_all[datetime_col]).time
+    food_data['time'] = pd.DatetimeIndex(food_data[datetime_col]).time
     
     # Handle week from start
-    food_all['week_from_start'] = week_from_start(food_all)
+    food_data['week_from_start'] = week_from_start(food_data)
     
-    food_all['year'] = food_all.date.apply(lambda d: d.year)
+    food_data['year'] = food_data.date.apply(lambda d: d.year)
     
-    return food_all
+    return food_data
 
 # %% ../00_core.ipynb 36
 def in_good_logging_day(data_source:str|pd.DataFrame,
@@ -324,8 +323,8 @@ def in_good_logging_day(data_source:str|pd.DataFrame,
                         date_col:int = 6,
                         time_col:int = 7) -> np.array:
     """
-    Calculates if each row is considered to be within a 'good logging day'. A log day is considered 'good' if there 
-    are more than the minimum number of required logs, with a specified hour separation between the first and last
+    Calculates if each log is considered to be within a 'good logging day'. A log day is considered 'good' if there 
+    are more than the minimum number of required logs, with a minimum specified hour separation between the first and last
     log for that log date. It is recommended that you use find_date and find_float_time to generate necessary date and
     time columns for this function.
     
@@ -344,7 +343,7 @@ def in_good_logging_day(data_source:str|pd.DataFrame,
     
     identifier
         Column number for an existing unique identifier column in provided data source. Data exported from mCC typically
-        has a unique identifier as its 1st column.
+        has a unique identifier as its 1st column (with indexing starting from 0).
 
     date_col
         Column number for an existing date column in provided data source. 
@@ -356,7 +355,7 @@ def in_good_logging_day(data_source:str|pd.DataFrame,
     Returns
     -------
     in_good_logging_day
-        Boolean array describing whether each row is a 'good' logging day.
+        Boolean array describing whether each log is a 'good' logging day.
     """
     def adherent(s):
         if len(s.values) >= min_log_num and (max(s.values) - min(s.values)) >= min_separation:
@@ -961,7 +960,7 @@ def clean_loggings(data_source:str|pd.DataFrame,
         dataframes are read as is.
     identifier
         Column number for an existing unique identifier column in provided data source. Data exported from mCC typically
-        has a unique identifier as its 1st column
+        has a unique identifier as its 1st column (with indexing starting from 0).
     
     
     Returns
@@ -1002,8 +1001,8 @@ def get_types(data_source:str|pd.DataFrame,
         dataframes are read as is. A column 'food_type' is required to be within the data.
     
     food_type
-        A single food type, or list of food types. Valid types are 'w': water, 'b': beverage,
-        'f': food, and 'm': medication.
+        A single food type, or list of food types. Valid types are 'f': food, 'b': beverage,
+        'w': water, and 'm': medication.
     
     Returns
     -------
@@ -1018,15 +1017,17 @@ def get_types(data_source:str|pd.DataFrame,
     
     if len(food_type) == 1:
         if food_type[0] not in ['w', 'b', 'f', 'm']:
-            raise Exception("not a valid logging type")
-        filtered = df[df['food_type']==food_type[0]]
-    else:  
+            raise Exception("not a valid logging type.")
+        filtered = df[df['food_type'] == food_type[0]]
+    else:
+        if any([i not in ['f', 'b', 'w', 'm'] for i in food_type]):
+            raise Exception("one or more logging types are invalid.")
         filtered = df[df['food_type'].isin(food_type)]
         
     
     return filtered
 
-# %% ../00_core.ipynb 45
+# %% ../00_core.ipynb 47
 def count_caloric_entries(df:pd.DataFrame) -> int:
     """
     Counts the number of food ('f') and beverage ('b') loggings.
@@ -1050,13 +1051,13 @@ def count_caloric_entries(df:pd.DataFrame) -> int:
     
     return num_caloric
 
-# %% ../00_core.ipynb 47
+# %% ../00_core.ipynb 49
 def mean_daily_eating_duration(df:pd.DataFrame,
                                date_col:int = 6,
                                time_col:int = 7) -> float:
     """
     Calculates mean daily eating window by taking the average of each day's eating window. An eating window
-    is defined as the duration of time between first and last caloric (food and beverage) intake. It is
+    is defined as the duration of time between first and last caloric (food or beverage) intake. It is
     recommended that you use find_date and find_float_time to generate necessary date and time columns for this
     function. 
     
@@ -1090,13 +1091,13 @@ def mean_daily_eating_duration(df:pd.DataFrame,
     dinner_time = df.groupby(date_col)[time_col].agg(max)
     return (dinner_time - breakfast_time).mean()
 
-# %% ../00_core.ipynb 49
+# %% ../00_core.ipynb 51
 def std_daily_eating_duration(df:pd.DataFrame,
                               date_col:int = 6,
                               time_col:int = 7) -> float:
     """
     Calculates the standard deviation of the daily eating window. An eating window
-    is defined as the duration of time between first and last caloric (food and beverage) intake. 
+    is defined as the duration of time between first and last caloric (food or beverage) intake. 
     It is recommended that you use find_date and find_float_time to generate necessary date and time
     columns for this function. 
     
@@ -1131,7 +1132,7 @@ def std_daily_eating_duration(df:pd.DataFrame,
 
     return (dinner_time - breakfast_time).std()
 
-# %% ../00_core.ipynb 51
+# %% ../00_core.ipynb 53
 def earliest_entry(df:pd.DataFrame,
                    time_col:int = 7) -> float:
     """
@@ -1159,7 +1160,7 @@ def earliest_entry(df:pd.DataFrame,
     
     return df[time_col].min()
 
-# %% ../00_core.ipynb 53
+# %% ../00_core.ipynb 55
 def mean_first_cal(df:pd.DataFrame,
                    date_col:int = 6,
                    time_col:int = 7) -> float:
@@ -1197,7 +1198,7 @@ def mean_first_cal(df:pd.DataFrame,
     
     return df.groupby([date_col])[time_col].min().mean()
 
-# %% ../00_core.ipynb 56
+# %% ../00_core.ipynb 58
 def std_first_cal(df:pd.DataFrame,
                   date_col:int = 6,
                   time_col:int = 7) -> float:
@@ -1233,7 +1234,7 @@ def std_first_cal(df:pd.DataFrame,
     
     return df.groupby([date_col])[time_col].min().std()
 
-# %% ../00_core.ipynb 58
+# %% ../00_core.ipynb 60
 def mean_last_cal(df:pd.DataFrame,
                   date_col:int = 6,
                   time_col:int = 7) -> float:
@@ -1269,7 +1270,7 @@ def mean_last_cal(df:pd.DataFrame,
     
     return df.groupby([date_col])[time_col].max().mean()
 
-# %% ../00_core.ipynb 60
+# %% ../00_core.ipynb 62
 def std_last_cal(df:pd.DataFrame,
                  date_col:int = 6,
                  time_col:int = 7) -> float:
@@ -1305,7 +1306,7 @@ def std_last_cal(df:pd.DataFrame,
     
     return df.groupby([date_col])[time_col].max().std()
 
-# %% ../00_core.ipynb 62
+# %% ../00_core.ipynb 64
 def logging_day_counts(df:pd.DataFrame) -> int:
     """
     Calculates the number of days that contain any logs. It is recommended that
@@ -1315,8 +1316,7 @@ def logging_day_counts(df:pd.DataFrame) -> int:
     Parameters
     ----------
     df
-        Dataframe of food logging data. A column for 'date' must exist
-        within the data.
+        Dataframe of food logging data. A column for 'date' must exist within the data.
     
     Returns
     -------
@@ -1326,7 +1326,7 @@ def logging_day_counts(df:pd.DataFrame) -> int:
     date_col = df.columns[df.columns.get_loc('date')]
     return df[date_col].nunique()
 
-# %% ../00_core.ipynb 64
+# %% ../00_core.ipynb 66
 def find_missing_logging_days(df:pd.DataFrame,
                               start_date:datetime.date = "not_defined",
                               end_date:datetime.date = "not_defined"):
@@ -1362,7 +1362,7 @@ def find_missing_logging_days(df:pd.DataFrame,
     if end_date == "not_defined":
         end_date = df['date'].max()
         
-    df = df[(df['date']>=start_date) & (df['date']<=end_date)]
+    df = df[(df['date'] >= start_date) & (df['date'] <= end_date)]
     
     # get all the dates between two dates
     missing_days = []
@@ -1372,7 +1372,7 @@ def find_missing_logging_days(df:pd.DataFrame,
     
     return missing_days
 
-# %% ../00_core.ipynb 66
+# %% ../00_core.ipynb 69
 def good_lwa_day_counts(df: pd.DataFrame,
                         window_start:datetime.time,
                         window_end:datetime.time,
@@ -1493,14 +1493,14 @@ def good_lwa_day_counts(df: pd.DataFrame,
 
     return rows, bad_dates
 
-# %% ../00_core.ipynb 72
+# %% ../00_core.ipynb 75
 def filtering_usable_data(df:pd.DataFrame,
                           num_items:int,
                           num_days:int,
                           identifier:int = 1,
                           date_col:int = 6):
     """
-    Filters data for only users who's data satisfies the minimum number of days and logs.
+    Filters data for only participants who's data satisfies the minimum number of days and logs.
     It is recommended that you use find_date to generate the necessary date column for this
     function. 
     
@@ -1510,12 +1510,12 @@ def filtering_usable_data(df:pd.DataFrame,
         Dataframe of food logging data. A column 'desc_text', typically found in mCC data
         is required.
     num_items
-        Minimum number of logs required to pass the filter
+        Minimum number of logs required to pass filter criteria.
     num_days
-        Minimum number of unique logging days required to pass the filter.
+        Minimum number of unique logging days required to pass filter criteria.
     identifier
         Column number for an existing unique identifier column in provided data source. Data exported from mCC typically
-        has a unique identifier as its 1st column.
+        has a unique identifier as its 1st column (with indexing starting from 0).
     date_col
         Column number for an existing date column in provided data source. 
     
@@ -1555,7 +1555,7 @@ def filtering_usable_data(df:pd.DataFrame,
     # display(df_usable.head(5))
     return df_usable, set(df_usable.unique_code.unique())
 
-# %% ../00_core.ipynb 75
+# %% ../00_core.ipynb 78
 def prepare_baseline_and_intervention_usable_data(data_source:str|pd.DataFrame,
                                                   baseline_num_items:int,
                                                   baseline_num_days:int,
@@ -1584,7 +1584,7 @@ def prepare_baseline_and_intervention_usable_data(data_source:str|pd.DataFrame,
         Number of unique logging days for a participant's intervention data to pass filter criteria.
     identifier
         Column number for an existing unique identifier column in provided data source. Data exported from mCC typically
-        has a unique identifier as its 1st column.
+        has a unique identifier as its 1st column (with indexing starting from 0).
     date_col
         Column number for an existing date column in provided data source. 
     
@@ -1615,7 +1615,7 @@ def prepare_baseline_and_intervention_usable_data(data_source:str|pd.DataFrame,
         
     return [df_food_basline_usable_expanded, df_food_intervention_usable]
 
-# %% ../00_core.ipynb 79
+# %% ../00_core.ipynb 82
 def users_sorted_by_logging(data_source:str|pd.DataFrame,
                             food_type:list = ["f", "b", "m", "w"],
                             min_log_num:int = 2,
@@ -1633,15 +1633,15 @@ def users_sorted_by_logging(data_source:str|pd.DataFrame,
         Folder paths with files matching the input pattern are read together into a single pd.DataFrame. Existing
         dataframes are read as is. 
     food_type
-        A single food type, or list of food types. Valid types are 'w': water, 'b': beverage,
-        'f': food, and 'm': medication.
+        A single food type, or list of food types. Valid types are 'f': food, 'b': beverage,
+        'w': water, and 'm': medication.
     min_log_num
         Minimum number of logs required for a day to be considered a 'good' logging day.
     min_separation
         Minimum number of hours between first and last log on a log day for it to be considered a 'good' logging day.
     identifier
         Column number for an existing unique identifier column in provided data source. Data exported from mCC typically
-        has a unique identifier as its 1st column.
+        has a unique identifier as its 1st column (with indexing starting from 0).
     date_col
         Column number for an existing date column in provided data source. 
     time_col
@@ -1671,7 +1671,7 @@ def users_sorted_by_logging(data_source:str|pd.DataFrame,
     
     return food_top_users_day_counts
 
-# %% ../00_core.ipynb 81
+# %% ../00_core.ipynb 84
 def eating_intervals_percentile(data_source:str|pd.DataFrame,
                                 identifier:int = 1,
                                 time_col:int = 7) -> pd.DataFrame:
@@ -1688,7 +1688,7 @@ def eating_intervals_percentile(data_source:str|pd.DataFrame,
         dataframes are read as is. 
     identifier
         Column number for an existing unique identifier column in provided data source. Data exported from mCC typically
-        has a unique identifier as its 1st column.
+        has a unique identifier as its 1st column (with indexing starting from 0).
     time_col
         Column number for an existing time column in provided data source. 
     
@@ -1721,7 +1721,7 @@ def eating_intervals_percentile(data_source:str|pd.DataFrame,
         
     return ptile
 
-# %% ../00_core.ipynb 83
+# %% ../00_core.ipynb 86
 def first_cal_analysis_summary(data_source:str|pd.DataFrame,
                                min_log_num:int = 2,
                                min_separation:int = 4,
@@ -1729,7 +1729,7 @@ def first_cal_analysis_summary(data_source:str|pd.DataFrame,
                                date_col:int = 6,
                                time_col:int = 7) -> pd.DataFrame:
     """
-    Calculate the 5, 10, 25 , 50, 75, 90, 95 percentile of first caloric entry time for each participant on
+    Calculates the 5, 10, 25 , 50, 75, 90, 95 percentile of first caloric entry time for each participant on
     'good' logging days. It is recommended that you use find_date and find_float_time to generate necessary date and
     time columns for this function.
 
@@ -1746,7 +1746,7 @@ def first_cal_analysis_summary(data_source:str|pd.DataFrame,
         Minimum number of hours between first and last log on a log day for it to be considered a 'good' logging day.
     identifier
         Column number for an existing unique identifier column in provided data source. Data exported from mCC typically
-        has a unique identifier as its 1st column.
+        has a unique identifier as its 1st column (with indexing starting from 0).
     date_col
         Column number for an existing date column in provided data source. 
     time_col
@@ -1789,7 +1789,7 @@ def first_cal_analysis_summary(data_source:str|pd.DataFrame,
     
     return first_cal_summary_df
 
-# %% ../00_core.ipynb 85
+# %% ../00_core.ipynb 88
 def last_cal_analysis_summary(data_source:str|pd.DataFrame,
                               min_log_num:int = 2,
                               min_separation:int = 4,
@@ -1797,7 +1797,7 @@ def last_cal_analysis_summary(data_source:str|pd.DataFrame,
                               date_col:int = 6,
                               time_col:int = 7) -> pd.DataFrame:
     """
-    Calculate the 5, 10, 25 , 50, 75, 90, 95 percentile of last caloric entry time for each participant on
+    Calculates the 5, 10, 25 , 50, 75, 90, 95 percentile of last caloric entry time for each participant on
     'good' logging days. It is recommended that you use find_date and find_float_time to generate necessary date and
     time columns for this function.
 
@@ -1814,7 +1814,7 @@ def last_cal_analysis_summary(data_source:str|pd.DataFrame,
         Minimum number of hours between first and last log on a log day for it to be considered a 'good' logging day.
     identifier
         Column number for an existing unique identifier column in provided data source. Data exported from mCC typically
-        has a unique identifier as its 1st column.
+        has a unique identifier as its 1st column (with indexing starting from 0).
     date_col
         Column number for an existing date column in provided data source. 
     time_col
@@ -1861,7 +1861,7 @@ def last_cal_analysis_summary(data_source:str|pd.DataFrame,
     
     return last_cal_summary_df
 
-# %% ../00_core.ipynb 87
+# %% ../00_core.ipynb 90
 def summarize_data(data_source:str|pd.DataFrame,
                    min_log_num:int = 2,
                    min_separation:int = 4,
@@ -1885,7 +1885,7 @@ def summarize_data(data_source:str|pd.DataFrame,
         Minimum number of hours between first and last log on a log day for it to be considered a 'good' logging day.
     identifier
         Column number for an existing unique identifier column in provided data source. Data exported from mCC typically
-        has a unique identifier as its 1st column.
+        has a unique identifier as its 1st column (with indexing starting from 0).
     date_col
         Column number for an existing date column in provided data source. 
     time_col
@@ -1894,7 +1894,7 @@ def summarize_data(data_source:str|pd.DataFrame,
    
     Returns
     -------    
-    returned
+    summary
         Summary dataframe.
     """
     df = file_loader(data_source)
@@ -1972,16 +1972,16 @@ def summarize_data(data_source:str|pd.DataFrame,
     good_logging_count = df.groupby(identifier)['in_good_logging_day'].sum()
 
 
-    returned = pd.concat([num_days, num_total_items, num_f_n_b, num_medications, num_water, first_cal_avg, first_cal_std, last_cal_avg, last_cal_std, eating_win_avg, eating_win_std, good_logging_count, first_cal_ser, last_cal_ser], axis=1).reset_index()
-    returned.columns = [identifier,'num_days', 'num_total_items', 'num_f_n_b', 'num_medications', 'num_water', 'first_cal_avg', 'first_cal_std', 'last_cal_avg', 'last_cal_std', 'eating_win_avg', 'eating_win_std', 'good_logging_count', 'first_cal variation (90%-10%)', 'last_cal variation (90%-10%)']
-    returned = returned.merge(eating_intervals, on = identifier, how='left').fillna(0)
+    summary = pd.concat([num_days, num_total_items, num_f_n_b, num_medications, num_water, first_cal_avg, first_cal_std, last_cal_avg, last_cal_std, eating_win_avg, eating_win_std, good_logging_count, first_cal_ser, last_cal_ser], axis=1).reset_index()
+    summary.columns = [identifier,'num_days', 'num_total_items', 'num_f_n_b', 'num_medications', 'num_water', 'first_cal_avg', 'first_cal_std', 'last_cal_avg', 'last_cal_std', 'eating_win_avg', 'eating_win_std', 'good_logging_count', 'first_cal variation (90%-10%)', 'last_cal variation (90%-10%)']
+    summary = summary.merge(eating_intervals, on = identifier, how='left').fillna(0)
     
-    returned['num_medications'] = returned['num_medications'].astype('int')
-    returned['num_water'] = returned['num_water'].astype('int')
+    summary['num_medications'] = summary['num_medications'].astype('int')
+    summary['num_water'] = summary['num_water'].astype('int')
     
-    return returned
+    return summary
 
-# %% ../00_core.ipynb 90
+# %% ../00_core.ipynb 93
 def summarize_data_with_experiment_phases(food_data:pd.DataFrame,
                                           ref_tbl:pd.DataFrame,
                                           min_log_num:int = 2,
@@ -2218,7 +2218,7 @@ def summarize_data_with_experiment_phases(food_data:pd.DataFrame,
     
     return returned
 
-# %% ../00_core.ipynb 93
+# %% ../00_core.ipynb 96
 def first_cal_mean_with_error_bar(data_source:str|pd.DataFrame,
                                   min_log_num:int = 2,
                                   min_separation:int = 4,
@@ -2227,7 +2227,7 @@ def first_cal_mean_with_error_bar(data_source:str|pd.DataFrame,
                                   time_col:int = 7) -> matplotlib.figure.Figure:
     """
     Represents mean and standard deviation of first caloric intake time for each participant
-    as a scatter plot, with the x-axis as participants and the y-axis as time (in hours).
+    as a scatter plot, with the x-axis as participants and the y-axis as time.
     It is recommended that you use find_date and find_float_time to generate necessary date and
     time columns for this function.
     
@@ -2299,7 +2299,7 @@ def first_cal_mean_with_error_bar(data_source:str|pd.DataFrame,
     
     return fig
 
-# %% ../00_core.ipynb 95
+# %% ../00_core.ipynb 98
 def last_cal_mean_with_error_bar(data_source:str|pd.DataFrame,
                                  min_log_num:int = 2,
                                  min_separation:int = 4,
@@ -2308,7 +2308,7 @@ def last_cal_mean_with_error_bar(data_source:str|pd.DataFrame,
                                  time_col:int = 7) -> matplotlib.figure.Figure:
     """
     Represents mean and standard deviation of last caloric intake time for each participant
-    as a scatter plot, with the x-axis as participants and the y-axis as time (in hours).
+    as a scatter plot, with the x-axis as participants and the y-axis as time.
     It is recommended that you use find_date and find_float_time to generate necessary date and
     time columns for this function.
     
@@ -2383,7 +2383,7 @@ def last_cal_mean_with_error_bar(data_source:str|pd.DataFrame,
     
     return fig
 
-# %% ../00_core.ipynb 97
+# %% ../00_core.ipynb 100
 def first_cal_analysis_variability_plot(data_source:str|pd.DataFrame,
                                         min_log_num:int = 2,
                                         min_separation:int = 4,
@@ -2464,7 +2464,7 @@ def first_cal_analysis_variability_plot(data_source:str|pd.DataFrame,
     
     return fig
 
-# %% ../00_core.ipynb 99
+# %% ../00_core.ipynb 102
 def last_cal_analysis_variability_plot(data_source:str|pd.DataFrame,
                                        min_log_num:int = 2,
                                        min_separation:int = 4,
@@ -2546,7 +2546,7 @@ def last_cal_analysis_variability_plot(data_source:str|pd.DataFrame,
     
     return fig
 
-# %% ../00_core.ipynb 101
+# %% ../00_core.ipynb 104
 def first_cal_avg_histplot(data_source:str|pd.DataFrame,
                            identifier:int = 1,
                            date_col:int = 6,
@@ -2600,7 +2600,7 @@ def first_cal_avg_histplot(data_source:str|pd.DataFrame,
     
     return fig
 
-# %% ../00_core.ipynb 103
+# %% ../00_core.ipynb 106
 def first_cal_sample_distplot(data_source:str|pd.DataFrame,
                               n:int,
                               replace:bool = False,
@@ -2663,7 +2663,7 @@ def first_cal_sample_distplot(data_source:str|pd.DataFrame,
     ax.set_xlabel('Time')
     return fig
 
-# %% ../00_core.ipynb 105
+# %% ../00_core.ipynb 108
 def last_cal_avg_histplot(data_source:str|pd.DataFrame,
                           identifier:int = 1,
                           date_col:int = 6,
@@ -2717,7 +2717,7 @@ def last_cal_avg_histplot(data_source:str|pd.DataFrame,
     
     return fig
 
-# %% ../00_core.ipynb 107
+# %% ../00_core.ipynb 110
 def last_cal_sample_distplot(data_source:str|pd.DataFrame,
                              n:int,
                              replace:bool = False,
@@ -2781,7 +2781,7 @@ def last_cal_sample_distplot(data_source:str|pd.DataFrame,
     
     return fig
 
-# %% ../00_core.ipynb 109
+# %% ../00_core.ipynb 112
 def swarmplot(data_source:str|pd.DataFrame,
               max_loggings:int,
               identifier:int = 1,
