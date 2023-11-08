@@ -2305,7 +2305,7 @@ def last_cal_mean_with_error_bar(data_source:str|pd.DataFrame,
                                  min_separation:int = 4,
                                  identifier:int = 1,
                                  date_col:int = 6,
-                                 time_col:int = 7) -> plt.figure.Figure:
+                                 time_col:int = 7) -> matplotlib.figure.Figure:
     """
     Represents mean and standard deviation of last caloric intake time for each participant
     as a scatter plot, with the x-axis as participants and the y-axis as time (in hours).
