@@ -3,6 +3,7 @@
 # %% ../00_core.ipynb 3
 # allows for type hinting annotations without breaking functionality
 from __future__ import annotations
+import matplotlib.figure
 
 # %% auto 0
 __all__ = ['file_loader', 'find_date', 'find_float_time', 'week_from_start', 'find_phase_duration', 'load_food_data',
@@ -2223,7 +2224,7 @@ def first_cal_mean_with_error_bar(data_source:str|pd.DataFrame,
                                   min_separation:int = 4,
                                   identifier:int = 1,
                                   date_col:int = 6,
-                                  time_col:int = 7) -> plt.figure.Figure:
+                                  time_col:int = 7) -> matplotlib.figure.Figure:
     """
     Represents mean and standard deviation of first caloric intake time for each participant
     as a scatter plot, with the x-axis as participants and the y-axis as time (in hours).
@@ -2549,7 +2550,7 @@ def last_cal_analysis_variability_plot(data_source:str|pd.DataFrame,
 def first_cal_avg_histplot(data_source:str|pd.DataFrame,
                            identifier:int = 1,
                            date_col:int = 6,
-                           time_col:int = 7) -> plt.figure.Figure:
+                           time_col:int = 7) -> matplotlib.figure.Figure:
     """
     Plots a histogram of average first caloric intake for all participants. It is recommended
     that you use find_date and find_float_time to generate necessary date and time columns for
@@ -2605,7 +2606,7 @@ def first_cal_sample_distplot(data_source:str|pd.DataFrame,
                               replace:bool = False,
                               identifier:int = 1,
                               date_col:int = 6,
-                              time_col:int = 7) -> plt.figure.Figure:
+                              time_col:int = 7) -> matplotlib.figure.Figure:
     """
     Creates a distplot for the first caloric intake time for a random selection of 'n' number of 
     participants. It is recommended that you use find_date and find_float_time to generate necessary
@@ -2666,7 +2667,7 @@ def first_cal_sample_distplot(data_source:str|pd.DataFrame,
 def last_cal_avg_histplot(data_source:str|pd.DataFrame,
                           identifier:int = 1,
                           date_col:int = 6,
-                          time_col:int = 7) -> plt.figure.Figure:
+                          time_col:int = 7) -> matplotlib.figure.Figure:
     """
     Plots a histogram of average last caloric intake for all participants. It is recommended
     that you use find_date and find_float_time to generate necessary date and time columns for
@@ -2722,7 +2723,7 @@ def last_cal_sample_distplot(data_source:str|pd.DataFrame,
                              replace:bool = False,
                              identifier:int = 1,
                              date_col:int = 6,
-                             time_col:int = 7) -> plt.figure.Figure:
+                             time_col:int = 7) -> matplotlib.figure.Figure:
     """
     Creates a distplot for the last caloric intake time for a random selection of 'n' number of 
     participants. It is recommended that you use find_date and find_float_time to generate necessary
@@ -2785,7 +2786,7 @@ def swarmplot(data_source:str|pd.DataFrame,
               max_loggings:int,
               identifier:int = 1,
               date_col:int = 6,
-              time_col:int = 7) -> plt.figure.Figure:
+              time_col:int = 7) -> matplotlib.figure.Figure:
     """
     Creates a swarmplot for participants logging data. It is recommended that you
     use find_date and find_float_time to generate necessary date and time columns for
