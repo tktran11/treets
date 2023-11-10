@@ -3,7 +3,7 @@
 d = { 'settings': { 'branch': 'master',
                 'doc_baseurl': '/treets/',
                 'doc_host': 'https://FleischerResearchLab.github.io',
-                'git_url': 'https://github.com/FleischerResearchLab/treets/tree/master/',
+                'git_url': 'https://github.com/FleischerResearchLab/treets/',
                 'lib_path': 'treets'},
   'syms': { 'treets.core': { 'treets.core.FoodParser': ('core.html#foodparser', 'treets/core.py'),
                              'treets.core.FoodParser.__init__': ('core.html#foodparser.__init__', 'treets/core.py'),
