@@ -1417,9 +1417,8 @@ def good_lwa_day_counts(df: pd.DataFrame,
         
     Returns
     -------
-    rows
+    rows, bad_dates
         List containing number of 'good' logging days, 'good' window days, 'outside' window days, and adherent days.
-    bad_dates.
         List of three lists. The lists contains dates that are not considered 'good' logging days, 'good' window days,
         or adherent days (in that order).
     """
@@ -1524,9 +1523,8 @@ def filtering_usable_data(df:pd.DataFrame,
     
     Returns
     -------
-    df_usable
+    df_usable, set_usable
         Data filtered to only include data from participants that have passed filtering criteria.
-    set_usable
         Set of participants that passed filtering criteria.
     """
     print(' => filtering_usable_data()')
