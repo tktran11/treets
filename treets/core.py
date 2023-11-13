@@ -948,7 +948,7 @@ class FoodParser:
 
 # %% ../00_core.ipynb 39
 def clean_loggings(data_source:str|pd.DataFrame,
-                   identifier:int = 1):
+                   identifier:int = 1) -> pd.DataFrame:
     """
     Cleans and attempts typo correction for all logging text entries.
     
@@ -1331,7 +1331,7 @@ def logging_day_counts(df:pd.DataFrame) -> int:
 # %% ../00_core.ipynb 66
 def find_missing_logging_days(df:pd.DataFrame,
                               start_date:datetime.date = "not_defined",
-                              end_date:datetime.date = "not_defined"):
+                              end_date:datetime.date = "not_defined") -> list:
     """
     Finds days that have no log entries between a start (inclusive) and end date (inclusive).
     It is recommended that you use find_date to generate the necessary date column for this
@@ -1384,7 +1384,7 @@ def good_lwa_day_counts(df: pd.DataFrame,
                         h:int = 4,
                         start_date:datetime.date = "not_defined",
                         end_date:datetime.date = "not_defined",
-                        time_col:int = 7):
+                        time_col:int = 7) -> tuple[list, list]:
     """
     Calculates the number of 'good' logging days, 'good' window days, 'outside' window days and adherent days.
     
@@ -1417,9 +1417,9 @@ def good_lwa_day_counts(df: pd.DataFrame,
         
     Returns
     -------
-    rows: list
+    rows
         List containing number of 'good' logging days, 'good' window days, 'outside' window days, and adherent days.
-    bad_dates: list
+    bad_dates.
         List of three lists. The lists contains dates that are not considered 'good' logging days, 'good' window days,
         or adherent days (in that order).
     """
@@ -1500,7 +1500,7 @@ def filtering_usable_data(df:pd.DataFrame,
                           num_items:int,
                           num_days:int,
                           identifier:int = 1,
-                          date_col:int = 6):
+                          date_col:int = 6) -> tuple[pd.DataFrame, set]:
     """
     Filters data for only participants who's data satisfies the minimum number of days and logs.
     It is recommended that you use find_date to generate the necessary date column for this
@@ -1524,9 +1524,9 @@ def filtering_usable_data(df:pd.DataFrame,
     
     Returns
     -------
-    df_usable: pd.DataFrame
+    df_usable
         Data filtered to only include data from participants that have passed filtering criteria.
-    set_usable: set
+    set_usable
         Set of participants that passed filtering criteria.
     """
     print(' => filtering_usable_data()')
@@ -1555,6 +1555,7 @@ def filtering_usable_data(df:pd.DataFrame,
         .copy().reset_index(drop = True)
     # print('  => Now returning the pd.DataFrame object with the head like the following.')
     # display(df_usable.head(5))
+    
     return df_usable, set(df_usable.unique_code.unique())
 
 # %% ../00_core.ipynb 78
