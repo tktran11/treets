@@ -106,7 +106,7 @@ def find_date(data_source:str|pd.DataFrame,
     Returns
     -------
     date
-        Series of dates.
+        Series of dates in ISO 8601 format.
     """
     df = file_loader(data_source)
     # fifth column of food log dataframes should represent date/time in a 24 hour system
@@ -151,20 +151,20 @@ def find_float_time(data_source:str|pd.DataFrame,
     Returns
     -------
     local_time
-        Series of times.
+        Series of times in float format (e.g. 4:36 AM -> 4.6).
     """
     df = file_loader(data_source)
     # fifth column of food log dataframes should represent date/time in a 24 hour system
     col = df.columns[date_col]
     if df[col].dtype == 'O':
         raise TypeError("'{}' column must be converted to datetime object firsly".format(col))
-    local_time = df[col].apply(lambda x: pd.Timedelta(x.time().isoformat()).total_seconds() /3600.)
+    local_time = df[col].apply(lambda x: pd.Timedelta(x.time().isoformat()).total_seconds() / 3600.)
     if h > 0:
-        local_time = np.where(local_time < h, 24+ local_time, local_time)
+        local_time = np.where(local_time < h, 24 + local_time, local_time)
         # index= to prevent mistaken assignments when data source and target df have a non-trivial index
         return pd.Series(local_time, index=df.index) 
     if h < 0:
-        local_time = np.where(local_time > (24+h), local_time-24., local_time)
+        local_time = np.where(local_time > (24 + h), local_time-24., local_time)
         return pd.Series(local_time, index=df.index)
     return local_time
     
@@ -199,6 +199,7 @@ def week_from_start(data_source:str|pd.DataFrame,
         raise NameError("There must exist a 'date' column.")
     col = df.columns[df.columns.get_loc('date')]
     identifier = df.columns[identifier]
+    
     # Handle week from start
     df_dic = dict(df.groupby(identifier)[col].agg(np.min))
 
@@ -222,7 +223,7 @@ def find_phase_duration(df:pd.DataFrame) -> pd.DataFrame:
     Returns
     -------
     df
-        Provided dataframe with an additional column describing study phase duration.
+        Dataframe with an additional column describing study phase duration.
     """
     # column order is specified in our how-to document for data from collaborators
     start_day = df.columns[4]
@@ -269,10 +270,10 @@ def load_food_data(data_source:str|pd.DataFrame,
     Returns
     -------
     food_data
-        Processed dataframe with additional date, flat time, and week from start columns.
+        Dataframe with additional date, flat time, and week from start columns.
     """
     food_data = file_loader(data_source)
-    # identifier column(s) should be 0 and 1, with 1 being study specific
+    # identifier column(s) should be 0 and 1, with 1 being the study specific identifier
     identifier = food_data.columns[identifier]
     # fifth column of food log dataframes should represent date/time in a 24 hour system
     datetime_col = food_data.columns[datetime_col]
@@ -302,7 +303,6 @@ def load_food_data(data_source:str|pd.DataFrame,
     food_data['date'] = find_date(food_data, h)
     
     # Handle the time - Time in floating point format
-    
     food_data['float_time'] = find_float_time(food_data, h)
     
     # Handle the time - Time in Datetime object format
@@ -950,7 +950,7 @@ class FoodParser:
 def clean_loggings(data_source:str|pd.DataFrame,
                    identifier:int = 1):
     """
-    Cleans and corrects all logging text entries.
+    Cleans and attempts typo correction for all logging text entries.
     
     Parameters
     ----------
@@ -1024,7 +1024,6 @@ def get_types(data_source:str|pd.DataFrame,
             raise Exception("one or more logging types are invalid.")
         filtered = df[df['food_type'].isin(food_type)]
         
-    
     return filtered
 
 # %% ../00_core.ipynb 47
@@ -1156,8 +1155,8 @@ def earliest_entry(df:pd.DataFrame,
         time_col = df.columns[df.columns.get_loc('float_time')]
     else:
         time_col = df.columns[time_col]
+        
     df = get_types(df, ['f', 'b'])
-    
     return df[time_col].min()
 
 # %% ../00_core.ipynb 55
@@ -1195,7 +1194,7 @@ def mean_first_cal(df:pd.DataFrame,
     else:
         time_col = df.columns[time_col]
     
-    
+    df = df[df['food_type'].isin(['f','b'])]
     return df.groupby([date_col])[time_col].min().mean()
 
 # %% ../00_core.ipynb 58
@@ -1231,7 +1230,8 @@ def std_first_cal(df:pd.DataFrame,
         time_col = df.columns[df.columns.get_loc('float_time')]
     else:
         time_col = df.columns[time_col]
-    
+        
+    df = df[df['food_type'].isin(['f','b'])]
     return df.groupby([date_col])[time_col].min().std()
 
 # %% ../00_core.ipynb 60
@@ -1267,7 +1267,8 @@ def mean_last_cal(df:pd.DataFrame,
         time_col = df.columns[df.columns.get_loc('float_time')]
     else:
         time_col = df.columns[7]
-    
+        
+    df = df[df['food_type'].isin(['f','b'])]
     return df.groupby([date_col])[time_col].max().mean()
 
 # %% ../00_core.ipynb 62
@@ -1303,7 +1304,8 @@ def std_last_cal(df:pd.DataFrame,
         time_col = df.columns[df.columns.get_loc('float_time')]
     else:
         time_col = df.columns[time_col]
-    
+        
+    df = df[df['food_type'].isin(['f','b'])]
     return df.groupby([date_col])[time_col].max().std()
 
 # %% ../00_core.ipynb 64
