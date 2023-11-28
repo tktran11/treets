@@ -129,7 +129,7 @@ def find_float_time(data_source:str|pd.DataFrame,
                     h:int = 4,
                     date_col:int = 5) -> pd.Series:
     """
-    Extracts time from a datetime column and after shifting datetime by 'h' hours.
+    Extracts time from a datetime column after shifting datetime by 'h' hours.
     A day starts 'h' hours early if 'h' is negative, or 'h' hours later if 'h' is
     positive.
     
@@ -256,7 +256,7 @@ def load_food_data(data_source:str|pd.DataFrame,
         dataframes are read as is.
     h
         Number of hours to shift the definition of 'date' by. h = 4 would indicate that a log date begins at
-        4:00 AM and ends the following calendar day at 3:59:59. Float representations of time would therefore
+        4:00 AM and ends the following calendar day at 3:59:59 AM. Float representations of time would therefore
         go from 4.0 (inclusive) to 28.0 (exclusive) to represent 'date' membership for days shifted from their
         original calendar date.
     identifier
@@ -270,7 +270,7 @@ def load_food_data(data_source:str|pd.DataFrame,
     Returns
     -------
     food_data
-        Dataframe with additional date, flat time, and week from start columns.
+        Dataframe with additional date, float time, and week from start columns.
     """
     food_data = file_loader(data_source)
     # identifier column(s) should be 0 and 1, with 1 being the study specific identifier
@@ -324,7 +324,7 @@ def in_good_logging_day(data_source:str|pd.DataFrame,
                         time_col:int = 7) -> np.array:
     """
     Calculates if each log is considered to be within a 'good logging day'. A log day is considered 'good' if there 
-    are more than the minimum number of required logs, with a minimum specified hour separation between the first and last
+    are at least the minimum number of required logs, with a minimum specified hour separation between the first and last
     log for that log date. It is recommended that you use find_date and find_float_time to generate necessary date and
     time columns for this function.
     
@@ -996,13 +996,13 @@ def get_types(data_source:str|pd.DataFrame,
     Parameters
     ----------
     data_source
-        String file or folder path. Single .json or .csv paths create a pd.DataFrame. 
-        Folder paths with files matching the input pattern are read together into a single pd.DataFrame. Existing
+        String file or folder path. Single .json or .csv paths create a pd.DataFrame. Folder paths
+        with files matching the input pattern are read together into a single pd.DataFrame. Existing
         dataframes are read as is. A column 'food_type' is required to be within the data.
     
     food_type
-        A single food type, or list of food types. Valid types are 'f': food, 'b': beverage,
-        'w': water, and 'm': medication.
+        A single food type, or list of food types. Valid types are 'f': food, 'b': beverage, 'w': water,
+        and 'm': medication.
     
     Returns
     -------
@@ -1625,7 +1625,7 @@ def users_sorted_by_logging(data_source:str|pd.DataFrame,
                             date_col:int = 6,
                             time_col:int = 7) -> pd.DataFrame:
     """
-    Reports the number of good 'logging' days for each user, in descending order based on number of 'good' logging days.
+    Reports the number of 'good' logging days for each user, in descending order based on number of 'good' logging days.
     
     Parameters
     ----------
@@ -1992,7 +1992,7 @@ def summarize_data_with_experiment_phases(food_data:pd.DataFrame,
                                           report_level:int = 2,
                                           txt:bool = False) -> pd.DataFrame:
     """
-    Summarizes participant data for each experiment phase and eating window assignment, Summary includes number of days,
+    Summarizes participant data for each experiment phase and eating window assignment. Summary includes number of days,
     total number of logs, number of food/beverage logs, number of medication logs, number of water logs,
     eating window duration information, first and last caloric log information, and adherence.
     
@@ -2228,7 +2228,7 @@ def first_cal_mean_with_error_bar(data_source:str|pd.DataFrame,
                                   time_col:int = 7) -> matplotlib.figure.Figure:
     """
     Represents mean and standard deviation of first caloric intake time for each participant
-    as a scatter plot, with the x-axis as participants and the y-axis as time.
+    as a scatter plot, with participants as the x-axis and time as the y-axis.
     It is recommended that you use find_date and find_float_time to generate necessary date and
     time columns for this function.
     
