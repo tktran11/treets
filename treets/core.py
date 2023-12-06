@@ -1369,8 +1369,10 @@ def find_missing_logging_days(df:pd.DataFrame,
     # get all the dates between two dates
     missing_days = []
     for x in pd.date_range(start_date, end_date, freq='d'):
-         if x not in df['date'].unique():
-                missing_days.append(x.date())
+        if isinstance(x, pd.Timestamp):
+            x = x.to_pydatetime()
+        if x not in df['date'].unique():
+            missing_days.append(x.date())
     
     return missing_days
 
