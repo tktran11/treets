@@ -358,15 +358,14 @@ def in_good_logging_day(data_source:str|pd.DataFrame,
         Boolean array describing whether each log is a 'good' logging day.
     """
     def adherent(s):
-        if len(s.values) >= min_log_num and (max(s.values) - min(s.values)) >= min_separation:
-            return True
-        else:
-            return False
+        return len(s.values) >= min_log_num and (max(s.values) - min(s.values)) >= min_separation
         
     df = file_loader(data_source)
     identifier = df.columns[identifier]
+    
     # if treets functions have been used (in any order) to generate columns
     # find appropriate column names, if not check for expected column position
+    
     if 'date' in df.columns:
         date_col = df.columns[df.columns.get_loc('date')]
     else:
@@ -392,7 +391,7 @@ class FoodParser:
     def __init__(self):
         """Initializes food parser object."""
         # read in manually annotated file
-        parser_keys_df = pd.read_csv("data/09_14_2023_parser_keys.csv")
+        parser_keys_df = pd.read_csv("data/12_08_2023_parser_keys.csv")
         all_gram_set, food_type_dict, food2tags = self.process_parser_keys_df(
             parser_keys_df
         )
@@ -1015,14 +1014,12 @@ def get_types(data_source:str|pd.DataFrame,
     if len(food_type) == 0:
         return df
     
-    if len(food_type) == 1:
-        if food_type[0] not in ['w', 'b', 'f', 'm']:
-            raise Exception("not a valid logging type.")
-        filtered = df[df['food_type'] == food_type[0]]
-    else:
-        if any([i not in ['f', 'b', 'w', 'm'] for i in food_type]):
-            raise Exception("one or more logging types are invalid.")
-        filtered = df[df['food_type'].isin(food_type)]
+    if isinstance(food_type, str):
+        food_type = [food_type]
+        
+    if any([i not in ['f', 'b', 'w', 'm'] for i in food_type]):
+        raise Exception("one or more logging types are invalid.")
+    filtered = df[df['food_type'].isin(food_type)]
         
     return filtered
 
@@ -1363,20 +1360,16 @@ def find_missing_logging_days(df:pd.DataFrame,
         start_date = df['date'].min()
     if end_date == "not_defined":
         end_date = df['date'].max()
-        
-    df = df[(df['date'] >= start_date) & (df['date'] <= end_date)]
     
-    # get all the dates between two dates
+    df = df[(df['date'] >= start_date) & (df['date'] <= end_date)]
     missing_days = []
     for x in pd.date_range(start_date, end_date, freq='d'):
-        if isinstance(x, pd.Timestamp):
-            x = x.to_pydatetime()
-        if x not in df['date'].unique():
-            missing_days.append(x.date())
+        if x.to_pydatetime().date() not in df['date'].unique():
+            missing_days.append(x.to_pydatetime().date())
     
     return missing_days
 
-# %% ../00_core.ipynb 69
+# %% ../00_core.ipynb 70
 def good_lwa_day_counts(df: pd.DataFrame,
                         window_start:datetime.time,
                         window_end:datetime.time,
@@ -1465,10 +1458,12 @@ def good_lwa_day_counts(df: pd.DataFrame,
         window_start_daily = window_start.hour + window_start.minute / 60 - buffer_time
         window_end_daily = window_end.hour + window_end.minute / 60 + buffer_time
         tmp = df[df['date'] == aday]
+        
         if (window_start == datetime.time(0,0)) and (window_end == datetime.time(23,59)):
             in_window_count.append(tmp[(tmp[time_col] >= window_start_daily + h) & (tmp[time_col] <= window_end_daily + h)].shape[0])
         else:
             in_window_count.append(tmp[(tmp[time_col] >= window_start_daily) & (tmp[time_col] <= window_end_daily)].shape[0])
+        
         daily_count.append(df[df['date'] == aday].shape[0])
         good_logging_count.append(good_logging(df[df['date'] == aday][time_col]))
 
@@ -1496,7 +1491,7 @@ def good_lwa_day_counts(df: pd.DataFrame,
 
     return rows, bad_dates
 
-# %% ../00_core.ipynb 75
+# %% ../00_core.ipynb 76
 def filtering_usable_data(df:pd.DataFrame,
                           num_items:int,
                           num_days:int,
@@ -1550,15 +1545,14 @@ def filtering_usable_data(df:pd.DataFrame,
 
     print('  => # of users pass the criteria:', end = ' ')
     print(len(item_count_passed & day_count_passed))
+    
     passed_participant_set = item_count_passed & day_count_passed
     df_usable = df.loc[df.unique_code.apply(lambda c: c in passed_participant_set)]\
         .copy().reset_index(drop = True)
-    # print('  => Now returning the pd.DataFrame object with the head like the following.')
-    # display(df_usable.head(5))
     
     return df_usable, set(df_usable.unique_code.unique())
 
-# %% ../00_core.ipynb 78
+# %% ../00_core.ipynb 79
 def prepare_baseline_and_intervention_usable_data(data_source:str|pd.DataFrame,
                                                   baseline_num_items:int,
                                                   baseline_num_days:int,
@@ -1618,7 +1612,7 @@ def prepare_baseline_and_intervention_usable_data(data_source:str|pd.DataFrame,
         
     return [df_food_basline_usable_expanded, df_food_intervention_usable]
 
-# %% ../00_core.ipynb 82
+# %% ../00_core.ipynb 83
 def users_sorted_by_logging(data_source:str|pd.DataFrame,
                             food_type:list = ["f", "b", "m", "w"],
                             min_log_num:int = 2,
@@ -1674,7 +1668,7 @@ def users_sorted_by_logging(data_source:str|pd.DataFrame,
     
     return food_top_users_day_counts
 
-# %% ../00_core.ipynb 84
+# %% ../00_core.ipynb 85
 def eating_intervals_percentile(data_source:str|pd.DataFrame,
                                 identifier:int = 1,
                                 time_col:int = 7) -> pd.DataFrame:
@@ -1724,7 +1718,7 @@ def eating_intervals_percentile(data_source:str|pd.DataFrame,
         
     return ptile
 
-# %% ../00_core.ipynb 86
+# %% ../00_core.ipynb 87
 def first_cal_analysis_summary(data_source:str|pd.DataFrame,
                                min_log_num:int = 2,
                                min_separation:int = 4,
@@ -1792,7 +1786,7 @@ def first_cal_analysis_summary(data_source:str|pd.DataFrame,
     
     return first_cal_summary_df
 
-# %% ../00_core.ipynb 88
+# %% ../00_core.ipynb 89
 def last_cal_analysis_summary(data_source:str|pd.DataFrame,
                               min_log_num:int = 2,
                               min_separation:int = 4,
@@ -1864,7 +1858,7 @@ def last_cal_analysis_summary(data_source:str|pd.DataFrame,
     
     return last_cal_summary_df
 
-# %% ../00_core.ipynb 90
+# %% ../00_core.ipynb 91
 def summarize_data(data_source:str|pd.DataFrame,
                    min_log_num:int = 2,
                    min_separation:int = 4,
@@ -1984,7 +1978,7 @@ def summarize_data(data_source:str|pd.DataFrame,
     
     return summary
 
-# %% ../00_core.ipynb 93
+# %% ../00_core.ipynb 94
 def summarize_data_with_experiment_phases(food_data:pd.DataFrame,
                                           ref_tbl:pd.DataFrame,
                                           min_log_num:int = 2,
@@ -2157,7 +2151,7 @@ def summarize_data_with_experiment_phases(food_data:pd.DataFrame,
         if pd.isnull(ser[col]):
             return ser[col]
         else:
-            return str(round(ser[col]/ser['phase_duration'].days * 100, 2)) + '%'
+            return (round(ser[col]/ser['phase_duration'].days * 100, 2))
     
     # calculate percentage for 
     for x in returned.columns:
@@ -2221,7 +2215,7 @@ def summarize_data_with_experiment_phases(food_data:pd.DataFrame,
     
     return returned
 
-# %% ../00_core.ipynb 96
+# %% ../00_core.ipynb 97
 def first_cal_mean_with_error_bar(data_source:str|pd.DataFrame,
                                   min_log_num:int = 2,
                                   min_separation:int = 4,
@@ -2302,7 +2296,7 @@ def first_cal_mean_with_error_bar(data_source:str|pd.DataFrame,
     
     return fig
 
-# %% ../00_core.ipynb 98
+# %% ../00_core.ipynb 99
 def last_cal_mean_with_error_bar(data_source:str|pd.DataFrame,
                                  min_log_num:int = 2,
                                  min_separation:int = 4,
@@ -2386,7 +2380,7 @@ def last_cal_mean_with_error_bar(data_source:str|pd.DataFrame,
     
     return fig
 
-# %% ../00_core.ipynb 100
+# %% ../00_core.ipynb 101
 def first_cal_analysis_variability_plot(data_source:str|pd.DataFrame,
                                         min_log_num:int = 2,
                                         min_separation:int = 4,
@@ -2467,7 +2461,7 @@ def first_cal_analysis_variability_plot(data_source:str|pd.DataFrame,
     
     return fig
 
-# %% ../00_core.ipynb 102
+# %% ../00_core.ipynb 103
 def last_cal_analysis_variability_plot(data_source:str|pd.DataFrame,
                                        min_log_num:int = 2,
                                        min_separation:int = 4,
@@ -2549,7 +2543,7 @@ def last_cal_analysis_variability_plot(data_source:str|pd.DataFrame,
     
     return fig
 
-# %% ../00_core.ipynb 104
+# %% ../00_core.ipynb 105
 def first_cal_avg_histplot(data_source:str|pd.DataFrame,
                            identifier:int = 1,
                            date_col:int = 6,
@@ -2603,7 +2597,7 @@ def first_cal_avg_histplot(data_source:str|pd.DataFrame,
     
     return fig
 
-# %% ../00_core.ipynb 106
+# %% ../00_core.ipynb 107
 def first_cal_sample_distplot(data_source:str|pd.DataFrame,
                               n:int,
                               replace:bool = False,
@@ -2666,7 +2660,7 @@ def first_cal_sample_distplot(data_source:str|pd.DataFrame,
     ax.set_xlabel('Time')
     return fig
 
-# %% ../00_core.ipynb 108
+# %% ../00_core.ipynb 109
 def last_cal_avg_histplot(data_source:str|pd.DataFrame,
                           identifier:int = 1,
                           date_col:int = 6,
@@ -2720,7 +2714,7 @@ def last_cal_avg_histplot(data_source:str|pd.DataFrame,
     
     return fig
 
-# %% ../00_core.ipynb 110
+# %% ../00_core.ipynb 111
 def last_cal_sample_distplot(data_source:str|pd.DataFrame,
                              n:int,
                              replace:bool = False,
@@ -2784,7 +2778,7 @@ def last_cal_sample_distplot(data_source:str|pd.DataFrame,
     
     return fig
 
-# %% ../00_core.ipynb 112
+# %% ../00_core.ipynb 113
 def swarmplot(data_source:str|pd.DataFrame,
               max_loggings:int,
               identifier:int = 1,
