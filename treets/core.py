@@ -9,13 +9,14 @@ import matplotlib.figure
 __all__ = ['file_loader', 'find_date', 'find_float_time', 'week_from_start', 'find_phase_duration', 'load_food_data',
            'in_good_logging_day', 'FoodParser', 'clean_loggings', 'get_types', 'count_caloric_entries',
            'mean_daily_eating_duration', 'std_daily_eating_duration', 'earliest_entry', 'mean_first_cal',
-           'std_first_cal', 'mean_last_cal', 'std_last_cal', 'logging_day_counts', 'find_missing_logging_days',
-           'good_lwa_day_counts', 'filtering_usable_data', 'prepare_baseline_and_intervention_usable_data',
-           'users_sorted_by_logging', 'eating_intervals_percentile', 'first_cal_analysis_summary',
-           'last_cal_analysis_summary', 'summarize_data', 'summarize_data_with_experiment_phases',
-           'first_cal_mean_with_error_bar', 'last_cal_mean_with_error_bar', 'first_cal_analysis_variability_plot',
-           'last_cal_analysis_variability_plot', 'first_cal_avg_histplot', 'first_cal_sample_distplot',
-           'last_cal_avg_histplot', 'last_cal_sample_distplot', 'swarmplot']
+           'std_first_cal', 'mean_last_cal', 'std_last_cal', 'mean_daily_eating_occasions',
+           'std_daily_eating_occasions', 'mean_daily_eating_midpoint', 'std_daily_eating_midpoint',
+           'logging_day_counts', 'find_missing_logging_days', 'good_lwa_day_counts', 'filtering_usable_data',
+           'prepare_baseline_and_intervention_usable_data', 'users_sorted_by_logging', 'eating_intervals_percentile',
+           'first_cal_analysis_summary', 'last_cal_analysis_summary', 'summarize_data',
+           'summarize_data_with_experiment_phases', 'first_cal_mean_with_error_bar', 'last_cal_mean_with_error_bar',
+           'first_cal_analysis_variability_plot', 'last_cal_analysis_variability_plot', 'first_cal_avg_histplot',
+           'first_cal_sample_distplot', 'last_cal_avg_histplot', 'last_cal_sample_distplot', 'swarmplot']
 
 # %% ../00_core.ipynb 4
 import warnings
@@ -1306,6 +1307,158 @@ def std_last_cal(df:pd.DataFrame,
     return df.groupby([date_col])[time_col].max().std()
 
 # %% ../00_core.ipynb 64
+def mean_daily_eating_occasions(df: pd.DataFrame,
+                                date_col:int = 6,
+                                time_col:int = 7) -> int:
+    """
+    Calculates the average number of daily eating occasions. An eating occasion is a single caloric (food or beverage)
+    log.It is recommended that you use find_date and find_float_time to generate necessary date and time columns 
+    for this function. 
+    
+    Parameters
+    ----------
+    df
+        Dataframe of food logging data. A column for 'food_type' must exist within the data.
+    date_col
+        Column number for an existing date column in provided data source. 
+    time_col
+        Column number for an existing time column in provided data source.
+        
+        
+    Returns
+    -------
+    mean_daily_eating_occasion
+        Average number of daily eating occasions. 
+    """
+    if 'date' in df.columns:
+        date_col = df.columns[df.columns.get_loc('date')]
+    else:
+        date_col = df.columns[date_col]
+    
+    if 'float_time' in df.columns:
+        time_col = df.columns[df.columns.get_loc('float_time')]
+    else:
+        time_col = df.columns[time_col]
+    
+    df = df[df['food_type'].isin(['f','b'])]
+    
+    return df.groupby([date_col])[time_col].nunique().mean()
+
+# %% ../00_core.ipynb 66
+def std_daily_eating_occasions(df: pd.DataFrame,
+                                date_col:int = 6,
+                                time_col:int = 7) -> int:
+    """
+    Calculates the standard deviation of the number of daily eating occasions. An eating occasion is a single caloric (food or beverage)
+    log.It is recommended that you use find_date and find_float_time to generate necessary date and time columns 
+    for this function. 
+    
+    Parameters
+    ----------
+    df
+        Dataframe of food logging data. A column for 'food_type' must exist within the data.
+    date_col
+        Column number for an existing date column in provided data source. 
+    time_col
+        Column number for an existing time column in provided data source.
+        
+        
+    Returns
+    -------
+    std_daily_eating_occasion
+        Standard deviation of the number of daily eating occasions. 
+    """
+    if 'date' in df.columns:
+        date_col = df.columns[df.columns.get_loc('date')]
+    else:
+        date_col = df.columns[date_col]
+    
+    if 'float_time' in df.columns:
+        time_col = df.columns[df.columns.get_loc('float_time')]
+    else:
+        time_col = df.columns[time_col]
+    
+    df = df[df['food_type'].isin(['f','b'])]
+    
+    return df.groupby([date_col])[time_col].nunique().std()
+
+# %% ../00_core.ipynb 68
+def mean_daily_eating_midpoint(df: pd.DataFrame,
+                                date_col:int = 6,
+                                time_col:int = 7) -> int:
+    """
+    Calculates the average daily midpoint eating occasion time. It is recommended that
+    you use find_date and find_float_time to generate necessary date and time columns for this
+    function. 
+    
+    Parameters
+    ----------
+    df
+        Dataframe of food logging data. A column for 'food_type' must exist within the data.
+    date_col
+        Column number for an existing date column in provided data source. 
+    time_col
+        Column number for an existing time column in provided data source.
+        
+        
+    Returns
+    -------
+    mean_daily_eating_midpoint
+        Float representation of the average daily midpoint eating occasion time. 
+    """ 
+    if 'date' in df.columns:
+        date_col = df.columns[df.columns.get_loc('date')]
+    else:
+        date_col = df.columns[date_col]
+    
+    if 'float_time' in df.columns:
+        time_col = df.columns[df.columns.get_loc('float_time')]
+    else:
+        time_col = df.columns[time_col]
+    
+    df = df[df['food_type'].isin(['f','b'])]
+    
+    return df.groupby([date_col])[time_col].median().mean()
+
+# %% ../00_core.ipynb 70
+def std_daily_eating_midpoint(df: pd.DataFrame,
+                                date_col:int = 6,
+                                time_col:int = 7) -> int:
+    """
+    Calculates the standard deviation of the daily midpoint eating occasion time. It is recommended that
+    you use find_date and find_float_time to generate necessary date and time columns for this
+    function. 
+    
+    Parameters
+    ----------
+    df
+        Dataframe of food logging data. A column for 'food_type' must exist within the data.
+    date_col
+        Column number for an existing date column in provided data source. 
+    time_col
+        Column number for an existing time column in provided data source.
+        
+        
+    Returns
+    -------
+    std_daily_eating_midpoint
+        Float representation of the standard deviation of the daily midpoint eating occasion time. 
+    """ 
+    if 'date' in df.columns:
+        date_col = df.columns[df.columns.get_loc('date')]
+    else:
+        date_col = df.columns[date_col]
+    
+    if 'float_time' in df.columns:
+        time_col = df.columns[df.columns.get_loc('float_time')]
+    else:
+        time_col = df.columns[time_col]
+    
+    df = df[df['food_type'].isin(['f','b'])]
+    
+    return df.groupby([date_col])[time_col].median().std()
+
+# %% ../00_core.ipynb 72
 def logging_day_counts(df:pd.DataFrame) -> int:
     """
     Calculates the number of days that contain any logs. It is recommended that
@@ -1325,7 +1478,7 @@ def logging_day_counts(df:pd.DataFrame) -> int:
     date_col = df.columns[df.columns.get_loc('date')]
     return df[date_col].nunique()
 
-# %% ../00_core.ipynb 66
+# %% ../00_core.ipynb 74
 def find_missing_logging_days(df:pd.DataFrame,
                               start_date:datetime.date = "not_defined",
                               end_date:datetime.date = "not_defined") -> list:
@@ -1369,7 +1522,7 @@ def find_missing_logging_days(df:pd.DataFrame,
     
     return missing_days
 
-# %% ../00_core.ipynb 70
+# %% ../00_core.ipynb 78
 def good_lwa_day_counts(df: pd.DataFrame,
                         window_start:datetime.time,
                         window_end:datetime.time,
@@ -1491,7 +1644,7 @@ def good_lwa_day_counts(df: pd.DataFrame,
 
     return rows, bad_dates
 
-# %% ../00_core.ipynb 76
+# %% ../00_core.ipynb 84
 def filtering_usable_data(df:pd.DataFrame,
                           num_items:int,
                           num_days:int,
@@ -1552,7 +1705,7 @@ def filtering_usable_data(df:pd.DataFrame,
     
     return df_usable, set(df_usable.unique_code.unique())
 
-# %% ../00_core.ipynb 79
+# %% ../00_core.ipynb 87
 def prepare_baseline_and_intervention_usable_data(data_source:str|pd.DataFrame,
                                                   baseline_num_items:int,
                                                   baseline_num_days:int,
@@ -1612,7 +1765,7 @@ def prepare_baseline_and_intervention_usable_data(data_source:str|pd.DataFrame,
         
     return [df_food_basline_usable_expanded, df_food_intervention_usable]
 
-# %% ../00_core.ipynb 83
+# %% ../00_core.ipynb 91
 def users_sorted_by_logging(data_source:str|pd.DataFrame,
                             food_type:list = ["f", "b", "m", "w"],
                             min_log_num:int = 2,
@@ -1668,7 +1821,7 @@ def users_sorted_by_logging(data_source:str|pd.DataFrame,
     
     return food_top_users_day_counts
 
-# %% ../00_core.ipynb 85
+# %% ../00_core.ipynb 93
 def eating_intervals_percentile(data_source:str|pd.DataFrame,
                                 identifier:int = 1,
                                 time_col:int = 7) -> pd.DataFrame:
@@ -1718,7 +1871,7 @@ def eating_intervals_percentile(data_source:str|pd.DataFrame,
         
     return ptile
 
-# %% ../00_core.ipynb 87
+# %% ../00_core.ipynb 95
 def first_cal_analysis_summary(data_source:str|pd.DataFrame,
                                min_log_num:int = 2,
                                min_separation:int = 4,
@@ -1786,7 +1939,7 @@ def first_cal_analysis_summary(data_source:str|pd.DataFrame,
     
     return first_cal_summary_df
 
-# %% ../00_core.ipynb 89
+# %% ../00_core.ipynb 97
 def last_cal_analysis_summary(data_source:str|pd.DataFrame,
                               min_log_num:int = 2,
                               min_separation:int = 4,
@@ -1858,7 +2011,7 @@ def last_cal_analysis_summary(data_source:str|pd.DataFrame,
     
     return last_cal_summary_df
 
-# %% ../00_core.ipynb 91
+# %% ../00_core.ipynb 99
 def summarize_data(data_source:str|pd.DataFrame,
                    min_log_num:int = 2,
                    min_separation:int = 4,
@@ -1978,7 +2131,7 @@ def summarize_data(data_source:str|pd.DataFrame,
     
     return summary
 
-# %% ../00_core.ipynb 94
+# %% ../00_core.ipynb 102
 def summarize_data_with_experiment_phases(food_data:pd.DataFrame,
                                           ref_tbl:pd.DataFrame,
                                           min_log_num:int = 2,
@@ -2085,6 +2238,12 @@ def summarize_data_with_experiment_phases(food_data:pd.DataFrame,
         
         rows.append(std_daily_eating_duration(temp_df,'date','float_time'))
         rows.append(earliest_entry(temp_df))
+        
+        rows.append(mean_daily_eating_occasions(temp_df, 'date', 'float_time'))
+        rows.append(std_daily_eating_occasions(temp_df, 'date', 'float_time'))
+        rows.append(mean_daily_eating_midpoint(temp_df, 'date', 'float_time'))
+        rows.append(std_daily_eating_midpoint(temp_df, 'date', 'float_time'))
+        
         rows.append(logging_day_counts(temp_df))
         row_day_num, bad_dates = good_lwa_day_counts(df[df["PID"]==id_]
                                            , window_start=row[window_start]
@@ -2121,8 +2280,9 @@ def summarize_data_with_experiment_phases(food_data:pd.DataFrame,
 
     # create a temp dataframe
     tmp = pd.DataFrame(matrix, columns = ['caloric_entries_num','medication_num', 'water_num','first_cal_avg','first_cal_std',
-                                          'last_cal_avg', 'last_cal_std', 'mean_daily_eating_window', 'std_daily_eating_window', 'earliest_entry', 'logging_day_counts'\
-                                         ,'good_logging_days', 'good_window_days', 'outside_window_days', 'adherent_days'])
+                                          'last_cal_avg', 'last_cal_std', 'mean_daily_eating_window', 'std_daily_eating_window', 'earliest_entry',
+                                          'mean_daily_eating_occasions', 'std_daily_eating_occasions', 'mean_daily_eating_midpoint', 'std_daily_eating_midpoint',
+                                          'logging_day_counts','good_logging_days', 'good_window_days', 'outside_window_days', 'adherent_days'])
     
     # concat these two tables
     returned = pd.concat([ref_tbl, tmp], axis=1)
@@ -2165,7 +2325,8 @@ def summarize_data_with_experiment_phases(food_data:pd.DataFrame,
        'caloric_entries_num','medication_num', 'water_num','first_cal_avg',
         'first_cal_std','last_cal_avg', 'last_cal_std', 
         'mean_daily_eating_window', 'std_daily_eating_window',
-       'earliest_entry', '2.5%', '97.5%', 'duration mid 95%',
+       'earliest_entry', 'mean_daily_eating_occasions', 'std_daily_eating_occasions',
+        'mean_daily_eating_midpoint', 'std_daily_eating_midpoint', '2.5%', '97.5%', 'duration mid 95%',
        'logging_day_counts', '%_logging_day_counts', 'good_logging_days',
         '%_good_logging_days','good_window_days', '%_good_window_days', 
         'outside_window_days','%_outside_window_days', 'adherent_days',
@@ -2215,7 +2376,7 @@ def summarize_data_with_experiment_phases(food_data:pd.DataFrame,
     
     return returned
 
-# %% ../00_core.ipynb 97
+# %% ../00_core.ipynb 105
 def first_cal_mean_with_error_bar(data_source:str|pd.DataFrame,
                                   min_log_num:int = 2,
                                   min_separation:int = 4,
@@ -2296,7 +2457,7 @@ def first_cal_mean_with_error_bar(data_source:str|pd.DataFrame,
     
     return fig
 
-# %% ../00_core.ipynb 99
+# %% ../00_core.ipynb 107
 def last_cal_mean_with_error_bar(data_source:str|pd.DataFrame,
                                  min_log_num:int = 2,
                                  min_separation:int = 4,
@@ -2380,7 +2541,7 @@ def last_cal_mean_with_error_bar(data_source:str|pd.DataFrame,
     
     return fig
 
-# %% ../00_core.ipynb 101
+# %% ../00_core.ipynb 109
 def first_cal_analysis_variability_plot(data_source:str|pd.DataFrame,
                                         min_log_num:int = 2,
                                         min_separation:int = 4,
@@ -2461,7 +2622,7 @@ def first_cal_analysis_variability_plot(data_source:str|pd.DataFrame,
     
     return fig
 
-# %% ../00_core.ipynb 103
+# %% ../00_core.ipynb 111
 def last_cal_analysis_variability_plot(data_source:str|pd.DataFrame,
                                        min_log_num:int = 2,
                                        min_separation:int = 4,
@@ -2543,7 +2704,7 @@ def last_cal_analysis_variability_plot(data_source:str|pd.DataFrame,
     
     return fig
 
-# %% ../00_core.ipynb 105
+# %% ../00_core.ipynb 113
 def first_cal_avg_histplot(data_source:str|pd.DataFrame,
                            identifier:int = 1,
                            date_col:int = 6,
@@ -2597,7 +2758,7 @@ def first_cal_avg_histplot(data_source:str|pd.DataFrame,
     
     return fig
 
-# %% ../00_core.ipynb 107
+# %% ../00_core.ipynb 115
 def first_cal_sample_distplot(data_source:str|pd.DataFrame,
                               n:int,
                               replace:bool = False,
@@ -2660,7 +2821,7 @@ def first_cal_sample_distplot(data_source:str|pd.DataFrame,
     ax.set_xlabel('Time')
     return fig
 
-# %% ../00_core.ipynb 109
+# %% ../00_core.ipynb 117
 def last_cal_avg_histplot(data_source:str|pd.DataFrame,
                           identifier:int = 1,
                           date_col:int = 6,
@@ -2714,7 +2875,7 @@ def last_cal_avg_histplot(data_source:str|pd.DataFrame,
     
     return fig
 
-# %% ../00_core.ipynb 111
+# %% ../00_core.ipynb 119
 def last_cal_sample_distplot(data_source:str|pd.DataFrame,
                              n:int,
                              replace:bool = False,
@@ -2778,7 +2939,7 @@ def last_cal_sample_distplot(data_source:str|pd.DataFrame,
     
     return fig
 
-# %% ../00_core.ipynb 113
+# %% ../00_core.ipynb 121
 def swarmplot(data_source:str|pd.DataFrame,
               max_loggings:int,
               identifier:int = 1,
