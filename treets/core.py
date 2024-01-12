@@ -1312,7 +1312,7 @@ def mean_daily_eating_occasions(df: pd.DataFrame,
                                 time_col:int = 7) -> int:
     """
     Calculates the average number of daily eating occasions. An eating occasion is a single caloric (food or beverage)
-    log.It is recommended that you use find_date and find_float_time to generate necessary date and time columns 
+    log. It is recommended that you use find_date and find_float_time to generate necessary date and time columns 
     for this function. 
     
     Parameters
@@ -1350,7 +1350,7 @@ def std_daily_eating_occasions(df: pd.DataFrame,
                                 time_col:int = 7) -> int:
     """
     Calculates the standard deviation of the number of daily eating occasions. An eating occasion is a single caloric (food or beverage)
-    log.It is recommended that you use find_date and find_float_time to generate necessary date and time columns 
+    log. It is recommended that you use find_date and find_float_time to generate necessary date and time columns 
     for this function. 
     
     Parameters
