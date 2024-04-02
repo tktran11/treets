@@ -1591,7 +1591,7 @@ def good_lwa_day_counts(df: pd.DataFrame,
     if pd.isnull(window_start):
         window_start = datetime.time(0,0)
     if pd.isnull(window_end):
-        window_end = datetime.time(23,59)
+        window_end = datetime.time(23,59,59)
 
     # helper function to determine a good logging
     def good_logging(local_time_series):
@@ -1612,7 +1612,7 @@ def good_lwa_day_counts(df: pd.DataFrame,
         window_end_daily = window_end.hour + window_end.minute / 60 + buffer_time
         tmp = df[df['date'] == aday]
         
-        if (window_start == datetime.time(0,0)) and (window_end == datetime.time(23,59)):
+        if (window_start == datetime.time(0,0)) and (window_end == datetime.time(23,59, 59)):
             in_window_count.append(tmp[(tmp[time_col] >= window_start_daily + h) & (tmp[time_col] <= window_end_daily + h)].shape[0])
         else:
             in_window_count.append(tmp[(tmp[time_col] >= window_start_daily) & (tmp[time_col] <= window_end_daily)].shape[0])
