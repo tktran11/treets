@@ -1,0 +1,280 @@
+generic name,gram_key
+acetaminophen,['acetaminophen']
+acetazolamide,"['acetazolamide', 'diamox']"
+acyclovir,['acyclovir']
+agomelatine,['valdoxan']
+albuterol,['ventolin']
+alfuzosin,['alfuzosin']
+allopurinol,"['allopurinol', 'zyloprim']"
+alprazolam,"['alprazolam', 'xanax']"
+amantadine,['amantadine']
+amitriptyline,"['amitriptyline', 'endep']"
+amlodipine,"['amlodipine', 'amlodipine teva', 'norvasc']"
+"amlodipine, benazepril",['lotrel']
+"amlodipine, valsartan",['exforge']
+amoxicillin,"['amoxicillin', 'augmentin']"
+"ampicillin, sulbactam",['unasyn']
+anastrozole,['anastrozole']
+apixaban,"['apixaban', 'eliquis']"
+aripiprazole,['abilify']
+armodafinil,"['armodafinil', 'nuvigil']"
+aspirin,['anopyrin']
+atenolol,"['atenolol', 'tenormin']"
+atenolol chlorthalidone,['atenolol chlorthalidone']
+ativan,['lorazepam']
+atomoxetine,['strattera']
+atorvastatin,"['atorvastatin', 'lipitor']"
+azathioprine,['azathioprine']
+azelastine,['astelin']
+baclofen,['baclofen']
+beclometasone,"['clenil modulite inhaler', 'fostair', 'foster', 'qnasl', 'qvar']"
+benazepril,['benazepril']
+bendroflumethiazide,['salures']
+betahistine,['betahistine']
+"bictegravir, emtricitabine, tenofovir, alafenamide",['biktarvy']
+birth control,"['birth control', 'levlen', 'loloestrin fe', 'lomedia fe', 'microgestin fe', 'norqd', 'qlaira', 'sprintec', 'triprevifem', 'triprevifem birth control', 'viorele']"
+bisacodyl,['dulcolax']
+bisoprolol,"['bisoprolol', 'cardicor']"
+"bisoprolol, perindopril",['cosyrel']
+brinzolamide,"['simbrinza', 'simbrinza eye drop']"
+budesonide,"['budesonide formoterol inhaler', 'budesonide', 'novopulmon', 'uceris']"
+"budesonide, formoterol",['symbicort']
+"buprenorphine, naloxone",['suboxone']
+bupropion,"['bupropion', 'voxra', 'wellbutrin']"
+"bupropion, naltrexone",['contrave']
+buspirone,"['buspar', 'buspirone']"
+candesartan,"['candecor', 'candesartan']"
+carbamazepine,['carbamazepine']
+"carbidopa, levodopa",['sinemet']
+carbimazole,['carbimazole']
+carnitine,['levocarnitine']
+carvedilol,['carvedilol']
+cefalexin,['keflex']
+celecoxib,"['celebrex', 'celecoxib']"
+cephalexin,['cephalexin']
+chloroquine,['chloroquine']
+chlorpheniramine maleate,['chlorpheniramine maleate']
+chlorthalidone,"['chlorthalidone', 'hygroton']"
+cholestyramine,['questran']
+cilazapril,['inhibace']
+cimetidine,"['cimtedine', 'tagamet']"
+ciprofloxacin,['ciprofloxacin']
+citalopram,"['celexa', 'citalopram', 'citalec']"
+clonazepam,"['clonazepam', 'klonopin', 'kriadex']"
+clonidine,['clonidine']
+clopidogrel,"['clopidogrel', 'plavix']"
+codeine,['codeine']
+"codeine, paracetamol",['cocodamol']
+colchicine,['colchicine']
+colesevelam,['colesevelam']
+colestipol,['colestipol']
+conjugated estrogen,"['premarin', 'premphase', 'prempro']"
+cortisol,['cortisol']
+cromolyn,['cromolyn sodium']
+cyclobenzaprine,"['cyclobenzaprine', 'flexeril']"
+cyclosporine,"['cyclosporine', 'restasis']"
+dabigatran,['pradaxa']
+dapagliflozin,['forxiga']
+dehydroepiandrosterone,['dhea']
+desloratadine,['desloratadine']
+desvenlafaxine,"['desvenlafaxine', 'pristiq']"
+dexlansoprazole,['dexilant']
+dextroamphetamine,"['adderall', 'adderall xr', 'dexamphetamine', 'mydayis']"
+diclofenac,['diclofenac']
+dicyclomine,['dicyclomine']
+dicycloverine,['bentyl']
+digoxin,['digoxin']
+diltiazem,['diltiazem']
+diosmin,['daflon']
+"diosmin, hesperidin",['detralex']
+diphenhydramine,['diphenhydramine']
+divalproex,['depakote']
+domperidone,['domperidone']
+doxazosin,['alfadil']
+doxepin,['doxepin']
+doxycycline,"['doxycycline', 'doxycycline monohydrate']"
+dropodex,['dropodex']
+drospirenone,['yasmin']
+duloxetine,"['cymbalta', 'duloxetine']"
+"dutasteride, tamsulosin",['duodart']
+empagliflozin,['jardiance']
+enalapril,['enalapril']
+escitalopram,"['escitalopram', 'lexapro']"
+esomeprazole,['esomeprazole']
+"esomeprazole, naproxen",['vimovo']
+estradiol,"['estrace', 'estradiol']"
+"estradiol, dydrogesterone","['femoston', 'femoston conti']"
+estriol,"['biest', 'biestrogen']"
+"ethinylestradiol, norethisterone acetate","['junel', 'junel fe']"
+ezetimibe,"['ezetimibe', 'ezetrol', 'zetia']"
+famotidine,['pepcid']
+felodipine,"['felodipine', 'fenofibrate']"
+ferrostrane,['ferrostrane']
+fexofenadine,"['fexofenadine', 'fexofenadine hydrochloride']"
+finasteride,['finasteride']
+fingolimod,['gilenya']
+flecainide,['flecainide']
+flucloxacillin,['flucloxacillin']
+fluconazole,['fluconazole']
+fludrocortisone,['fludrocortisone']
+flunisolide,['flunisolide']
+fluoxetine,"['fluoxetine', 'prozac']"
+fluticasone propionate,"['advair', 'breo', 'flovent', 'seretide']"
+folinic acid,['folinic acid']
+furosemide,"['furosemide', 'lasix']"
+gabapentin,"['gabapentin', 'neurontin']"
+glimepiride,['glimepiride']
+glipizide,['glipizide']
+hormone replacement therapy,"['hrt', 'kilovance', 'progynova']"
+hydralazine,['hydralazine']
+hydrochloride,['hydrochloride']
+hydrochlorothiazide,"['hct', 'hctz', 'hydrochlorothiazide']"
+hydrocodone,"['hydrocodone', 'norco']"
+hydroxychloroquine,"['hydroxychloroquine', 'plaquenil']"
+hydroxyprogesterone,['biosteron']
+hydroxyurea,"['hydrea', 'hydroxyurea']"
+hydroxyzine,"['atarax', 'hydroxyzine']"
+ibrutinib,"['ibrutinib', 'imbruvica']"
+ibuprofen,"['ibuprofen', 'ipren', 'motrin', 'nurofen']"
+icosapent ethyl,['vascepa']
+immunoglobulin g,['igg']
+indapamide,['indapamide']
+indomethacin,['indomethacin']
+insulin,"['insulin', 'lantus', 'levemir u', 'novolin r', 'novolog']"
+irbesartan,"['aprovel', 'irbesartan']"
+isosorbide mononitrate,['isosorbide mononitrate']
+ketotifen,['ketotifen fumarate oral']
+labetalol,['labetalol']
+lacosamide,['vimpat']
+lactulose,['lactulose']
+lamotrigine,"['lamictal', 'lamotrigine']"
+lansoprazole,['lansoprazole']
+lercanidipine,['lercanidipine']
+letrozole,['letrozole']
+levetiracetam,"['keppra', 'levetiracetam']"
+levothyroxine,"['eltroxin', 'euthyrox', 'levaxin', 'levothroid', 'levothyroxine', 'levoxyl', 'synthroid', 'thyronorm', 'thyroxine', 'tirosint', 'unithroid']"
+linaclotide,['linzess']
+linagliptin,['linagliptin']
+liothyronine,"['cytomel', 'liothyronine']"
+liraglutide,['victoza']
+lisdexamfetamine,['vyvanse']
+lisinopril,['lisinopril']
+lorazepam,['ativan']
+losartan,"['cozaar', 'losartan', 'lozap', 'lozap h']"
+"losartan, hydrochlorothiazide",['hyzaar']
+lovastatin,['lovastatin']
+meclizine,['meclizine']
+meloxicam,['meloxicam']
+mercaptopurine,['mercaptopurine']
+mesalamine,"['asacol', 'lialda', 'mesalamine', 'mesalazine']"
+metformin,"['glucophage', 'metformin']"
+"metformin, sitagliptin","['janumet', 'janumet xr']"
+methadone,['methadone']
+methenamine,['hiprex']
+methimazole,['methimazole']
+methocarbamol,"['methocarbamol', 'robaxin']"
+methylphenidate,"['concerta', 'methylphenidate', 'ritalin']"
+methylprednisolone,['methylprednisolone']
+metoprolol,['metoprolol']
+metronidazole,['metronidazole']
+mildronate,['meldonium']
+milnacipran,['savella']
+mirtazapine,['mirtazapine']
+moclobemide,['moclobemide']
+modafinil,['modafinil']
+mometasone,['asmanex']
+"mometasone, formoterol",['dulera']
+montelukast,"['montelukast', 'singulair']"
+morphine,['medd']
+multivitamin injection,['mvi']
+mycophenolic acid,"['cellcept', 'mycophenolate']"
+naltrexone,"['naltrexone', 'revia']"
+naproxen,['naproxen']
+nebivolol,['bystolic']
+nefopam,['acupan']
+niacin,['niacin']
+nifedipine,['nifedipine']
+nitrofuratoin,"['furolin', 'macrobid']"
+nortriptyline,['nortriptyline']
+nystatin,['nystatin']
+olmesartan,"['benicar', 'olmesartan', 'olmesartan medoxomil']"
+omeprazole,['omeprazole']
+orlistat,['alli']
+ospemifene,"['ospemifene', 'osphena']"
+oxazepam,"['oxazepam', 'vaben']"
+oxcarbazepine,['oxcarbazepine']
+oxybutynin,['oxybutynin']
+oxycodone,"['oxycodone', 'oxycontin', 'percocet']"
+paliperidone,['invega']
+pantoprazole,"['pantoprazole', 'protonix', 'somac']"
+paroxetine,"['paroxetine', 'paxil', 'seroxat']"
+penecillin,['penecillin']
+pentosan polysulfate,['elmiron']
+perindopril,"['coversyl', 'perindopril', 'perindopril amlodipine']"
+phentermine,"['phen', 'phentermine']"
+pioglitazone,"['actos', 'pioglitazone']"
+pitavastatin,"['livalo', 'pitavastatin']"
+potassium,['potassium']
+potassium chloride,['klorcon']
+pravastatin,['pravastatin']
+prednisolone,['prednisolone']
+prednisone,['prednisone']
+pregabalin,"['lyrica', 'pregabalin']"
+progesterone,"['famenita', 'progesterone', 'prometrium', 'utrogestan']"
+propafenone,['propafenone']
+propranolol,"['inderal', 'propranolol']"
+propylthiouracil,['propylthiouracil']
+prucalopride,['resotran']
+quetiapine,"['quetiapine', 'seroquel']"
+quinapril,['quinapril']
+rabeprazole,['rabeprazole']
+raloxifene,['evista']
+ramipril,"['altace', 'ramipril', 'tritace']"
+ranitidine,['ranitidine']
+rifaximin,['rifaximin']
+rilpivirine,['edurant']
+risperidone,"['risperdal', 'risperidone']"
+ritonavir,['norvir']
+rivaroxaban,"['rivaroxaban', 'xarelto']"
+rosuvastatin,"['crestor', 'rosuvastatin', 'sorvasta']"
+salbutamol,['salbutamol']
+sertraline,"['sertraline', 'zoloft']"
+simvastatin,"['simvastatin', 'zocor']"
+spironolactone,['spironolactone']
+"sulfamethoxazole, trimethoprim","['bactrim', 'bactrim ds']"
+sulfasalazine,"['salazopyrin', 'sulfasalazine']"
+sumatriptan,['sumatriptan']
+tacrolimus,['tacrolimus']
+tadalafil,"['cialis', 'tadalafil']"
+tamoxifen,['tamoxifen']
+tamsulosin,"['flomax', 'tamsulosin']"
+telmisartan,['micardis']
+tenofovir,['truvada']
+terazosin,['terazosin']
+terbinafine,['terbinafine']
+testosterone,['androgel']
+thyroid extract,"['armour thyroid', 'nature throid', 'np thyroid', 'wp thyroid']"
+tiotropium,"['spiriva', 'spiriva respimat']"
+tizanidine,['tizanidine']
+tofacitinib,['xeljanz']
+tolterodine,['tolterodine']
+topiramate,"['topamax', 'topiramate']"
+tramadol,['tramadol']
+tranexamic acid,['tranexamic acid']
+travoprost,['duotrav']
+trazodone,['trazodone']
+triamterene,"['dyrenium', 'maxide', 'triamterene']"
+trospium chloride,['spasmex']
+ursodiol,['ursodiol']
+valacyclovir,"['valacyclovir', 'valtrex']"
+valsartan,"['diovan', 'valsartan', 'valsartan amlodipine']"
+"valsartan, hydrochlorothiazide",['co diovan']
+varenicline,"['champix', 'chantix', 'varenicline']"
+venlafaxine,"['effexor', 'venlafaxine']"
+verapamil,['verapamil']
+vilazodone,['viibryd']
+vitamin k,['vitamin k']
+vortioxetine,"['trintellix', 'vortioxetine']"
+warfarin,['warfarin']
+zolpidem,"['ambien', 'stilnoct', 'zolpidem']"
+zopiclone,['zopiclone']
